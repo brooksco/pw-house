@@ -1,0 +1,263 @@
+@import url(http://fonts.googleapis.com/css?family=Quicksand:400,700|Shadows+Into+Light);
+// @import url(http://fonts.googleapis.com/css?family=Bitter);
+@import url(http://fonts.googleapis.com/css?family=Cabin);
+@import url(http://fonts.googleapis.com/css?family=Raleway);
+@import url(http://fonts.googleapis.com/css?family=Old+Standard+TT);
+@import url(http://fonts.googleapis.com/css?family=Playfair+Display);
+@import url(http://fonts.googleapis.com/css?family=Lato);
+@import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
+@import url(http://fonts.googleapis.com/css?family=Domine);
+
+$light-gray: #eee;
+$medium-gray: #dadada;
+$dark-gray: #333;
+$darker-gray: #1a1a1a;
+
+
+// General styling
+
+
+body {
+	// font-family: "Quicksand";
+	// font-family: 'Bitter';
+	font-family: 'Lato';
+	// font-family: 'Libre Baskerville';
+	font-weight: lighter;
+	// font-family: 'Georgia';
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Libre Baskerville';
+	// font-family: 'Lato';
+	color: $dark-gray;
+	font-weight: lighter;
+	// text-transform: uppercase;
+}
+
+// Shortcut for consistent & responsive spacing of sections
+.unit-spacing {
+	padding-top: 60px;
+	padding-bottom: 60px;
+	max-width: 1200px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+// Shortcut for consistent & responsive spacing
+.margin-five {
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+.mid-line {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+
+
+#main {
+	max-width: 1200px;
+	// margin-left: 5%;
+	// margin-right: 5%;
+	margin-left: auto;
+	margin-right: auto;
+	// margin-bottom: 100px;
+
+}
+
+.image-border {
+	border: solid 8px $light-gray;
+	// border-top: solid 8px $light-gray;
+	// border-right: solid 8px $darker-gray;
+}
+
+// End general styling
+
+
+// Sidebar styling
+
+#site-header {
+	// margin-bottom: 3em;
+	
+	h1, h2, h3, h4 {
+		// color: white;
+	}
+}
+
+#sidebar {
+	max-width: 350px;
+	position: fixed; top: 0px; bottom: 0px;
+	width: inherit;
+	text-align: center;
+	padding-top: 3em;
+	// background-color: $darker-gray;
+	// color: white;
+	// background-color: $light-gray;
+	
+	nav {
+		li {
+			a {
+				color: gray;
+				// font-family: 'Raleway';
+				text-transform: uppercase;
+				font-weight: lighter;
+				font-size: 1.15em;
+				text-decoration: none;
+				margin-bottom: .75em;
+			}
+		}
+	}
+
+}
+
+// End sidebar styling
+
+// Home page styling
+
+#main-content {
+	// background-color: $light-gray;
+	// padding-top: 1em;
+	// padding-bottom: 2em;
+}
+
+.home-text {
+	background-color: $light-gray;
+
+	font-size: 1.25em;
+
+	margin-top: -1em;
+	padding-left: 2.5em;
+	padding-right: 2.5em;
+	padding-top: 2em;
+	padding-bottom: 4em;
+}
+
+.background-block {
+	background-color: $light-gray; 
+	padding: .5em;
+}
+
+
+
+
+
+
+
+
+// Royal Slider
+
+#full-width-slider {
+	margin-bottom: 1em;
+  width: 100%;
+  color: #000;
+}
+.coloredBlock {
+  padding: 12px;
+  background: rgba(255,0,0,0.6);
+  color: #FFF;
+   width: 200px;
+   left: 20%;
+   top: 5%;
+}
+.infoBlock {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  left: auto;
+  max-width: 25%;
+  padding-bottom: 0;
+  background: #FFF;
+  background: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  padding: 20px;
+}
+.infoBlockLeftBlack {
+  color: #FFF;
+  background: #000;
+  background: rgba(0,0,0,0.75);
+  left: 30px;
+  right: auto;
+}
+.infoBlock h4 {
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 0;
+  padding-bottom: 3px;
+}
+.infoBlock p {
+  font-size: 14px;
+  margin: 4px 0 0;
+}
+.infoBlock a {
+  color: #FFF;
+  text-decoration: underline;
+}
+.photosBy {
+  position: absolute;
+  line-height: 24px;
+  font-size: 12px;
+  background: #FFF;
+  color: #000;
+  padding: 0px 10px;
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  top: auto;
+  border-radius: 2px;
+  z-index: 25; 
+} 
+.photosBy a {
+  color: #000;
+}
+.fullWidth {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+}
+
+@media screen and (min-width:960px) and (min-height:660px) {
+  .heroSlider .rsOverflow,
+  .royalSlider.heroSlider {
+      height: 520px !important;
+  }
+}
+
+@media screen and (min-width:960px) and (min-height:1000px) {
+    .heroSlider .rsOverflow,
+    .royalSlider.heroSlider {
+        height: 660px !important;
+    }
+}
+@media screen and (min-width: 0px) and (max-width: 800px) {
+  .royalSlider.heroSlider,
+  .royalSlider.heroSlider .rsOverflow {
+    height: 300px !important;
+  }
+  .infoBlock {
+    padding: 10px;
+    height: auto;
+    max-height: 100%;
+    min-width: 40%;
+    left: 5px;
+    top: 5px;
+    right: auto;
+    font-size: 12px;
+  }
+  .infoBlock h3 {
+     font-size: 14px;
+     line-height: 17px;
+  }
+}
+
+// End royal slider
+
+
+
+
+
+
+
+
+// Media queries
