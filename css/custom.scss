@@ -141,6 +141,37 @@ h1, h2, h3, h4, h5, h6 {
 	padding: .5em;
 }
 
+#facebook {
+	width: 50px;
+
+	-webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  filter: grayscale(100%);
+
+	-webkit-transition: all .25s ease-in-out;
+	-moz-transition: all .25s ease-in-out;
+	-ms-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
+
+}
+
+#facebook:hover {
+
+	
+	-webkit-filter: grayscale(0%);
+  -moz-filter: grayscale(0%);
+  -ms-filter: grayscale(0%);
+  -o-filter: grayscale(0%);
+  filter: grayscale(0%);
+
+	// opacity:.75;
+	// filter: alpha(opacity=75); 
+	// -ms-filter:"progid:DXImageTransform.Micr… /*IE8*/"
+
+}
 
 
 
