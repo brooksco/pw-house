@@ -3302,7 +3302,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-right: 5%; }
 
 .mid-line {
-  width: 80%;
+  width: 75%;
   margin-left: auto;
   margin-right: auto; }
 
@@ -3314,6 +3314,10 @@ h1, h2, h3, h4, h5, h6 {
 .image-border {
   border: solid 8px #eeeeee; }
 
+#logo {
+  width: 75%;
+  margin-bottom: .5em; }
+
 #sidebar {
   max-width: 350px;
   position: fixed;
@@ -3321,17 +3325,19 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 0px;
   width: inherit;
   text-align: center;
-  padding-top: 3em; }
+  padding-top: 2em; }
   #sidebar nav li a {
-    color: gray;
+    color: #6d6e70;
     text-transform: uppercase;
     font-weight: lighter;
     font-size: 1.15em;
     text-decoration: none;
     margin-bottom: .75em; }
 
-.home-text {
-  background-color: #eeeeee;
+#main-content {
+  background-color: #eeeeee; }
+
+.block-text {
   font-size: 1.25em;
   margin-top: -1em;
   padding-left: 2.5em;
@@ -3436,3 +3442,6 @@ h1, h2, h3, h4, h5, h6 {
   .infoBlock h3 {
     font-size: 14px;
     line-height: 17px; } }
+@media (max-width: 768px) {
+  #sidebar {
+    display: none; } }

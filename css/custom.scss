@@ -10,6 +10,7 @@
 
 $light-gray: #eee;
 $medium-gray: #dadada;
+$mediumer-gray: #6d6e70;
 $dark-gray: #333;
 $darker-gray: #1a1a1a;
 
@@ -50,7 +51,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .mid-line {
-	width: 80%;
+	width: 75%;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -87,12 +88,17 @@ h1, h2, h3, h4, h5, h6 {
 	}
 }
 
+#logo {
+	width: 75%; 
+	margin-bottom: .5em;
+}
+
 #sidebar {
 	max-width: 350px;
 	position: fixed; top: 0px; bottom: 0px;
 	width: inherit;
 	text-align: center;
-	padding-top: 3em;
+	padding-top: 2em;
 	// background-color: $darker-gray;
 	// color: white;
 	// background-color: $light-gray;
@@ -100,7 +106,7 @@ h1, h2, h3, h4, h5, h6 {
 	nav {
 		li {
 			a {
-				color: gray;
+				color: $mediumer-gray;
 				// font-family: 'Raleway';
 				text-transform: uppercase;
 				font-weight: lighter;
@@ -118,16 +124,11 @@ h1, h2, h3, h4, h5, h6 {
 // Home page styling
 
 #main-content {
-	// background-color: $light-gray;
-	// padding-top: 1em;
-	// padding-bottom: 2em;
+	background-color: $light-gray;
 }
 
-.home-text {
-	background-color: $light-gray;
-
+.block-text {
 	font-size: 1.25em;
-
 	margin-top: -1em;
 	padding-left: 2.5em;
 	padding-right: 2.5em;
@@ -261,3 +262,9 @@ h1, h2, h3, h4, h5, h6 {
 
 
 // Media queries
+
+@media (max-width: 768px) {
+	#sidebar {
+		display: none;
+	}
+}
