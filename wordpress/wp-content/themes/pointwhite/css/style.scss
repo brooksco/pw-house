@@ -1,0 +1,47 @@
+/*
+Theme Name: Point White
+Theme URI: http://wordpress.org/themes/twentythirteen
+Author: Colin Brooks
+Author URI: http://colinbrooks.us/
+Description:  Custom theme for pointwhiteguesthouse.com
+Version: 1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: pointwhite
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
+
+
+@charset "UTF-8";
+/*------------------------------------*\
+    STYLE.CSS
+\*------------------------------------*/
+/**
+ *
+ * sass --watch style.scss:style.min.css --style compressed
+ *
+ * Here we pull in some variables, include the inuit.css framework, then add our
+ * project-specific components afterwards.
+ */
+
+
+/**
+ * Setup
+ */
+@import "vars";
+@import "inuit.css/inuit";
+
+
+
+
+
+/**
+ * She’s all yours, cap’n... Begin importing your stuff here.
+ */
+//@import "ui/example";
+
+// @import "royalslider/royalslider.css";
+// @import "royalslider/skins/minimal-white/rs-minimal-white.css";
+@import "custom";
