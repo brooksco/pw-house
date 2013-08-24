@@ -30,7 +30,7 @@
 
 			<div class="block-text">
 
-				<h3>Welcome to the pacific northwest</h3>
+				<h3 id="home-title">Welcome to the pacific northwest</h3>
 
 				<p>
 

@@ -125,15 +125,20 @@ h1, h2, h3, h4, h5, h6 {
 
 #main-content {
 	background-color: $light-gray;
+	padding-bottom: 2em;
 }
 
 .block-text {
 	font-size: 1.25em;
-	margin-top: -1em;
+	// margin-top: -1em;
 	padding-left: 2.5em;
 	padding-right: 2.5em;
-	padding-top: 2em;
+	padding-top: 1em;
 	padding-bottom: 4em;
+}
+
+#home-title {
+	padding-top: .5em;
 }
 
 .background-block {
@@ -174,6 +179,68 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+
+
+// Gallery styling
+
+.gallery {
+   margin: auto;
+}
+.gallery-item {
+   float: left;
+   // margin-top: 10px;
+   text-align: center;
+   // width: auto;
+   width: 20%;
+   margin: 0;
+}
+// .gallery img {
+//    border: 2px solid #cfcfcf;
+// }
+
+.gallery-icon {
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.attachment-thumbnail {
+	border-left: 3px solid $light-gray;
+	border-right: 3px solid $light-gray;
+	width: 100%;
+	height: auto;
+}
+
+.gallery-caption {
+   margin-left: 0;
+}
+
+// End gallery styling
+
+// Footer styling
+
+footer {
+	background-color: $light-gray;
+	padding-top: 3em;
+	padding-bottom: .5em;
+	text-align: center;
+	color: gray;
+	font-size: .9em;
+
+	p {
+		margin-bottom: .5em;
+	}
+
+	a {
+		text-decoration: none;
+		color: gray;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+}
+
+// End footer styling
 
 
 

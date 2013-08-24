@@ -18,8 +18,8 @@
 
 		<!-- <li><a href="#">About</a></li> -->
 		<li><a href="activities.php">Activities</a></li>
-		<li><a href="#">Gallery</a></li>
-		<li><a href="#">Booking</a></li>
+		<li><a href="gallery.php">Gallery</a></li>
+		<li><a href="booking.php">Booking</a></li>
 		<li><a href="#">Contact</a></li>
 
 	</ul>

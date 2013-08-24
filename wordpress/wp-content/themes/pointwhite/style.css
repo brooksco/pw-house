@@ -3341,15 +3341,18 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: .75em; }
 
 #main-content {
-  background-color: #eeeeee; }
+  background-color: #eeeeee;
+  padding-bottom: 2em; }
 
 .block-text {
   font-size: 1.25em;
-  margin-top: -1em;
   padding-left: 2.5em;
   padding-right: 2.5em;
-  padding-top: 2em;
+  padding-top: 1em;
   padding-bottom: 4em; }
+
+#home-title {
+  padding-top: .5em; }
 
 .background-block {
   background-color: #eeeeee;
@@ -3374,6 +3377,43 @@ h1, h2, h3, h4, h5, h6 {
   -ms-filter: grayscale(0%);
   -o-filter: grayscale(0%);
   filter: grayscale(0%); }
+
+.gallery {
+  margin: auto; }
+
+.gallery-item {
+  float: left;
+  text-align: center;
+  width: 20%;
+  margin: 0; }
+
+.gallery-icon {
+  margin-bottom: 0;
+  padding-bottom: 0; }
+
+.attachment-thumbnail {
+  border-left: 3px solid #eeeeee;
+  border-right: 3px solid #eeeeee;
+  width: 100%;
+  height: auto; }
+
+.gallery-caption {
+  margin-left: 0; }
+
+footer {
+  background-color: #eeeeee;
+  padding-top: 3em;
+  padding-bottom: .5em;
+  text-align: center;
+  color: gray;
+  font-size: .9em; }
+  footer p {
+    margin-bottom: .5em; }
+  footer a {
+    text-decoration: none;
+    color: gray; }
+  footer a:hover {
+    text-decoration: underline; }
 
 #full-width-slider {
   margin-bottom: 1em;

@@ -13,5 +13,16 @@ function load_my_scripts()
 	// wp_enqueue_script( 'custom-script', '/js/custom-min.js' );
 }
 add_action( 'wp_enqueue_scripts', 'load_my_scripts' );
+remove_filter( 'the_content', 'wpautop' );
+
+// Remove Gallery Styling
+add_filter( 'gallery_style', 'my_gallery_style', 99 );
+
+function my_gallery_style() {
+    return "
+";
+}
+
+add_filter( 'use_default_gallery_style', '__return_false' );
 
 ?>

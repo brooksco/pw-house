@@ -2,7 +2,7 @@
 
 <header id="site-header" class="margin-five">
 
-	<a href="index.php"><img id="logo" src="/pw-house/wordpress/wp-content/themes/pointwhite/img/logo.png"/></a>
+	<a href="<?php echo site_url(); ?>"><img id="logo" src="/pw-house/wordpress/wp-content/themes/pointwhite/img/logo.png"/></a>
 
 	<h1>Point White<br>Guest House</h1>
 
