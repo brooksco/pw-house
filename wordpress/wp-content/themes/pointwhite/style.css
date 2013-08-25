@@ -1,4 +1,6 @@
 @charset "UTF-8";
+@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);
+@import url(http://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope);
 @import url(http://fonts.googleapis.com/css?family=Lato);
 @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
 /*
@@ -3292,9 +3294,24 @@ body {
   font-weight: 300; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Libre Baskerville';
+  font-family: 'Annie Use Your Telescope', cursive;
   color: #333333;
   font-weight: 300; }
+
+h1 {
+  font-size: 2em; }
+
+h2 {
+  font-size: 1.75em; }
+
+h3 {
+  font-size: 1.5em; }
+
+h4 {
+  font-size: 1.25em; }
+
+h5 {
+  font-size: 1em; }
 
 .unit-spacing {
   padding-top: 60px;
@@ -3322,7 +3339,11 @@ h1, h2, h3, h4, h5, h6 {
 
 #logo {
   width: 75%;
-  margin-bottom: .5em; }
+  margin-bottom: .75em; }
+
+#island-sub-header {
+  margin-top: .5em;
+  margin-bottom: 2em; }
 
 #sidebar {
   max-width: 350px;
@@ -3526,17 +3547,18 @@ footer {
       display: none; }
 
   #site-header img {
-    width: 160px; }
+    width: 200px;
+    margin-bottom: 1em; }
 
-  #facebook-link {
+  #facebook-link, #island-sub-header {
     display: none; }
 
   #sidebar {
-    padding-top: 1em;
+    padding-top: .5em;
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: -1em;
+    margin-bottom: -1.5em;
     position: relative;
     text-align: center; }
     #sidebar hr {

@@ -2,15 +2,19 @@
 
 <header id="site-header" class="margin-five">
 
-	<a href="<?php echo site_url(); ?>"><img id="logo" src="/pw-house/wordpress/wp-content/themes/pointwhite/img/logo.png"/></a>
+	<!-- <a href="<?php echo site_url(); ?>"><img id="logo" src="/pw-house/wordpress/wp-content/themes/pointwhite/img/logo.png"/></a> -->
+	<a href="<?php echo site_url(); ?>"><img id="logo" src="/pw-house/wordpress/wp-content/themes/pointwhite/img/PWGH-logo-blue.png" /></a>
+	<!-- <a href="<?php echo site_url(); ?>"><img id="logo" src="/pw-house/wordpress/wp-content/themes/pointwhite/img/PWGH-logo-web-2.png" style="margin-bottom: 1.25em;"/></a> -->
 
-	<h1>Point White<br>Guest House</h1>
+	<!-- <h1>Point White<br>Guest House</h1> -->
 
-	<h4>Bainbridge Island</h4>
+	<hr class="mid-line">
+
+	<h3 id="island-sub-header">Bainbridge Island</h3>
 
 </header>
 
-	<hr class="mid-line">
+	<!-- <hr class="mid-line"> -->
 
 <nav>
 
