@@ -3341,15 +3341,14 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: .75em; }
 
 #main-content {
-  background-color: #eeeeee;
-  padding-bottom: 2em; }
+  background-color: #eeeeee; }
 
 .block-text {
   font-size: 1.25em;
   padding-left: 2.5em;
   padding-right: 2.5em;
   padding-top: 1em;
-  padding-bottom: 4em; }
+  padding-bottom: 2em; }
 
 #home-title {
   padding-top: .5em; }
@@ -3358,7 +3357,8 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #eeeeee;
   padding: .5em; }
 
-#facebook {
+#facebook, #facebook-footer {
+  margin-top: 1em;
   width: 50px;
   -webkit-filter: grayscale(100%);
   -moz-filter: grayscale(100%);
@@ -3371,7 +3371,7 @@ h1, h2, h3, h4, h5, h6 {
   -o-transition: all .25s ease-in-out;
   transition: all .25s ease-in-out; }
 
-#facebook:hover {
+#facebook:hover, #facebook-footer:hover {
   -webkit-filter: grayscale(0%);
   -moz-filter: grayscale(0%);
   -ms-filter: grayscale(0%);
@@ -3402,8 +3402,8 @@ h1, h2, h3, h4, h5, h6 {
 
 footer {
   background-color: #eeeeee;
-  padding-top: 3em;
-  padding-bottom: .5em;
+  padding-top: 4em;
+  padding-bottom: 4em;
   text-align: center;
   color: gray;
   font-size: .9em; }
@@ -3414,6 +3414,12 @@ footer {
     color: gray; }
   footer a:hover {
     text-decoration: underline; }
+
+#facebook-link-footer {
+  display: none; }
+
+#facebook-footer {
+  margin-top: 1.5em; }
 
 #full-width-slider {
   margin-bottom: 1em;
@@ -3509,5 +3515,39 @@ footer {
     font-size: 14px;
     line-height: 17px; } }
 @media (max-width: 768px) {
+  #site-header {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%; }
+    #site-header h1 {
+      font-size: 1.75em; }
+    #site-header h4 {
+      display: none; }
+
+  #site-header img {
+    width: 160px; }
+
+  #facebook-link {
+    display: none; }
+
   #sidebar {
-    display: none; } }
+    padding-top: 1em;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: -1em;
+    position: relative;
+    text-align: center; }
+    #sidebar hr {
+      display: none; }
+    #sidebar nav {
+      vertical-align: top;
+      width: 100%; }
+      #sidebar nav li {
+        display: inline-block;
+        padding-left: 1em;
+        padding-right: 1em; }
+
+  #facebook-link-footer {
+    display: block; } }

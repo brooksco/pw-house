@@ -125,7 +125,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #main-content {
 	background-color: $light-gray;
-	padding-bottom: 2em;
+	// padding-bottom: 2em;
 }
 
 .block-text {
@@ -134,7 +134,7 @@ h1, h2, h3, h4, h5, h6 {
 	padding-left: 2.5em;
 	padding-right: 2.5em;
 	padding-top: 1em;
-	padding-bottom: 4em;
+	padding-bottom: 2em;
 }
 
 #home-title {
@@ -146,14 +146,16 @@ h1, h2, h3, h4, h5, h6 {
 	padding: .5em;
 }
 
-#facebook {
+
+#facebook, #facebook-footer {
+	margin-top: 1em;
 	width: 50px;
 
 	-webkit-filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
-  filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	-ms-filter: grayscale(100%);
+	-o-filter: grayscale(100%);
+	filter: grayscale(100%);
 
 	-webkit-transition: all .25s ease-in-out;
 	-moz-transition: all .25s ease-in-out;
@@ -163,14 +165,13 @@ h1, h2, h3, h4, h5, h6 {
 
 }
 
-#facebook:hover {
+#facebook:hover, #facebook-footer:hover {
 
-	
 	-webkit-filter: grayscale(0%);
-  -moz-filter: grayscale(0%);
-  -ms-filter: grayscale(0%);
-  -o-filter: grayscale(0%);
-  filter: grayscale(0%);
+	-moz-filter: grayscale(0%);
+	-ms-filter: grayscale(0%);
+	-o-filter: grayscale(0%);
+	filter: grayscale(0%);
 
 	// opacity:.75;
 	// filter: alpha(opacity=75); 
@@ -184,10 +185,10 @@ h1, h2, h3, h4, h5, h6 {
 // Gallery styling
 
 .gallery {
-   margin: auto;
+	margin: auto;
 }
 .gallery-item {
-   float: left;
+	float: left;
    // margin-top: 10px;
    text-align: center;
    // width: auto;
@@ -211,7 +212,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gallery-caption {
-   margin-left: 0;
+	margin-left: 0;
 }
 
 // End gallery styling
@@ -220,8 +221,8 @@ h1, h2, h3, h4, h5, h6 {
 
 footer {
 	background-color: $light-gray;
-	padding-top: 3em;
-	padding-bottom: .5em;
+	padding-top: 4em;
+	padding-bottom: 4em;
 	text-align: center;
 	color: gray;
 	font-size: .9em;
@@ -240,114 +241,119 @@ footer {
 	}
 }
 
+#facebook-link-footer {
+	display: none;
+}
+
+#facebook-footer {
+	margin-top: 1.5em;
+}
+
 // End footer styling
-
-
-
 
 
 // Royal Slider
 
 #full-width-slider {
 	margin-bottom: 1em;
-  width: 100%;
-  color: #000;
+	width: 100%;
+	color: #000;
 }
 .coloredBlock {
-  padding: 12px;
-  background: rgba(255,0,0,0.6);
-  color: #FFF;
-   width: 200px;
-   left: 20%;
-   top: 5%;
+	padding: 12px;
+	background: rgba(255,0,0,0.6);
+	color: #FFF;
+	width: 200px;
+	left: 20%;
+	top: 5%;
 }
 .infoBlock {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-  left: auto;
-  max-width: 25%;
-  padding-bottom: 0;
-  background: #FFF;
-  background: rgba(255, 255, 255, 0.8);
-  overflow: hidden;
-  padding: 20px;
+	position: absolute;
+	top: 30px;
+	right: 30px;
+	left: auto;
+	max-width: 25%;
+	padding-bottom: 0;
+	background: #FFF;
+	background: rgba(255, 255, 255, 0.8);
+	overflow: hidden;
+	padding: 20px;
 }
 .infoBlockLeftBlack {
-  color: #FFF;
-  background: #000;
-  background: rgba(0,0,0,0.75);
-  left: 30px;
-  right: auto;
+	color: #FFF;
+	background: #000;
+	background: rgba(0,0,0,0.75);
+	left: 30px;
+	right: auto;
 }
 .infoBlock h4 {
-  font-size: 20px;
-  line-height: 1.2;
-  margin: 0;
-  padding-bottom: 3px;
+	font-size: 20px;
+	line-height: 1.2;
+	margin: 0;
+	padding-bottom: 3px;
 }
 .infoBlock p {
-  font-size: 14px;
-  margin: 4px 0 0;
+	font-size: 14px;
+	margin: 4px 0 0;
 }
 .infoBlock a {
-  color: #FFF;
-  text-decoration: underline;
+	color: #FFF;
+	text-decoration: underline;
 }
 .photosBy {
-  position: absolute;
-  line-height: 24px;
-  font-size: 12px;
-  background: #FFF;
-  color: #000;
-  padding: 0px 10px;
-  position: absolute;
-  left: 12px;
-  bottom: 12px;
-  top: auto;
-  border-radius: 2px;
-  z-index: 25; 
+	position: absolute;
+	line-height: 24px;
+	font-size: 12px;
+	background: #FFF;
+	color: #000;
+	padding: 0px 10px;
+	position: absolute;
+	left: 12px;
+	bottom: 12px;
+	top: auto;
+	border-radius: 2px;
+	z-index: 25; 
 } 
 .photosBy a {
-  color: #000;
+	color: #000;
 }
 .fullWidth {
-  max-width: 1400px;
-  margin: 0 auto 24px;
+	max-width: 1400px;
+	margin: 0 auto 24px;
 }
 
 @media screen and (min-width:960px) and (min-height:660px) {
-  .heroSlider .rsOverflow,
-  .royalSlider.heroSlider {
-      height: 520px !important;
-  }
+	.heroSlider .rsOverflow,
+	.royalSlider.heroSlider {
+		height: 520px !important;
+	}
 }
 
 @media screen and (min-width:960px) and (min-height:1000px) {
-    .heroSlider .rsOverflow,
-    .royalSlider.heroSlider {
-        height: 660px !important;
-    }
+	.heroSlider .rsOverflow,
+	.royalSlider.heroSlider {
+		height: 660px !important;
+	}
 }
 @media screen and (min-width: 0px) and (max-width: 800px) {
-  .royalSlider.heroSlider,
-  .royalSlider.heroSlider .rsOverflow {
-    height: 300px !important;
-  }
-  .infoBlock {
-    padding: 10px;
-    height: auto;
-    max-height: 100%;
-    min-width: 40%;
-    left: 5px;
-    top: 5px;
-    right: auto;
-    font-size: 12px;
-  }
-  .infoBlock h3 {
-     font-size: 14px;
-     line-height: 17px;
-  }
+	.royalSlider.heroSlider,
+	.royalSlider.heroSlider .rsOverflow {
+		height: 300px !important;
+	}
+	.infoBlock {
+		padding: 10px;
+		height: auto;
+		max-height: 100%;
+		min-width: 40%;
+		left: 5px;
+		top: 5px;
+		right: auto;
+		font-size: 12px;
+	}
+	.infoBlock h3 {
+		font-size: 14px;
+		line-height: 17px;
+	}
 }
 
 // End royal slider
@@ -362,7 +368,70 @@ footer {
 // Media queries
 
 @media (max-width: 768px) {
-	#sidebar {
+	#site-header {
+		display: inline-block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 100%;
+
+
+		h1 {
+			font-size: 1.75em;
+		}
+
+		h4 {
+			display: none;
+		}
+	}
+
+	#site-header img {
+		width: 160px;
+	}
+
+	#facebook-link {
 		display: none;
 	}
+
+	#sidebar {
+		padding-top: 1em;
+		max-width: 100%;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: -1em;
+		position: relative;
+		text-align: center;
+		// display: inline-block;
+
+		hr {
+			// width: 20%;
+			display: none;
+		}
+
+
+		nav {
+			// display: inline-block;
+			vertical-align: top;
+			width: 100%;
+
+			li {
+				display: inline-block;
+				padding-left: 1em;
+				padding-right: 1em;
+				a {
+				// 	color: $mediumer-gray;
+				// // font-family: 'Raleway';
+				// text-transform: uppercase;
+				// font-weight: lighter;
+				// font-size: 1.15em;
+				// text-decoration: none;
+				// margin-bottom: .75em;
+			}
+		}
+	}
+}
+
+#facebook-link-footer {
+	display: block;
+}
+
 }
