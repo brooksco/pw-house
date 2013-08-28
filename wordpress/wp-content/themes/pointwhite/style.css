@@ -3412,7 +3412,12 @@ h5 {
 
 .attachment-thumbnail {
   width: 96%;
-  height: auto; }
+  height: auto;
+  -webkit-transition: all .25s ease-in-out;
+  -moz-transition: all .25s ease-in-out;
+  -ms-transition: all .25s ease-in-out;
+  -o-transition: all .25s ease-in-out;
+  transition: all .25s ease-in-out; }
 
 .attachment-thumbnail:hover {
   box-shadow: 0 0 10px 1px #25aae1; }
@@ -3426,9 +3431,9 @@ footer {
   padding-bottom: 4em;
   text-align: center;
   color: gray;
-  font-size: .9em; }
+  font-size: .8em; }
   footer p {
-    margin-bottom: .5em; }
+    margin-bottom: 1.5em; }
   footer a {
     text-decoration: none;
     color: gray; }
