@@ -1,8 +1,6 @@
 @charset "UTF-8";
-@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);
 @import url(http://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope);
 @import url(http://fonts.googleapis.com/css?family=Lato);
-@import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
 /*
 Theme Name: Point White
 Theme URI: http://wordpress.org/themes/twentythirteen
@@ -3366,8 +3364,8 @@ h5 {
 
 .block-text {
   font-size: 1.25em;
-  padding-left: 2.5em;
-  padding-right: 2.5em;
+  padding-left: 5%;
+  padding-right: 5%;
   padding-top: 1em;
   padding-bottom: 2em; }
 
@@ -3413,10 +3411,11 @@ h5 {
   padding-bottom: 0; }
 
 .attachment-thumbnail {
-  border-left: 3px solid #eeeeee;
-  border-right: 3px solid #eeeeee;
-  width: 100%;
+  width: 96%;
   height: auto; }
+
+.attachment-thumbnail:hover {
+  box-shadow: 0 0 10px 1px #25aae1; }
 
 .gallery-caption {
   margin-left: 0; }

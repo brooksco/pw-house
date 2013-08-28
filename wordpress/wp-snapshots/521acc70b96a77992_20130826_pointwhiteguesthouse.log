@@ -1,0 +1,116 @@
+******************************************************************************** 
+PACKAGE-LOG: 03:33:04 
+NOTICE: Do not post to public sites or forums 
+******************************************************************************** 
+duplicator: 0.4.6 
+wordpress: 3.6 
+php: 5.3.1 
+php sapi: apache2handler 
+server: Apache/2.2.14 (Unix) DAV/2 mod_ssl/2.2.14 OpenSSL/0.9.8l PHP/5.3.1 mod_perl/2.0.4 Perl/v5.10.1 
+browser: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.14 Safari/537.36 
+package name: 20130826_pointwhiteguesthouse 
+php_max_time: set from=30 to=5000 
+php_max_memory: set from=128M to=5000M 
+mysql wait_timeout:5000 
+recorded table id: 1 
+******************************************************************************** 
+BUILD SQL SCRIPT: 
+******************************************************************************** 
+columns_priv (0) 
+couch_comments (0) 
+couch_data_numeric (0) 
+couch_data_text (87) 
+couch_fields (87) 
+couch_folders (0) 
+couch_fulltext (16) 
+couch_levels (5) 
+couch_pages (16) 
+couch_relations (0) 
+couch_settings (3) 
+couch_templates (16) 
+couch_users (1) 
+db (2) 
+event (0) 
+func (0) 
+general_log (0) 
+help_category (37) 
+help_keyword (450) 
+help_relation (990) 
+help_topic (504) 
+host (0) 
+ndb_binlog_index (0) 
+plugin (0) 
+proc (0) 
+procs_priv (0) 
+servers (0) 
+slow_log (0) 
+tables_priv (0) 
+time_zone (0) 
+time_zone_leap_second (0) 
+time_zone_name (0) 
+time_zone_transition (0) 
+time_zone_transition_type (0) 
+user (5) 
+wp_commentmeta (0) 
+wp_comments (1) 
+wp_dopbsp_calendars (1) 
+wp_dopbsp_days (134) 
+wp_dopbsp_forms (1) 
+wp_dopbsp_forms_fields (5) 
+wp_dopbsp_forms_select_options (0) 
+wp_dopbsp_reservations (0) 
+wp_dopbsp_settings (1) 
+wp_dopbsp_users (806) 
+wp_duplicator (1) 
+wp_links (0) 
+wp_new_royalsliders (3) 
+wp_options (248) 
+wp_postmeta (113) 
+wp_posts (176) 
+wp_term_relationships (1) 
+wp_term_taxonomy (1) 
+wp_terms (1) 
+wp_usermeta (16) 
+wp_users (1) 
+SQL CREATED: /Applications/XAMPP/xamppfiles/htdocs/pw-house/wordpress/wp-snapshots/521acc70b96a77992_20130826_pointwhiteguesthouse_database.sql 
+SQL FILE SIZE: 1.58MB 
+SQL RUNTIME: 0.5255 sec. 
+******************************************************************************** 
+BUILD ZIP PACKAGE: 
+******************************************************************************** 
+PACKAGE DIR:  /Applications/XAMPP/xamppfiles/htdocs/pw-house/wordpress 
+PACKAGE FILE: /Applications/XAMPP/xamppfiles/htdocs/pw-house/wordpress/wp-snapshots/521acc70b96a77992_20130826_pointwhiteguesthouse_package.zip 
+FILTER EXTENSIONS:  '' 
+FILTER DIRECTORIES: '' 
+---------------------------------------- 
+STARTING PACKAGE BUILD 
+ADDED=>SQL: /Applications/XAMPP/xamppfiles/htdocs/pw-house/wordpress/wp-snapshots/521acc70b96a77992_20130826_pointwhiteguesthouse_database.sql 
+BUILDING FILE LIST 
+FILE LIST COMPLETE: 0.1702 sec. 
+FILE LIST STATS: Dirs 238 | Files 2028 | Links 0 |  
+
+PACKAGE INFO: ZipArchive Object
+(
+    [status] => 0
+    [statusSys] => 0
+    [numFiles] => 2267
+    [filename] => /Applications/XAMPP/xamppfiles/htdocs/pw-house/wordpress/wp-snapshots/521acc70b96a77992_20130826_pointwhiteguesthouse_package.zip
+    [comment] => 
+)
+ 
+CREATING PACKAGE 
+CLOSING PACKAGE RESULT: '1' 
+PACKAGE FILE SIZE: 83.34MB 
+PACKAGE RUNTIME: 6.5979 sec. 
+******************************************************************************** 
+BUILD INSTALLER FILE: 
+******************************************************************************** 
+INSTALLER FILE: Build Start 
+INSTALLER FILE: Build Finished 
+INSTALLER FILE: Preping for use 
+INSTALLER FILE: Complete [/Applications/XAMPP/xamppfiles/htdocs/pw-house/wordpress/wp-snapshots/521acc70b96a77992_20130826_pointwhiteguesthouse_installer.php] 
+******************************************************************************** 
+FILE SIZE: Zip:83.34MB | SQL:1.58MB | Installer:527.09KB 
+TOTAL PROCESS RUNTIME: 7.1982 sec. 
+DONE PROCESSING => 20130826_pointwhiteguesthouse 03:33:11 
+******************************************************************************** 

@@ -1,11 +1,11 @@
 // @import url(http://fonts.googleapis.com/css?family=Quicksand:400,700|Shadows+Into+Light+Two);
-@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);
+// @import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);
 @import url(http://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope);
 // @import url(http://fonts.googleapis.com/css?family=Raleway);
 // @import url(http://fonts.googleapis.com/css?family=Old+Standard+TT);
 // @import url(http://fonts.googleapis.com/css?family=Playfair+Display);
 @import url(http://fonts.googleapis.com/css?family=Lato);
-@import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
+// @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
 // @import url(http://fonts.googleapis.com/css?family=Domine);
 
 $light-gray: #eee;
@@ -13,6 +13,8 @@ $medium-gray: #dadada;
 $mediumer-gray: #6d6e70;
 $dark-gray: #333;
 $darker-gray: #1a1a1a;
+
+$pw-blue: #25aae1;
 
 
 // General styling
@@ -154,8 +156,8 @@ h5 {
 .block-text {
 	font-size: 1.25em;
 	// margin-top: -1em;
-	padding-left: 2.5em;
-	padding-right: 2.5em;
+	padding-left: 5%;
+	padding-right: 5%;
 	padding-top: 1em;
 	padding-bottom: 2em;
 }
@@ -212,15 +214,12 @@ h5 {
 }
 .gallery-item {
 	float: left;
-   // margin-top: 10px;
-   text-align: center;
-   // width: auto;
-   width: 20%;
-   margin: 0;
+	text-align: center;
+ //   margin-left: 3px;
+	// margin-right: 3px;
+	width: 20%;
+	margin: 0;
 }
-// .gallery img {
-//    border: 2px solid #cfcfcf;
-// }
 
 .gallery-icon {
 	margin-bottom: 0;
@@ -228,10 +227,14 @@ h5 {
 }
 
 .attachment-thumbnail {
-	border-left: 3px solid $light-gray;
-	border-right: 3px solid $light-gray;
-	width: 100%;
+	// border-left: 3px solid $light-gray;
+	// border-right: 3px solid $light-gray;
+	width: 96%;
 	height: auto;
+}
+
+.attachment-thumbnail:hover {
+	box-shadow: 0 0 10px 1px $pw-blue;
 }
 
 .gallery-caption {
