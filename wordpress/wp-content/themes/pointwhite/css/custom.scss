@@ -1,12 +1,6 @@
-// @import url(http://fonts.googleapis.com/css?family=Quicksand:400,700|Shadows+Into+Light+Two);
-// @import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);
 @import url(http://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope);
-// @import url(http://fonts.googleapis.com/css?family=Raleway);
-// @import url(http://fonts.googleapis.com/css?family=Old+Standard+TT);
-// @import url(http://fonts.googleapis.com/css?family=Playfair+Display);
 @import url(http://fonts.googleapis.com/css?family=Lato);
 // @import url(http://fonts.googleapis.com/css?family=Libre+Baskerville);
-// @import url(http://fonts.googleapis.com/css?family=Domine);
 
 $light-gray: #eee;
 $medium-gray: #dadada;
@@ -21,12 +15,9 @@ $pw-blue: #25aae1;
 
 
 body {
-	// font-family: "Quicksand";
-	// font-family: 'Bitter';
 	font-family: 'Lato';
-	// font-family: 'Libre Baskerville';
 	font-weight: 300;
-	// font-family: 'Georgia';
+
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -81,11 +72,8 @@ h5 {
 
 #main {
 	max-width: 1200px;
-	// margin-left: 5%;
-	// margin-right: 5%;
 	margin-left: auto;
 	margin-right: auto;
-	// margin-bottom: 100px;
 
 }
 
@@ -100,13 +88,6 @@ h5 {
 
 // Sidebar styling
 
-#site-header {
-	// margin-bottom: 3em;
-	
-	h1, h2, h3, h4 {
-		// color: white;
-	}
-}
 
 #logo {
 	width: 75%; 
@@ -124,9 +105,6 @@ h5 {
 	width: inherit;
 	text-align: center;
 	padding-top: 2em;
-	// background-color: $darker-gray;
-	// color: white;
-	// background-color: $light-gray;
 	
 	nav {
 		li {
@@ -295,6 +273,10 @@ footer {
 }
 
 // End footer styling
+
+.DOPBookingSystemPROContainer {
+	margin-bottom: 1em;
+}
 
 
 // Royal Slider

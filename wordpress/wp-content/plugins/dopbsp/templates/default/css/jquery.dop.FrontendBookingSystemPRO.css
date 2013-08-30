@@ -553,15 +553,15 @@
 .DOPBookingSystemPRO_Day .header .co.available,
 .DOPBookingSystemPRO_Day .header .ci.available,
 .DOPBookingSystemPRO_Day .bind-left.extended.available .header{
-    background-color: #68ba68 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
-    border-color: #68ba68 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    background-color: #25aae1 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #25aae1 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Day.available .content,
 .DOPBookingSystemPRO_Day .content .co.available,
 .DOPBookingSystemPRO_Day .content .ci.available,
 .DOPBookingSystemPRO_Day .bind-left.extended.available .content{
-    border-color: #68ba68 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #25aae1 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Day .header .co.available,
@@ -656,14 +656,14 @@
 .DOPBookingSystemPRO_Day.selected.first .header .co.available,
 .DOPBookingSystemPRO_Day.selected.last .header .ci.available,
 .DOPBookingSystemPRO_Day.selected.first .bind-left.available.extended .header{
-    background-color: #68ba68 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
-    border-color: #68ba68 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    background-color: #25aae1 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #25aae1 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Day.selected.first .content .co.available,
 .DOPBookingSystemPRO_Day.selected.last .content .ci.available,
 .DOPBookingSystemPRO_Day.selected.first .bind-left.available.extended .content{
-    border-color: #68ba68 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #25aae1 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Day.selected.first .header .co.booked,
@@ -883,7 +883,7 @@
 /* Available Hour */
 
 .DOPBookingSystemPRO_Hour.available .hour{    
-    background: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    background: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Hour.available{    
@@ -893,18 +893,18 @@
 .DOPBookingSystemPRO_Hour.available .bind-content,
 .DOPBookingSystemPRO_Hour.available .bind-top,
 .DOPBookingSystemPRO_Hour.available .bind-bottom{    
-    border-color: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Hour.available .bind-top .hour,
 .DOPBookingSystemPRO_Hour.available .bind-bottom .hour{    
-    color: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    color: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Hour.available .bind-top.enabled .hour,
 .DOPBookingSystemPRO_Hour.available .bind-bottom.enabled .hour{
-    background: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
-    color: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    background: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    color: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 /* Booked Hour */

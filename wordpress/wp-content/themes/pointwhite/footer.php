@@ -11,7 +11,8 @@
 		Crafted with care by <a href="http://colinbrooks.us">colinbrooks.us</a>
 	</p>
 
-	<a id="facebook-link-footer" href="#"><img src="/wp-content/themes/pointwhite/img/facebookblue.png" id="facebook-footer" /></a>
+	<a id="facebook-link-footer" href="https://www.facebook.com/pointwhiteguesthouse" target="_blank">
+		<img src="/wp-content/themes/pointwhite/img/facebookblue-small.png" id="facebook-footer" /></a>
 
 
 </footer>

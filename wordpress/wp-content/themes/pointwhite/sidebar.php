@@ -2,11 +2,7 @@
 
 <header id="site-header" class="margin-five">
 
-	<!-- <a href="<?php echo site_url(); ?>"><img id="logo" src="/pw-house/wordpress/wp-content/themes/pointwhite/img/logo.png"/></a> -->
-	<a href="<?php echo site_url(); ?>"><img id="logo" src="/wp-content/themes/pointwhite/img/PWGH-logo-blue.png" /></a>
-	<!-- <a href="<?php echo site_url(); ?>"><img id="logo" src="/pw-house/wordpress/wp-content/themes/pointwhite/img/PWGH-logo-web-2.png" style="margin-bottom: 1.25em;"/></a> -->
-
-	<!-- <h1>Point White<br>Guest House</h1> -->
+	<a href="<?php echo site_url(); ?>"><img id="logo" src="/wp-content/themes/pointwhite/img/PWGH-logo-blue-small.png" /></a>
 
 	<hr class="mid-line">
 
@@ -28,7 +24,7 @@
 
 <!-- <br><br> -->
 
-<a id="facebook-link" href="https://www.facebook.com/pointwhiteguesthouse" target="_blank"><img src="/wp-content/themes/pointwhite/img/facebookblue.png" id="facebook" /></a>
+<a id="facebook-link" href="https://www.facebook.com/pointwhiteguesthouse" target="_blank"><img src="/wp-content/themes/pointwhite/img/facebookblue-small.png" id="facebook" /></a>
 
 
 
