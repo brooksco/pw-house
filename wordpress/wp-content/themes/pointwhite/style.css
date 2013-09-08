@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@import "http://yui.yahooapis.com/pure/0.2.1/grids-min.css";
 @import url(http://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope);
 @import url(http://fonts.googleapis.com/css?family=Lato);
 /*
@@ -3297,19 +3298,24 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 300; }
 
 h1 {
-  font-size: 2em; }
+  font-size: 2em;
+  line-height: 2em; }
 
 h2 {
-  font-size: 1.75em; }
+  font-size: 1.75em;
+  line-height: 1.75em; }
 
 h3 {
-  font-size: 1.5em; }
+  font-size: 1.5em;
+  line-height: 1.5em; }
 
 h4 {
-  font-size: 1.25em; }
+  font-size: 1.25em;
+  line-height: 1.25em; }
 
 h5 {
-  font-size: 1em; }
+  font-size: 1em;
+  line-height: 1em; }
 
 .unit-spacing {
   padding-top: 60px;
@@ -3397,6 +3403,9 @@ h5 {
   -o-filter: grayscale(0%);
   filter: grayscale(0%); }
 
+#map {
+  margin-top: -2.5em; }
+
 .gallery {
   margin: auto; }
 
@@ -3428,6 +3437,8 @@ h5 {
 footer {
   background-color: #eeeeee;
   padding-top: 4em;
+  padding-left: 5%;
+  padding-right: 5%;
   padding-bottom: 4em;
   text-align: center;
   color: gray;

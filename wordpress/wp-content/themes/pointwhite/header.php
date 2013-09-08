@@ -8,7 +8,6 @@
 	<title><?php wp_title('|',1,'right'); ?> <?php bloginfo('name'); ?></title>
 
 	<link href="<?php bloginfo('stylesheet_url');?>" rel="stylesheet">
-	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/grids-min.css">
 
 	<?php wp_head(); ?>
 </head>
