@@ -3345,6 +3345,10 @@ h5 {
   width: 75%;
   margin-bottom: .75em; }
 
+#logo:hover {
+  background-color: white;
+  opacity: 0.85; }
+
 #island-sub-header {
   margin-top: .5em;
   margin-bottom: 2em; }
@@ -3364,12 +3368,14 @@ h5 {
     font-size: 1.15em;
     text-decoration: none;
     margin-bottom: .75em; }
+  #sidebar nav li a:hover {
+    color: #333333; }
 
 #main-content {
   background-color: #eeeeee; }
 
 .block-text {
-  font-size: 1.25em;
+  font-size: 1.2em;
   padding-left: 5%;
   padding-right: 5%;
   padding-top: 1em;
@@ -3553,6 +3559,68 @@ footer {
   .infoBlock h3 {
     font-size: 14px;
     line-height: 17px; } }
+#comments {
+  margin-top: -2em;
+  padding-left: 5%;
+  padding-right: 5%; }
+  #comments label {
+    margin-bottom: .5em; }
+  #comments input {
+    border: 0px;
+    border-radius: 5px;
+    line-height: 1.5em; }
+    #comments input:focus {
+      outline: none;
+      box-shadow: 0 0 10px 1px #25aae1; }
+  #comments textarea {
+    border: 0px;
+    border-radius: 5px; }
+    #comments textarea:focus {
+      outline: none;
+      box-shadow: 0 0 10px 1px #25aae1; }
+  #comments #submit {
+    background-color: #25aae1;
+    border: 0px;
+    padding: .75em 2em .75em 2em;
+    color: white;
+    border-radius: 5px;
+    font-size: 1.1em; }
+    #comments #submit:hover {
+      background-color: #1b92c4; }
+
+.comments-title {
+  margin-bottom: .25em; }
+
+.comment-list {
+  margin-bottom: 2em;
+  list-style: none; }
+
+.comment {
+  margin-bottom: 1em;
+  padding-bottom: 1.5em;
+  padding-top: 1em;
+  margin-right: 3em;
+  border-bottom: 1px solid gray; }
+  .comment p {
+    margin-top: .5em; }
+
+.comment-reply-link, .comment-edit-link {
+  background-color: #25aae1;
+  color: white;
+  padding: .25em .75em .25em .75em;
+  border-radius: 2px;
+  text-decoration: none; }
+  .comment-reply-link:hover, .comment-edit-link:hover {
+    background-color: #1b92c4; }
+
+.comment-edit-link {
+  background-color: #6d6e70; }
+  .comment-edit-link:hover {
+    background-color: #5a5a5c; }
+
+#respond {
+  margin-top: 3.5em; }
+
 @media (max-width: 768px) {
   #site-header {
     display: inline-block;
@@ -3590,4 +3658,7 @@ footer {
         padding-right: 1em; }
 
   #facebook-link-footer {
-    display: block; } }
+    display: block; }
+
+  #comments input, #comments textarea {
+    width: 100%; } }

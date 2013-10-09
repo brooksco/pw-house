@@ -1,0 +1,521 @@
+/* * ****************************************************************************
+  #                         BookingWizz for WordPress v1.2
+  #******************************************************************************
+  #      Author:     Convergine (http://www.convergine.com)
+  #      Website:    http://www.convergine.com
+  #      Support:    http://support.convergine.com
+  #      Version:     1.2
+  #
+  #      Copyright:   (c) 2009 - 2012  Convergine.com
+  #
+  #****************************************************************************** */
+
+#Wcalendar{
+    display: inline-block;
+    position: relative;
+    width: 100%;
+}
+.BW_events_list{
+    display: inline-block;
+    position: relative;
+    width: 100%;
+}
+.Woverlay{
+    
+    height: 100%;
+    left: 0;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 10000;
+    display: none;
+}
+.Woverlay div{
+    background: url(../images/ajax-loader.gif) no-repeat top left;
+    margin:40px 0 0 45%;
+    width:31px;
+    height: 31px;
+    
+}
+.Wcalendar table {  font-family:Tahoma, Geneva, sans-serif; }
+.dash_border {
+    height: 33px !important;
+    text-align: center;
+    vertical-align: bottom;
+}
+.dash_border td{
+	padding: 0 !important;
+}
+.dash_border .calendar_header th{
+    border-bottom: 1px dotted #666666;
+    color: #0099CC;
+    font-weight: normal;
+    text-align: center !important;
+    font-size: 20px;
+    font-family: "Myriad Pro";
+}
+.dash_border .calendar_header.small th{
+
+font-size: 13px;
+}
+table.bw_calendar{border-spacing: 3px;}
+table.bw_calendar.small {border-spacing: 1px;}
+table.bw_calendar tbody { color:#666666; font-size:12px; }
+table.bw_calendar tbody .weekend { color:#990000; font-size:14px;} /* RED HIGHLIGHTING FOR SUNDAY AND SATURDAY */
+table.bw_calendar.small tbody .weekend {font-size:12px;} /* RED HIGHLIGHTING FOR SUNDAY AND SATURDAY */
+table.bw_calendar tbody th { font-size:28px; font-weight:bold; color:#0099CC; text-transform:uppercase;} /* TITLE OF CURRENT MONTH*/
+table.bw_calendar tr td{
+    position: relative;
+    height: 45px;
+    border: none;
+    width: 14%;
+}
+table.bw_calendar.small tr td{
+    position: relative;
+    height: 25px;
+}
+.previous_month,.next_month  { color: #666666;
+                               display: inline-block;
+                               font-size: 18px;
+                               margin: 0 0 0 5px;
+                               text-decoration: none;
+                               text-transform: uppercase; }
+.previous_month:hover,.next_month:hover  {}
+.next_month { 
+    margin: 0 5px 0 0;
+}
+
+
+.cal_reg_on {vertical-align:top; background-color:#B6DBED; color:#666666; font-size:22px;/*width:32px;*/height:30px;padding:0 !important;} /* REGULAR DAY WHICH FALLS UNDER 1 - 31 (dark grey area) */
+.cal_reg_on div.eventConteiner,.mainmenu5 div.eventConteiner,.cal_reg_on_today div.eventConteiner{
+    background-color: #EEEEEE;
+    border: 1px solid #EEEEEE;
+    border-radius: 3px 3px 3px 3px;
+    color: #666666;
+    font-size: 10px;
+    font-weight: normal;
+    margin: 2px 1px;
+    padding: 2px;
+    cursor:pointer;
+}
+.cal_reg_on div.eventConteiner:hover,.mainmenu5 div.eventConteiner:hover,.cal_reg_on_today div.eventConteiner:hover{
+    background-color: #fff;
+    border-color: #333333;
+}
+.cal_reg_on a { font-size:11px;} /* href style for NO-JS version*/
+.cal_reg_off {vertical-align:top; background-color:#E4E4E4;color:#666666; font-size:22px;width:29px;height:30px;padding:0 !important;} /* NOT AVAILABLE SQUARE OR TOTALLY BOOKED SQUARE */
+.cal_reg_off a { font-size:11px;} /* href style for NO-JS version*/
+.cal_reg_off noscript {font-size:11px;}
+.cal_reg_off span {font-size:11px; padding:0; margin:0;}
+.cal_reg_on_today {vertical-align:top; background-color:#B6DBED;color:#666666; font-size:22px;width:32px;height:30px;padding:0 !important; } /* TODAY SQUARE - SQUARE AVAILABLE FOR BOOKING */
+.cal_reg_on_today a { font-size:11px;} /* href style for NO-JS version*/
+.cal_reg_off_today {
+    background-color: #0099CC;
+    color: #FFFFFF;
+    font-size: 22px;
+    vertical-align: top;
+} /* TODAY SQUARE - NOT AVAILABLE FOR BOOKING  */
+.cal_reg_off_today noscript {font-size:11px;}
+.cal_reg_off_today span {font-size:11px; padding:0; margin:0;}
+.cal_reg_off_today a { font-size:11px;} /* href style for NO-JS version*/
+.mainmenu5 {vertical-align:top; background-color:#0099CC;color:#FFF; font-size:22px; font-weight:bold; cursor:pointer;vertical-align:top;width:32px;height:30px;padding:0 !important; } /* HOVER SQUARE */ 
+.mainmenu5 a { font-size:11px;} /* href style for NO-JS version*/
+.cal_reg_off .day_number{
+    cursor: default;
+}
+.error_msg {padding:15px; width:570px; margin:0 auto; font-size:14px;  text-align:center; border:1px solid #F30; background-color:#FEDEDE; margin-top:15px;}
+.hide-me-for-nojs{
+    font-size: 10px;
+}
+.cal_text {font-size:11px;cursor:pointer;}
+.cal_text:hover{
+    color: #000;
+}
+.cal_text a { color:#666;}
+.cal_text a:visited { color:#666;}
+noscript a { color:#666;}
+noscript a:visited { color:#666;}
+
+.showInfo{
+    background: none repeat scroll 0 0 #EFACAC;
+    border: 1px solid #EFACAC;
+    border-radius: 3px 3px 3px 3px;
+    bottom: 22px;
+    color: #404040;
+    display: none;
+    left: -13px;
+    padding: 5px;
+    position: absolute;
+    width: 60px;
+    z-index: 1000;
+    font-weight: normal;
+}
+.showInfo b{
+    border-color: #EFACAC transparent transparent;
+    border-style: solid;
+    border-width: 7px;
+    bottom: -14px;
+    height: 0;
+    left: 20px;
+    position: absolute;
+    width: 0;
+}
+.wp .mainmenu5{
+    cursor: default;
+}
+._showInfo{
+    /*background: none repeat scroll 0 0 #EFACAC;
+    border: 1px solid #EFACAC;
+    border-radius: 3px 3px 3px 3px;*/
+    color: #404040;
+    padding: 5px; 
+    z-index: 1000;
+    font-weight: normal;
+    line-height: 100%;
+}
+.mainmenu5 ._showInfo{
+    color:#fff;
+}
+._showInfo .cal_text:hover{
+    text-shadow: 0 0 2px #666;
+    color: #fff;
+}
+.past .day_number{
+	
+}
+.day_number{
+    font-size: 16px;
+    height: 100%;
+    padding: 2px 0 0 2px;
+    position: relative;
+    width: 100%;
+    display: inline;
+}
+.small .day_number{
+    font-size: 14px;
+    height: 100%;
+    padding: 2px 0 0 2px;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+/**********************************  EVENTS WIDGET   *****************************************/
+
+
+.BW_events_widget{
+
+}
+
+.BW_events_widget .BW_events_item{
+    border-bottom: 1px dashed #BBBBBB;
+    padding: 5px 0;
+    border-bottom: 1px dashed #bbb;	
+}
+
+.BW_events_widget .BW_events_item .BW_events_img{
+    float: left;
+}
+
+.BW_events_widget .BW_events_item .BW_events_info{
+    float: left;
+    padding: 0 0 0 5px;
+}
+
+.BW_events_widget .BW_events_item .BW_events_info span{
+    display: block;
+}
+
+.BW_events_widget .BW_events_item .BW_events_info span b{
+
+}
+
+.BW_events_widget .BW_events_item  a{
+    text-decoration: underline !important;
+    display: block !important;
+}
+
+
+/***********************************************************************/
+/************************** EVENTS LIST PAGE **************************/
+/***********************************************************************/
+#eventListConteiner{
+
+    font-family: "Myriad Pro";
+    color: #000;
+
+}
+.eventConteiner{
+    border-left: 1px solid #EEEEEE;
+    border-right: 1px solid #EEEEEE;
+     border-bottom:  1px solid #EEEEEE;
+    margin-bottom: 30px;
+}
+.eventConteiner table{border: none}
+.eventConteiner table tr{}
+.eventConteiner table tr td{padding: 0;border: none}
+.eventConteiner .eventTitle1{
+     background: url("../images/title_bg.png") repeat-x scroll left -1px transparent;
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: bold;
+    height: 39px;
+    line-height: 39px;
+    padding: 0 0 0 25px;
+}
+.eventConteiner.past .eventTitle1{
+    background: url("../images/title_bg_pas.png") repeat-x scroll left -1px transparent;
+}
+#eventListConteiner .eventTitle1 a{
+    color:#fff;
+}
+#eventListConteiner .eventTitle1 a:hover{
+    text-decoration: none;
+}
+#eventListConteiner .eventTitle1 div{
+    float: right;
+    margin: 0 10px 0 0;
+}
+#eventListConteiner .eventDescription{
+    padding: 10px 5px 10px 25px;
+    color: #000;
+    width: 100%;
+    font-size: 12px;
+}
+#eventListConteiner .eventDescription img{
+    float: left;
+    margin: 0 5px 0 0;
+}
+#eventListConteiner .eventTime{
+
+    /*border-left: 1px solid #EEEEEE;*/
+    color: #000000;
+    font-size: 15px;
+    height: 32px;
+    margin: 4px 5px 2px 0;
+    padding: 0 5px;
+
+}
+#eventListConteiner .eventTime img{
+    margin: 8px 0 -2px 0;
+}
+#eventListConteiner .eventSpots{
+    /* border-left: 1px solid #EEEEEE;*/
+    color: #000000;
+    height: 46px;
+    margin: 2px 0 0;
+    padding-top: 5px;
+    padding-left: 8px;
+}
+#eventListConteiner .tableR .tdB{
+    padding: 5px;
+}
+#eventListConteiner .tableR .tdB label{
+
+    color: #000000;
+    display: block;
+    font-size: 14px;
+}
+#eventListConteiner .tableR .tdB span.date{
+    background: url(../images/calenrar1.png) no-repeat 0 2px;
+    color: #0C9FD2;
+    display: inline-block;
+    font-family: arial;
+    font-size: 15px;
+    padding-right: 5px;
+    padding-left: 22px;
+}
+#eventListConteiner .tableR .tdB span.date.past,#eventListConteiner .tableR .tdB span.time.past{
+    color:#999;
+}
+
+#eventListConteiner .tableR .tdB span.time{
+    background:  url("../images/clock.png") no-repeat scroll 0px 4px transparent;
+    color: #0C9FD2;
+    display: inline-block;
+    font-family: arial;
+    font-size: 15px;
+    padding-right: 5px;
+    padding-left: 22px;
+}
+#eventListConteiner .tableR td{
+    border-left: 1px solid #e1e1e1;
+    border-bottom: 1px solid #E1E1E1;
+}
+#eventListConteiner .tableR td.nobrd{
+    border: none;
+    text-align: center;
+    padding: 10px 0;
+}
+#eventListConteiner .tableR{
+    width: 218px !important;
+    vertical-align: inherit !important;
+    margin: 0;
+    border: none;
+    }
+#eventListConteiner .eventFee{
+    /* border-left: 1px solid #EEEEEE;*/
+    color: #000000;
+    font-size: 24px;
+    height: 31px;
+    margin: 2px 0;
+    padding-top: 5px;
+    text-align: center;
+}
+#eventListConteiner .eventFee.past{
+    color:#666 !important;   
+}
+#eventListConteiner .eventFee.past span{
+    color:#666 !important;
+}
+#eventListConteiner .bookButton{
+    height: 50px;
+}
+input.small{
+    width: 30px;
+}
+select.small{
+    width: 50px;
+}
+.qtyCont{
+    border-top: 1px solid #CCCCCC;
+    color: #666666;
+    font-size: 16px;
+    margin: 20px auto 0;
+    padding: 5px 0 0;
+    text-align: center;
+    width: 90%;
+    height: 50px;
+    /*position: relative;*/
+}
+.qtyCont span.spinner{position: relative;display: inline-block;height: 24px; margin-right: 25px;}
+.spinner_buttons{
+    height: 24px;
+    position: absolute;
+    right: -17px;
+    top: 0;
+
+}
+.ui-spinner{top:0 !important }
+.qtyCont input{
+    color: #666666;
+    font-size: 16px;
+    text-align: center;
+    height: 24px;
+    text-align:center !important;
+}
+.qtyCont #feeValue{font-size: 21px; position: relative;
+
+}
+span.spot{
+    color: #0EA0D2;
+    display: block;
+    float: left;
+    font-size: 40px;
+    padding-right: 5px;
+    padding-top: 5px;
+    line-height: 24px;
+
+}
+span.spot1{
+    color: #000000;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 15px;
+    text-align: left;
+}
+
+
+/*###################  events list   ##################################*/
+
+table.event_list_naw{
+    width:100% !important;
+    margin: 0px !important;
+    border-bottom: 1px dashed #666666;
+}
+table.event_list_naw th{
+    color: #0FA1D2;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+table.event_list_naw a,.Wprevious_month{
+    background: url("../images/calendar_naw.png") no-repeat scroll 0 0 transparent;
+    color: #FFFFFF !important;
+    display: inline-block;
+    font-size: 12px;
+    padding: 12px 0;
+    text-align: center;
+    text-decoration: none;
+    width: 69px;
+    line-height: 12px;
+}
+.Wnext_month{
+    background: url("../images/calendar_naw.png") no-repeat scroll 0 -34px transparent;
+    color: #FFFFFF !important;
+    display: inline-block;
+    font-size: 12px;
+    padding: 12px 0;
+    text-align: center;
+    text-decoration: none;
+    width: 69px;
+    line-height: 12px;
+}
+.Wnext_month.small{
+    background: url("../images/calendar_naw_small.png") no-repeat scroll 0 -26px transparent;
+    color: #FFFFFF !important;
+    display: inline-block;
+    font-size: 12px;
+    line-height: 12px;
+    padding: 5px 0;
+    text-align: center;
+    text-decoration: none;
+    width: 43px;
+}
+.Wprevious_month.small{
+    background: url("../images/calendar_naw_small.png") no-repeat scroll 0 0 transparent;
+    color: #FFFFFF !important;
+    display: inline-block;
+    font-size: 12px;
+    line-height: 12px;
+    padding: 6px 0;
+    text-align: center;
+    text-decoration: none;
+    width: 43px;
+}
+table.event_list_naw a.next,.Wnext_month{
+    background-position: 0 -34px;
+}
+table.event_list_naw a:hover{
+
+}
+table.event_list_naw th.center{
+
+    text-align: center !important;
+
+}
+table.event_list_naw th.left{
+
+    text-align: left !important;
+
+}
+table.event_list_naw th.right{
+
+    text-align: right !important;
+
+}
+.tableR .past{
+    color: #999;
+    /*border-top: 1px solid #EEEEEE;
+font-size: 18px;
+height: 0;
+line-height: 18px;
+padding: 5px;
+text-align: center;	*/
+}
+div.past{
+    color: #666666 !important;
+    font-size: 20px;
+    padding: 0px 0;
+}
+
+/*###################  events list   ##################################*/

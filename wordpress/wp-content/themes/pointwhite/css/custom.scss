@@ -5,10 +5,12 @@
 $light-gray: #eee;
 $medium-gray: #dadada;
 $mediumer-gray: #6d6e70;
+$mediumest-gray: #5a5a5c;
 $dark-gray: #333;
 $darker-gray: #1a1a1a;
 
 $pw-blue: #25aae1;
+$pw-blue-dark: #1b92c4;
 
 
 // General styling
@@ -97,6 +99,11 @@ h5 {
 #logo {
 	width: 75%; 
 	margin-bottom: .75em;
+
+}
+
+#logo:hover {
+	background-color: white; opacity: 0.85;
 }
 
 #island-sub-header {
@@ -122,6 +129,10 @@ h5 {
 				text-decoration: none;
 				margin-bottom: .75em;
 			}
+
+			a:hover {
+				color: $dark-gray;
+			}
 		}
 	}
 
@@ -137,7 +148,7 @@ h5 {
 }
 
 .block-text {
-	font-size: 1.25em;
+	font-size: 1.2em;
 	// margin-top: -1em;
 	padding-left: 5%;
 	padding-right: 5%;
@@ -396,7 +407,103 @@ footer {
 
 // End royal slider
 
+// Comments styling
 
+#comments {
+	margin-top: -2em;
+	padding-left: 5%;
+	padding-right: 5%;
+
+	label {
+		margin-bottom: .5em;
+	}
+
+	input {
+		border: 0px;
+		border-radius: 5px;
+		line-height: 1.5em;
+
+		&:focus {
+			outline: none;
+			box-shadow:0 0 10px 1px $pw-blue;
+		}
+	}
+
+	textarea {
+		border: 0px;
+		border-radius: 5px;
+
+		&:focus {
+			outline: none;
+			box-shadow:0 0 10px 1px $pw-blue;
+		}
+	}
+
+	#submit {
+		background-color: $pw-blue;
+		border: 0px;
+		padding: .75em 2em .75em 2em;
+		color: white;
+		border-radius: 5px;
+		font-size: 1.1em;
+
+		&:hover {
+			background-color: $pw-blue-dark;
+		}
+	}
+}
+
+.comments-title {
+	margin-bottom: .25em;
+}
+
+.comment-list {
+	margin-bottom: 2em;
+	list-style: none;
+}
+
+.comment {
+	margin-bottom: 1em;
+	padding-bottom: 1.5em;
+	padding-top: 1em;
+	margin-right: 3em;
+	border-bottom: 1px solid gray;
+
+	p {
+		margin-top: .5em;
+	}
+}
+
+.comment-notes {
+	// font-size: 1.2em;
+}
+
+.comment-reply-link {
+	background-color: $pw-blue;
+	color: white;
+	padding: .25em .75em .25em .75em;
+	border-radius: 2px;
+	text-decoration: none;
+
+	&:hover {
+		background-color: $pw-blue-dark;
+	}
+}
+
+.comment-edit-link {
+	@extend .comment-reply-link;
+	background-color: $mediumer-gray;
+
+	&:hover {
+		background-color: $mediumest-gray;
+	}
+}
+
+#respond {
+	margin-top: 3.5em;
+}
+
+// End comments styling
 
 
 
@@ -456,21 +563,20 @@ footer {
 				display: inline-block;
 				padding-left: 1em;
 				padding-right: 1em;
-				a {
-				// 	color: $mediumer-gray;
-				// // font-family: 'Raleway';
-				// text-transform: uppercase;
-				// font-weight: lighter;
-				// font-size: 1.15em;
-				// text-decoration: none;
-				// margin-bottom: .75em;
+				
 			}
 		}
 	}
-}
 
-#facebook-link-footer {
-	display: block;
-}
+	#facebook-link-footer {
+		display: block;
+	}
+
+	#comments {
+		input, textarea {
+			width: 100%;
+		}
+
+	}
 
 }
