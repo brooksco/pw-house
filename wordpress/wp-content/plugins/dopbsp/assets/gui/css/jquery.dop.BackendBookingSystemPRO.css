@@ -2,10 +2,10 @@
 
 /*
 * Title                   : Booking System PRO (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 1.9
 * File                    : jquery.dop.BackendBookingSystemPRO.css
-* File Version            : 1.4
-* Created / Last Modified : 03 June 2013
+* File Version            : 1.5
+* Created / Last Modified : 01 November 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -168,6 +168,7 @@
 /******************************************************************************* Day */
 
 .DOPBookingSystemPRO_Day{
+    clear: none !important;
     float: left;
     margin: 2px 0 0 0;
     padding: 0;
@@ -324,6 +325,7 @@
     border-bottom-right-radius: 2px !important;
     color: #222222 !important;
     display: block !important;
+    float: none !important;
     font-family: Arial, Helvetica, sans-serif !important;
     font-size: 12px !important;
     margin: 0 !important;
@@ -423,12 +425,12 @@
 /* Available Day */
 
 .DOPBookingSystemPRO_Day.available .header{
-    background: #25aae1 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
-    border-color: #25aae1 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    background: #68ba68 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #68ba68 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Day.available .content{
-    border-color: #25aae1 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #68ba68 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 /* Booked Day */
@@ -488,6 +490,27 @@
     border-color: #000000 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your SELECTED color. */
 }
 
+/* Day Jump Day */
+
+.DOPBookingSystemPRO_Day.day-jump .header{
+    background: #000000 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your DAY JUMP color. */
+    border-color: #000000 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your DAY JUMP color. */
+    -webkit-transition: background 1000ms linear, border-color 1000ms linear;
+    -moz-transition: background 1000ms linear, border-color 1000ms linear;
+    -ms-transition: background 1000ms linear, border-color 1000ms linear;
+    -o-transition: background 1000ms linear, border-color 1000ms linear;
+    transition: background 1000ms linear, border-color 1000ms linear;
+}
+
+.DOPBookingSystemPRO_Day.day-jump .content{
+    border-color: #000000 !important; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your DAY JUMP color. */
+    -webkit-transition: border-color 1000ms linear;
+    -moz-transition: border-color 1000ms linear;
+    -ms-transition: border-color 1000ms linear;
+    -o-transition: border-color 1000ms linear;
+    transition: border-color 1000ms linear;
+}
+
 /* Mask Day */
 
 .DOPBookingSystemPRO_Day.mask{
@@ -520,6 +543,7 @@
     opacity: 0 !important;
     filter: alpha(opacity=0) !important;
 }
+
 /*********************************************************************** Hour */ 
 
 .DOPBookingSystemPRO_Hours{
@@ -679,33 +703,33 @@
 /* Available Hour */
 
 .DOPBookingSystemPRO_Hour.available .hour{    
-    background: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    background: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Hour.available .bind-content{    
-    border-color: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Hour.available .bind-top{    
-    border-color: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Hour.available .bind-top .hour{    
-    color: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    color: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Hour.available .bind-bottom{    
-    border-color: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    border-color: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Hour.available .bind-bottom .hour{    
-    color: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    color: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 .DOPBookingSystemPRO_Hour.available .bind-top.enabled .hour,
 .DOPBookingSystemPRO_Hour.available .bind-bottom.enabled .hour{
-    background: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
-    color: #25aae1; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    background: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
+    color: #68ba68; /* <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Change to your AVAILABLE color. */
 }
 
 /* Booked Hour */
@@ -996,121 +1020,22 @@
 /******************************************************************************* Info */
 
 .DOPBookingSystemPRO_Info{
-    background: #fcfcfc;
-    border: 1px solid #909090;
-    -webkit-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-    -moz-box-shadow: 2px 2px 4px #b0b0b0;
-    -webkit-box-shadow: 2px 2px 4px #b0b0b0;
-    box-shadow: 2px 2px 4px #b0b0b0;
+    background: #fbfbfb;
+    border: 1px solid #c0c0c0;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: 0px 0px 4px #b0b0b0;
+    -moz-box-shadow: 0px 0px 4px #b0b0b0;
+    box-shadow: 0px 0px 4px #b0b0b0;
     color: #606060;
     display: none;
-    line-height: 1em;
-    max-width: 300px;
+    font-size: 12px;
     left: 0px;
+    line-height: 1.5em;
+    max-width: 300px;
     padding: 10px;
     position: absolute;
     top: 0px;
     z-index: 1000000;
-}
-
-/******************************************************************************* Reservations */
-
-.DOPBookingSystemPRO_Reservation{
-    margin: 10px 0 0 0;
-    padding: 0 10px 0 10px;
-}
-
-.DOPBookingSystemPRO_Reservation .container{
-    background: #ededed;
-    -webkit-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    padding: 10px;
-    max-width: 400px;
-}
-
-.DOPBookingSystemPRO_Reservation .section{
-    background: #f3f3f3;
-    -webkit-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    border: 1px solid #cccccc;
-    margin: 0;
-    padding: 10px 10px 5px 10px;
-    max-width: 400px;
-}
-
-.DOPBookingSystemPRO_Reservation .section.content{
-    display: none;
-    margin: 10px 0 0 0;
-}
-
-.DOPBookingSystemPRO_Reservation .toggle{
-    color: #606060;
-    cursor: pointer;
-    float: right;
-    font-size: 14px;
-    font-weight: bold;
-    line-height: 1em;
-    margin: 0;
-}
-
-.DOPBookingSystemPRO_Reservation .toggle:hover{
-    color: #000000;
-}
-
-.DOPBookingSystemPRO_Reservation .section-item{
-    padding: 0 0 5px 0;
-}
-
-.DOPBookingSystemPRO_Reservation .section-item.name{
-    font-weight: bold;
-}
-
-.DOPBookingSystemPRO_Reservation .section-item label{
-    color: #606060;
-    display: block;
-    float: left;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 12px;
-    width: 100px
-}
-
-.DOPBookingSystemPRO_Reservation .section.content label{
-    font-weight: bold;
-}
-
-.DOPBookingSystemPRO_Reservation .section-item .date{
-    color: #000000;
-    display: block;
-    float: left;
-    font-family: Verdana;
-    font-size: 13px;
-    font-weight: bold;
-    line-height: 13px;
-}
-
-.DOPBookingSystemPRO_Reservation .section-item .text{
-    color: #000000;
-    display: block;
-    float: left;
-    font-size: 12px;
-    line-height: 13px;
-}
-
-.DOPBookingSystemPRO_Reservation .section-item .text .cut{
-    text-decoration: line-through;
-}
-
-.DOPBookingSystemPRO_Reservation .section-item .text a{
-    color: #96a533;
-    margin: 0 20px 0 0;
-    text-decoration: none;
-}
-
-.DOPBookingSystemPRO_Reservation .section-item .text a:hover{
-    text-decoration: underline;
 }

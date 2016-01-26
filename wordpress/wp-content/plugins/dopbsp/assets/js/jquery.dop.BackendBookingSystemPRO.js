@@ -1,10 +1,10 @@
 
 /*
 * Title                   : Booking System PRO (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 2.0
 * File                    : jquery.dop.BackendBookingSystemPRO.js
-* File Version            : 1.6
-* Created / Last Modified : 31 July 2013
+* File Version            : 1.8
+* Created / Last Modified : 25 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -197,12 +197,21 @@
                         methods.parseCalendarData(new Date().getFullYear());
                     },
                     parseCalendarData:function(year){
-                        $.post(ajaxurl, {action:'dopbsp_load_schedule', calendar_id:ID, year:year}, function(data){
+                        var scheduleBuffer = {};
+                                
+                        $.post(ajaxurl, {action: 'dopbsp_load_schedule',
+                                         calendar_id: ID,
+                                         year: year}, function(data){
                             if ($.trim(data) != ''){
-                                $.extend(Schedule, JSON.parse($.trim(data)));
+                                scheduleBuffer = JSON.parse($.trim(data));
+                                
+                                for (var day in scheduleBuffer){
+                                    scheduleBuffer[day] = JSON.parse(scheduleBuffer[day]);
+                                }
+                                $.extend(Schedule, scheduleBuffer);
                             }
                             
-                            if (showCalendar && (StartMonth < 12-noMonths+1 || firstYearLoaded)){
+                            if (showCalendar && (StartMonth < 12-noMonths+1 || firstYearLoaded || year == MaxYear)){
                                 showCalendar = false;
                                 dopbspToggleMessage('hide', DOPBSP_CALENDAR_LOADED);
                                 methods.initCalendar();
@@ -212,10 +221,7 @@
                                 firstYearLoaded = true;
                             }
                                                        
-                            if (year >= MaxYear){
-                                //dopbspToggleMessage('hide', DOPBSP_CALENDAR_LOADED);
-                            }
-                            else{
+                            if (year < MaxYear){
                                 methods.parseCalendarData(year+1);
                             }
                         });
@@ -260,6 +266,7 @@
                         HTML.push('</div>');
 
                         Container.html(HTML.join(''));
+                        $('.DOPBookingSystemPRO_Info').remove();
                         $('body').append('<div class="DOPBookingSystemPRO_Info" id="DOPBookingSystemPRO_Info'+ID+'"></div>');
                         
                         no = FirstDay-1;
@@ -279,6 +286,7 @@
                         methods.initContainer();
                         methods.initNavigation();
                         methods.initInfo();
+                        methods.initExternalCheck();
                         methods.generateCalendar(StartYear, StartMonth);
                     },
                     initContainer:function(){// Init  Container
@@ -348,11 +356,6 @@
                             if(noMonths == 1){
                                 $('.DOPBookingSystemPRO_Navigation .remove_btn', Container).css('display', 'none');
                             }
-                        });
-                        
-                        $('#DOPBSP-reservations').unbind('click');
-                        $('#DOPBSP-reservations').bind('click', function(){
-                            methods.showReservations();
                         });
                     },
                     
@@ -491,11 +494,11 @@
                         dayNo++;
                         
                         if (price > 0 && (bind == 0 || bind == 1)){
-                            contentLine1 = Currency+price;
+                            contentLine1 = Currency+prototypes.getWithDecimals(price, 2);
                         }
                                                 
                         if (promo > 0 && (bind == 0 || bind == 1)){
-                            contentLine1 = Currency+promo;
+                            contentLine1 = Currency+prototypes.getWithDecimals(promo, 2);
                         }
 
                         if (type != 'past_day'){
@@ -532,6 +535,9 @@
                                         else if (available == 1){
                                             contentLine2 = available+' '+AvailableOneText;
                                         }
+                                        else{
+                                            contentLine2 = AvailableOneText;
+                                        }
                                     }
                                     break;
                                 case 'unavailable':
@@ -561,15 +567,15 @@
                         dayHTML.push('        <div class="header">');
                         dayHTML.push('            <div class="day">'+day+'</div>');
                         
-                        if (HoursEnabled && type != 'past_day' && status != 'unavailable' && (bind == 0 || bind == 3)){
+                        if (HoursEnabled && type.indexOf('past_day') == -1 && (bind == 0 || bind == 3)){
                             dayHTML.push('            <div class="hours" id="'+id+'_hours"></div>');
                         }
                         
-                        if (notes != '' && type != 'past_day' && (bind == 0 || bind == 3)){
+                        if (notes != '' && type.indexOf('past_day') == -1 && (bind == 0 || bind == 3)){
                             dayHTML.push('            <div class="notes" id="'+id+'_notes"></div>');
                         }   
                         
-                        if (info != '' && type != 'past_day' && (bind == 0 || bind == 3)){
+                        if (info != '' && type.indexOf('past_day') == -1 && (bind == 0 || bind == 3)){
                             dayHTML.push('            <div class="info" id="'+id+'_info"></div>');
                         }                     
                         dayHTML.push('            <br class="DOPBookingSystemPRO_Clear" />');
@@ -578,7 +584,7 @@
                         dayHTML.push('            <div class="price">'+contentLine1+'</div>');
                         
                         if (promo > 0 && (bind == 0 || bind == 1)){
-                            dayHTML.push('            <div class="old-price">'+Currency+price+'</div>');
+                            dayHTML.push('            <div class="old-price">'+Currency+prototypes.getWithDecimals(price)+'</div>');
                         }
                         dayHTML.push('            <br class="DOPBookingSystemPRO_Clear" />');
                         dayHTML.push('            <div class="available">'+contentLine2+'</div>');
@@ -836,11 +842,11 @@
                         
                         if (status != 'past_hour'){
                             if (price > 0 && (bind == 0 || bind == 1)){
-                                priceContent = Currency+price;
+                                priceContent = Currency+prototypes.getWithDecimals(price, 2);
                             }
 
                             if (promo > 0 && (bind == 0 || bind == 1)){
-                                priceContent = Currency+promo;
+                                priceContent = Currency+prototypes.getWithDecimals(promo, 2);
                             }
 
                             switch (status){
@@ -876,6 +882,9 @@
                                         else if (available == 1){
                                             availableContent = available+' '+AvailableOneText;
                                         }
+                                        else{
+                                            availableContent = AvailableOneText;
+                                        }
                                     }
                                     break;
                                 case 'unavailable':
@@ -901,7 +910,7 @@
                         }
                         
                         if (promo > 0 && type != 'past_hour' && (bind == 0 || bind == 1)){                                      
-                            hourHTML.push('        <div class="old-price">'+Currency+price+'</div>');
+                            hourHTML.push('        <div class="old-price">'+Currency+prototypes.getWithDecimals(price)+'</div>');
                         }                        
                         hourHTML.push('        <div class="available">'+availableContent+'</div>');
                         
@@ -1335,7 +1344,7 @@
                         
                             $('#DOPBSP_price').unbind('keyup');
                             $('#DOPBSP_price').bind('keyup', function(){
-                                prototypes.cleanInput(this, '0123456789.', '0', '');
+                                prototypes.cleanInput(this, '0123456789.', '', '');
 
                                 if ($(this).val() > '0'){
                                     $('#DOPBSP_promo').removeAttr('disabled');
@@ -1348,7 +1357,7 @@
 
                             $('#DOPBSP_promo').unbind('keyup');
                             $('#DOPBSP_promo').bind('keyup', function(){
-                                prototypes.cleanInput(this, '0123456789.', '0', '');
+                                prototypes.cleanInput(this, '0123456789.', '', '');
                             });
                         }
                         
@@ -1389,7 +1398,7 @@
                             
                             $('#DOPBSP_hours_price').unbind('keyup');
                             $('#DOPBSP_hours_price').bind('keyup', function(){
-                                prototypes.cleanInput(this, '0123456789.', '0', '');
+                                prototypes.cleanInput(this, '0123456789.', '', '');
 
                                 if ($(this).val() > '0'){
                                     $('#DOPBSP_hours_promo').removeAttr('disabled');
@@ -1402,7 +1411,7 @@
 
                             $('#DOPBSP_hours_promo').unbind('keyup');
                             $('#DOPBSP_hours_promo').bind('keyup', function(){
-                                prototypes.cleanInput(this, '0123456789.', '0', '');
+                                prototypes.cleanInput(this, '0123456789.', '', '');
                             });
                                                 
                             $('#DOPBSP_hours_available').unbind('keyup');
@@ -1576,44 +1585,46 @@
 
                                     for (d=fromDay; d<=toDay; d++){
                                         key = y+'-'+prototypes.timeLongItem(m)+'-'+prototypes.timeLongItem(d);
-
-                                        if ($('#DOPBSP_group').is(':checked')){
-                                            if (key == startDate){
-                                                bindValue = 1;
-                                            }                 
-                                            else if (key == endDate){
-                                                bindValue = 3;
-                                            }   
-                                            else{
-                                                bindValue = 2;                                            
+                                            
+                                        if (AvailableDays[methods.weekDay(y, m, d)] || startDate == endDate){
+                                            if ($('#DOPBSP_group').is(':checked')){
+                                                if (key == startDate){
+                                                    bindValue = 1;
+                                                }                 
+                                                else if (key == endDate){
+                                                    bindValue = 3;
+                                                }   
+                                                else{
+                                                    bindValue = 2;                                            
+                                                }
                                             }
-                                        }
-                                        
-                                        if ($('#DOPBSP_change_hours_definitions').is(':checked') && $('#DOPBSP_hours_definitions').val() != undefined && $('#DOPBSP_hours_definitions').val() != ''){
-                                            hoursDefinitionsValue = hours;
-                                        }
-                                        else{
-                                            if (Schedule[key] != undefined){
-                                                hoursValue = $('#DOPBSP_set_hours_default_data').is(':checked') ? hoursValue:Schedule[key]['hours'];
-                                                hoursDefinitionsValue = Schedule[key]['hours_definitions'];
+
+                                            if ($('#DOPBSP_change_hours_definitions').is(':checked') && $('#DOPBSP_hours_definitions').val() != undefined && $('#DOPBSP_hours_definitions').val() != ''){
+                                                hoursDefinitionsValue = hours;
                                             }
                                             else{
-                                                hoursDefinitionsValue = HoursDefinitions;
+                                                if (Schedule[key] != undefined){
+                                                    hoursValue = $('#DOPBSP_set_hours_default_data').is(':checked') ? hoursValue:Schedule[key]['hours'];
+                                                    hoursDefinitionsValue = Schedule[key]['hours_definitions'];
+                                                }
+                                                else{
+                                                    hoursDefinitionsValue = HoursDefinitions;
+                                                }
                                             }
-                                        }
 
-                                        Schedule[key] = {"available": availableValue,
-                                                         "bind": bindValue,
-                                                         "hours": $.extend(true, {}, hoursValue),
-                                                         "hours_definitions": hoursDefinitionsValue,
-                                                         "info": infoValue,
-                                                         "notes": notesValue,
-                                                         "price": priceValue,
-                                                         "promo": promoValue,
-                                                         "status": statusValue};
-                                       
-                                        if (HoursEnabled && DetailsFromHours){
-                                            methods.setDayFromHours(key);
+                                            Schedule[key] = {"available": availableValue,
+                                                             "bind": bindValue,
+                                                             "hours": $.extend(true, {}, hoursValue),
+                                                             "hours_definitions": hoursDefinitionsValue,
+                                                             "info": infoValue,
+                                                             "notes": notesValue,
+                                                             "price": priceValue,
+                                                             "promo": promoValue,
+                                                             "status": statusValue};
+
+                                            if (HoursEnabled && DetailsFromHours){
+                                                methods.setDayFromHours(key);
+                                            }
                                         }
                                     }
                                 }
@@ -1722,6 +1733,8 @@
                         nextMonth = month == 12 ? 1:month+1,
                         startDate = dayStartSelection < dayEndSelection ? dayStartSelection.split('_')[1]:dayEndSelection.split('_')[1],
                         endDate = dayStartSelection < dayEndSelection ? dayEndSelection.split('_')[1]:dayStartSelection.split('_')[1];
+                
+                        CurrMonth = (year-StartYear)*12+month;
                         
                         for (var day in Schedule){
                             if (day.indexOf(year+'-'+prototypes.timeLongItem(month)) != -1){
@@ -1732,14 +1745,16 @@
                         }         
                             
                         if (yearStartSave != year || monthStartSave != month){
-                            methods.generateCalendar(StartYear, (year-StartYear)*12+month);
+                            methods.generateCalendar(StartYear, CurrMonth);
                         
                             if (StartMonth != month){
                                 $('.DOPBookingSystemPRO_Navigation .previous_btn', Container).css('display', 'block');
                             }
                         }
 
-                        $.post(ajaxurl, {action:'dopbsp_save_schedule', calendar_id:ID, schedule:schedule}, function(data){    
+                        $.post(ajaxurl, {action: 'dopbsp_save_schedule',
+                                         calendar_id: ID,
+                                         schedule: JSON.stringify(schedule)}, function(data){
                             if (year == yearEndSave && month == monthEndSave){
                                 dopbspToggleMessage('success', data);
                             }                            
@@ -1852,12 +1867,18 @@
                             
                         if (yearStartSave != year || monthStartSave != month){
                             methods.generateCalendar(StartYear, CurrMonth+1);
+                        
+                            if (StartMonth != month){
+                                $('.DOPBookingSystemPRO_Navigation .previous_btn', Container).css('display', 'block');
+                            }
                         }
                         else{
                             methods.generateCalendar(StartYear, dayStartSelectionCurrMonth); 
                         }
 
-                        $.post(ajaxurl, {action:'dopbsp_delete_schedule', calendar_id:ID, schedule:schedule}, function(data){                            
+                        $.post(ajaxurl, {action: 'dopbsp_delete_schedule',
+                                         calendar_id: ID,
+                                         schedule: JSON.stringify(schedule)}, function(data){                            
                             if (year == yearEndSave && month == monthEndSave){
                                 dopbspToggleMessage('success', data);
                             }                            
@@ -1880,12 +1901,12 @@
                                     }
 
                                     // Price Check
-                                    if (Schedule[day]['hours'][hour]['price'] != '' && (price == '' || parseInt(Schedule[day]['hours'][hour]['price']) < price)){
-                                        price = parseInt(Schedule[day]['hours'][hour]['price']);
+                                    if (Schedule[day]['hours'][hour]['price'] != '' && (price == '' || parseFloat(Schedule[day]['hours'][hour]['price']) < price)){
+                                        price = parseFloat(Schedule[day]['hours'][hour]['price']);
                                     }
 
-                                    if (Schedule[day]['hours'][hour]['promo'] != '' && (price == '' || parseInt(Schedule[day]['hours'][hour]['promo']) < price)){
-                                        price = parseInt(Schedule[day]['hours'][hour]['promo']);
+                                    if (Schedule[day]['hours'][hour]['promo'] != '' && (price == '' || parseFloat(Schedule[day]['hours'][hour]['promo']) < price)){
+                                        price = parseFloat(Schedule[day]['hours'][hour]['promo']);
                                     }
 
                                     // Status Check
@@ -1962,159 +1983,35 @@
                         
                         return previousHour;
                     },
-                    
-                    showReservations:function(){
-                        if (clearClick){
-                            dopbspRemoveColumns(3);
-                            dopbspToggleMessage('show', DOPBSP_LOAD);
-                            
-                            $.post(ajaxurl, {action:'dopbsp_show_reservations', calendar_id:ID}, function(data){
-                                $('.DOPBSP-admin .column3 .column-content').html(data);
-                                dopbspToggleMessage('hide', '');
-                                
-                                methods.initToggleReservation();
-                                methods.initJumpDayReservation();
-                                methods.initApproveReservation();
-                                methods.initRejectReservation(); 
-                                methods.initCancelReservation();                                
-                            });                        
-                        }
-                    },
-                    initToggleReservation:function(id){                        
-                        $('.DOPBookingSystemPRO_Reservation .toggle').unbind('click');
-                        $('.DOPBookingSystemPRO_Reservation .toggle').bind('click', function(){
-                            var id = $(this).attr('id').split('DOPBSP_Reservation_ToggleID')[1];
-
-                            $('.DOPBookingSystemPRO_Day', Container).removeClass('selected');
-                            $('.DOPBookingSystemPRO_Hour', Container).removeClass('selected');
-                            $('.DOPBookingSystemPRO_Reservation .section.content').css('display', 'none');
-
-                            if ($('#DOPBSP_Reservation_ToggleID'+id).html() == '+'){
-                                $('.DOPBookingSystemPRO_Reservation .toggle').html('+'); 
-                                $('#DOPBSP_Reservation_ToggleID'+id).html('-');
-                                $('#DOPBSP_Reservation_ContentID'+id).css('display', 'block');
-                            }
-                            else{ 
-                                $('.DOPBookingSystemPRO_Reservation .toggle').html('+');                           
-                            }
-                        });                                
-                    },
-                    initJumpDayReservation:function(){                                
-                        $('.DOPBookingSystemPRO_Message_JumpDay').unbind('click');
-                        $('.DOPBookingSystemPRO_Message_JumpDay').bind('click', function(){
-                            var date = $(this).attr('id').split('DOPBookingSystemPRO_Message_JumpDay_')[1],
+                    initExternalCheck:function(){
+                        if ($('#calendar_jump_to_day').val() != ''){
+                            var date = $('#calendar_jump_to_day').val(),
                             year = parseInt(date.split('-')[0], 10),
                             month = parseInt(date.split('-')[1], 10);
-
+                            
+                            $('#calendar_jump_to_day').val('');
                             methods.generateCalendar(StartYear, (year-StartYear)*12+month);
-                        });
-                    },
-                    initApproveReservation:function(){                                
-                        $('.DOPBookingSystemPRO_ReservationApprove').unbind('click');
-                        $('.DOPBookingSystemPRO_ReservationApprove').bind('click', function(){
-                            if (clearClick){
-                                if (confirm(DOPBSP_RESERVATIONS_APPROVE_CONFIRMATION)){
-                                    var id = $(this).attr('id').split('DOPBookingSystemPRO_ReservationApprove')[1],
-                                    year, month;
-
-                                    dopbspMoveTop();
-                                    dopbspToggleMessage('show', DOPBSP_SAVE);
-                                    
-                                    $.post(ajaxurl, {action:'dopbsp_approve_reservation', calendar_id:ID, reservation_id:id}, function(data){
-                                        data = $.trim(data);
-                                        data = methods.cleanReservationAction(data);
-                                        
-                                        year = parseInt(data.split('-')[0]);
-                                        month = parseInt(data.split('-')[1]);
-                                        
-                                        for (var day in Schedule){
-                                            if (day.indexOf(year) != -1){                                      
-                                                delete Schedule[day];
-                                            }                            
-                                        }
-                        
-                                        $.post(ajaxurl, {action:'dopbsp_load_schedule', calendar_id:ID, year:year}, function(data){
-                                            dopbspToggleMessage('hide', DOPBSP_RESERVATIONS_APPROVE_SUCCESS);
-                                            if ($.trim(data) != ''){
-                                                $.extend(Schedule, JSON.parse($.trim(data)));
-                                            }
-                                            
-                                            $('#DOPBSP_Reservation_StatusID'+id).html(DOPBSP_RESERVATIONS_STATUS_APPROVED);
-                                            $('#DOPBookingSystemPRO_ReservationApprove'+id).css('display', 'none');
-                                            $('#DOPBookingSystemPRO_ReservationReject'+id).css('display', 'none');
-                                            $('#DOPBookingSystemPRO_ReservationCancel'+id).css('display', 'inline-block');
-                                            methods.generateCalendar(StartYear, (year-StartYear)*12+month);
-                                        });
-                                    });   
-                                }
-                            }
-                        }); 
-                    },
-                    initRejectReservation:function(){                                
-                        $('.DOPBookingSystemPRO_ReservationReject').unbind('click');
-                        $('.DOPBookingSystemPRO_ReservationReject').bind('click', function(){
-                            if (clearClick){
-                                if (confirm(DOPBSP_RESERVATIONS_REJECT_CONFIRMATION)){
-                                    var id = $(this).attr('id').split('DOPBookingSystemPRO_ReservationReject')[1],
-                                    noReservations = 0;
-
-                                    dopbspToggleMessage('show', DOPBSP_SAVE);
-    
-                                    $.post(ajaxurl, {action:'dopbsp_reject_reservation', calendar_id:ID, reservation_id:id}, function(data){
-                                        noReservations = $('#DOPBSP-reservations span').html() == '' ? 0:parseInt($('#DOPBSP-reservations span').html(), 10)-1;
-                                        $('#DOPBSP_Reservation_ID'+id).css('display', 'none');
-                                        
-                                        if (noReservations == 0){                                            
-                                            $('#DOPBSP-reservations').removeClass('new');
-                                            $('#DOPBSP-reservations span').html('');
-                                        }
-                                        else{                                            
-                                            $('#DOPBSP-reservations span').html(noReservations);
-                                        }
-                                        dopbspToggleMessage('hide', DOPBSP_RESERVATIONS_REJECT_SUCCESS);
-                                    });
-                                }
-                            }
-                        });                        
-                    },
-                    initCancelReservation:function(){                                
-                        $('.DOPBookingSystemPRO_ReservationCancel').unbind('click');
-                        $('.DOPBookingSystemPRO_ReservationCancel').bind('click', function(){
-                            if (clearClick){
-                                if (confirm(DOPBSP_RESERVATIONS_CANCEL_CONFIRMATION)){
-                                    var id = $(this).attr('id').split('DOPBookingSystemPRO_ReservationCancel')[1],
-                                    noReservations = 0;
-
-                                    dopbspToggleMessage('show', DOPBSP_SAVE);
-                                    
-                                    $.post(ajaxurl, {action:'dopbsp_cancel_reservation', calendar_id:ID, reservation_id:id}, function(data){
-                                        noReservations = $('#DOPBSP-reservations span').html() == '' ? 0:parseInt($('#DOPBSP-reservations span').html(), 10)-1;
-                                        $('#DOPBSP_Reservation_ID'+id).css('display', 'none');
-                                        
-                                        if (noReservations == 0){                                            
-                                            $('#DOPBSP-reservations').removeClass('new');
-                                            $('#DOPBSP-reservations span').html('');
-                                        }
-                                        else{                                            
-                                            $('#DOPBSP-reservations span').html(noReservations);
-                                        }
-                                        dopbspToggleMessage('hide', DOPBSP_RESERVATIONS_CANCEL_SUCCESS);
-                                    });
-                                }
-                            }
-                        });                        
-                    },
-                    cleanReservationAction:function(data){
-                        var result = data.split('>');
-                        
-                        if (result[1] != undefined){
-                            data = result[result.length-1];
-                        }
-                        else{
-                            data = data;
+                            
+                            $('body').animate({scrollTop:0}, 'slow', function(){
+                                $('#'+ID+'_'+date).addClass('day-jump');
+                            
+                                setTimeout(function(){
+                                    $('#'+ID+'_'+date).removeClass('day-jump');
+                                }, 1200);
+                            });
                         }
                         
-                        return data;
+                        if ($('#calendar_refresh').val() != ''){
+                            $('#calendar_refresh').val('');
+                            showCalendar = true;
+                            firstYearLoaded = false;
+                            dopbspToggleMessage('show', DOPBSP_LOAD);
+                            methods.parseCalendarData(new Date().getFullYear());
+                        }
+                            
+                        setTimeout(function(){
+                            methods.initExternalCheck();
+                        }, 500);
                     }
                   },
 
@@ -2588,6 +2485,11 @@
                             
                             $(input).val(returnStr);
                         },
+                        getWithDecimals:function(number, length){
+                            length = length == undefined ? 2:length;
+                            
+                            return parseInt(number) == number ? String(number):parseFloat(number).toFixed(length);
+                        },
                         validEmail:function(email){// Validate email
                             var filter = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
                             
@@ -2615,38 +2517,56 @@
                             var topURL = window.location.href,
                             pathPiece1 = '', pathPiece2 = '';
                             
-                            if (dataURL.indexOf('https') != -1 || dataURL.indexOf('http') != -1){
-                                if (topURL.indexOf('http://www.') != -1){
-                                    pathPiece1 = prototypes.isSubdomain(dataURL) ? 'http://':'http://www.';
+                            if (prototypes.getDomain(topURL) == prototypes.getDomain(dataURL)){
+                                if (dataURL.indexOf('https') != -1 || dataURL.indexOf('http') != -1){
+                                    if (topURL.indexOf('http://www.') != -1){
+                                        pathPiece1 = 'http://www.';
+                                    }
+                                    else if (topURL.indexOf('http://') != -1){
+                                        pathPiece1 = 'http://';
+                                    }
+                                    else if (topURL.indexOf('https://www.') != -1){
+                                        pathPiece1 = 'https://www.';
+                                    }
+                                    else if (topURL.indexOf('https://') != -1){
+                                        pathPiece1 = 'https://';
+                                    }
+
+                                    if (dataURL.indexOf('http://www.') != -1){
+                                        pathPiece2 = dataURL.split('http://www.')[1];
+                                    }
+                                    else if (dataURL.indexOf('http://') != -1){
+                                        pathPiece2 = dataURL.split('http://')[1];
+                                    }
+                                    else if (dataURL.indexOf('https://www.') != -1){
+                                        pathPiece2 = dataURL.split('https://www.')[1];
+                                    }
+                                    else if (dataURL.indexOf('https://') != -1){
+                                        pathPiece2 = dataURL.split('https://')[1];
+                                    }
+
+                                    return pathPiece1+pathPiece2;
                                 }
-                                else if (topURL.indexOf('http://') != -1){
-                                    pathPiece1 = 'http://';
+                                else{
+                                    return dataURL;
                                 }
-                                else if (topURL.indexOf('https://www.') != -1){
-                                    pathPiece1 = prototypes.isSubdomain(dataURL) ? 'https://':'https://www.';
-                                }
-                                else if (topURL.indexOf('https://') != -1){
-                                    pathPiece1 = 'https://';
-                                }
-                                    
-                                if (dataURL.indexOf('http://www.') != -1){
-                                    pathPiece2 = dataURL.split('http://www.')[1];
-                                }
-                                else if (dataURL.indexOf('http://') != -1){
-                                    pathPiece2 = dataURL.split('http://')[1];
-                                }
-                                else if (dataURL.indexOf('https://www.') != -1){
-                                    pathPiece2 = dataURL.split('https://www.')[1];
-                                }
-                                else if (dataURL.indexOf('https://') != -1){
-                                    pathPiece2 = dataURL.split('https://')[1];
-                                }
-                                
-                                return pathPiece1+pathPiece2;
                             }
                             else{
                                 return dataURL;
                             }
+                        },
+                        getDomain:function(url, includeSubdomain){
+                            var domain = url;
+                            includeSubdomain = includeSubdomain == undefined ? true:false;
+ 
+                            domain = domain.replace(new RegExp(/^\s+/),""); // Remove white spaces from the begining of the url.
+                            domain = domain.replace(new RegExp(/\s+$/),""); // Remove white spaces from the end of the url.
+                            domain = domain.replace(new RegExp(/\\/g),"/"); // If found , convert back slashes to forward slashes.
+                            domain = domain.replace(new RegExp(/^http\:\/\/|^https\:\/\/|^ftp\:\/\//i),""); // If there, removes 'http://', 'https://' or 'ftp://' from the begining.
+                            domain = domain.replace(new RegExp(/^www\./i),""); // If there, removes 'www.' from the begining.
+                            domain = domain.replace(new RegExp(/\/(.*)/),""); // Remove complete string from first forward slaash on.
+
+                            return domain;
                         },
                         isSubdomain:function(url){
                             var subdomain;

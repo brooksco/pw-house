@@ -1,10 +1,10 @@
 
 /*
 * Title                   : Booking System PRO (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 2.0
 * File                    : jquery.dop.FrontendBookingSystemPRO.js
-* File Version            : 1.7
-* Created / Last Modified : 31 July 2013
+* File Version            : 2.0
+* Created / Last Modified : 27 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -13,8 +13,8 @@
 
 (function($){
     $.fn.DOPBookingSystemPRO = function(options){
-        var Data = {'AddLastHourToTotalPrice': true,
-                    'AddtMonthViewText': 'Add Month View',
+        var Data = {'AddLastHourToTotalPrice': 'true',
+                    'AddMonthViewText': 'Add Month View',
                     'AvailableDays': ['true', 'true', 'true', 'true', 'true', 'true', 'true'],
                     'AvailableOneText': 'available',
                     'AvailableText': 'available',
@@ -41,8 +41,8 @@
                     'HoursAMPM': 'false',
                     'HoursEnabled': 'false',
                     'HoursDefinitions': [{"value": "00:00"}],
-                    'HoursInfoEnabled': true,
-                    'HoursIntervalEnabled': false,
+                    'HoursInfoEnabled': 'true',
+                    'HoursIntervalEnabled': 'false',
                     'ID': 0,
                     'Language': 'en',
                     'MaxNoChildren': 2,
@@ -63,7 +63,7 @@
                     'NoAdultsLabel': 'No Adults',
                     'NoChildrenEnabled': 'true',
                     'NoChildrenLabel': 'No Chilren',
-                    'NoItemsEnabled': true,
+                    'NoItemsEnabled': 'true',
                     'NoItemsLabel': 'No book items',
                     'NoPeopleLabel': 'No People',
                     'NoPeopleEnabled': 'true',
@@ -87,7 +87,10 @@
                     'TermsAndConditionsLink': '',
                     'TotalPriceLabel': 'Total:',
                     'UnavailableText': 'unavailable',
-                    'ViewOnly': 'false'},
+                    'ViewOnly': 'false',
+                    'WooCommerceEnabled': 'false',
+                    'WooCommerceAddToCartLabel': 'Add to cart',
+                    'WooCommerceAddToCartSuccess': 'Your reservation has been added to cart.'},
         Container = this,
         ajaxURL = '',
 
@@ -101,7 +104,7 @@
         CurrMonth = StartMonth, 
         
         AddLastHourToTotalPrice = true,
-        AddtMonthViewText = 'Add Month View',
+        AddMonthViewText = 'Add Month View',
         AvailableDays = [true, true, true, true, true, true, true],
         AvailableOneText = 'available',
         AvailableText = 'available',
@@ -124,6 +127,7 @@
         FormID = 1,
         FormEmailInvalid = 'is invalid. Please enter a valid Email.',
         FormRequired = 'is required.',
+        FormTitle = 'Contact Informations',
         HoursAMPM = false,
         HoursEnabled = true,
         HoursDefinitions = [{"value": "00:00"}, {"value": "00:15"}, {"value": "00:30"}, {"value": "00:45"}, {"value": "01:00"}, {"value": "01:15"}, {"value": "01:30"}, {"value": "01:45"}, {"value": "02:00"}, {"value": "02:15"}, {"value": "02:30"}, {"value": "02:45"}, {"value": "03:00"}, {"value": "03:15"}, {"value": "03:30"}, {"value": "03:45"}, {"value": "04:00"}, {"value": "04:15"}, {"value": "04:30"}, {"value": "04:45"}, {"value": "05:00"}, {"value": "05:15"}, {"value": "05:30"}, {"value": "05:45"}, {"value": "06:00"}, {"value": "06:15"}, {"value": "06:30"}, {"value": "06:45"}, {"value": "07:00"}, {"value": "07:15"}, {"value": "07:30"}, {"value": "07:45"}, {"value": "08:00"}, {"value": "08:15"}, {"value": "08:30"}, {"value": "08:45"}, {"value": "09:00"}, {"value": "09:15"}, {"value": "09:30"}, {"value": "09:45"}, {"value": "10:00"}, {"value": "10:15"}, {"value": "10:30"}, {"value": "10:45"}, {"value": "11:00"}, {"value": "11:15"}, {"value": "11:30"}, {"value": "11:45"}, {"value": "12:00"}, {"value": "12:15"}, {"value": "12:30"}, {"value": "12:45"}, {"value": "13:00"}, {"value": "13:15"}, {"value": "13:30"}, {"value": "13:45"}, {"value": "14:00"}, {"value": "14:15"}, {"value": "14:30"}, {"value": "14:45"}, {"value": "15:00"}, {"value": "15:15"}, {"value": "15:30"}, {"value": "15:45"}, {"value": "16:00"}, {"value": "16:15"}, {"value": "16:30"}, {"value": "16:45"}, {"value": "17:00"}, {"value": "17:15"}, {"value": "17:30"}, {"value": "17:45"}, {"value": "18:00"}, {"value": "18:15"}, {"value": "18:30"}, {"value": "18:45"}, {"value": "19:00"}, {"value": "19:15"}, {"value": "19:30"}, {"value": "19:45"}, {"value": "20:00"}, {"value": "20:15"}, {"value": "20:30"}, {"value": "20:45"}, {"value": "21:00"}, {"value": "21:15"}, {"value": "21:30"}, {"value": "21:45"}, {"value": "22:00"}, {"value": "22:15"}, {"value": "22:30"}, {"value": "22:45"}, {"value": "23:00"}, {"value": "23:15"}, {"value": "23:30"}, {"value": "23:45"}],
@@ -173,6 +177,9 @@
         TotalPriceLabel = 'Total:',
         UnavailableText = 'unavailable',
         ViewOnly = true,
+        WooCommerceEnabled = false,
+        WooCommerceAddToCartLabel = 'Add to cart',
+        WooCommerceAddToCartSuccess = 'Your reservation has been added to cart.',
         
         showCalendar = true,
         firstYearLoaded = false,
@@ -211,7 +218,7 @@
                         Container.html('<div class="loader"></div>');
                         
                         AddLastHourToTotalPrice = Data['AddLastHourToTotalPrice'] == "true" ? true:false;
-                        AddtMonthViewText = Data['AddtMonthViewText'];
+                        AddMonthViewText = Data['AddMonthViewText'];
                         AvailableDays[0] = Data['AvailableDays'][0] == "true" ? true:false;
                         AvailableDays[1] = Data['AvailableDays'][1] == "true" ? true:false;
                         AvailableDays[2] = Data['AvailableDays'][2] == "true" ? true:false;
@@ -290,19 +297,43 @@
                         TotalPriceLabel = Data['TotalPriceLabel'];
                         UnavailableText = Data['UnavailableText'];
                         ViewOnly = Data['ViewOnly'] == 'true' ? true:false;
+                        WooCommerceEnabled = Data['WooCommerceEnabled'] == 'true' ? true:false;
+                        WooCommerceAddToCartLabel = Data['WooCommerceAddToCartLabel'];
+                        WooCommerceAddToCartSuccess = Data['WooCommerceAddToCartSuccess'];
                         
                         MorningCheckOut = HoursEnabled ? false:MorningCheckOut;
                         MultipleDaysSelect = HoursEnabled ? false:MultipleDaysSelect;
                         
+                        // Hide WooCommerce default "Add to cart" button.
+                        if (WooCommerceEnabled && $('input[name="add-to-cart"]').val() != undefined){
+                            $('input[name="add-to-cart"]').parent().css('display', 'none');
+                        }
+//        StartDate.setDate(StartDate.getDate() + 3);
+//        StartYear = StartDate.getFullYear();
+//        StartMonth = StartDate.getMonth()+1;
+//        StartDay = StartDate.getDate();
+//        CurrYear = StartYear;
+//        CurrMonth = StartMonth;
+                        
                         methods.parseCalendarData(new Date().getFullYear());
                     },
-                    parseCalendarData:function(year){                        
-                        $.post(ajaxURL, {action:'dopbsp_load_schedule', calendar_id:ID, year:year}, function(data){
+                    parseCalendarData:function(year){
+                        var scheduleBuffer = {};
+                        
+                        $.post(ajaxURL, {action: 'dopbsp_load_schedule',
+                                         dopbsp_frontend_ajax_request: true,
+                                         calendar_id: ID,
+                                         year:year}, function(data){
                             if ($.trim(data) != ''){
-                                $.extend(Schedule, JSON.parse($.trim(data)));
+                                scheduleBuffer = JSON.parse($.trim(data));
+                                
+                                for (var day in scheduleBuffer){
+                                    scheduleBuffer[day] = JSON.parse(scheduleBuffer[day]);
+                                }
+                                $.extend(Schedule, scheduleBuffer);
                             }
                             
-                            if (showCalendar && (StartMonth < 12-noMonths+1 || firstYearLoaded)){
+                            if (showCalendar && (StartMonth < 12-noMonths+1 || firstYearLoaded || year == MaxYear)){
                                 showCalendar = false;
                                 methods.initCalendar();
                             }
@@ -323,7 +354,7 @@
                         // ***************************************************** Calendar HTML
                         HTML.push('<div class="DOPBookingSystemPRO_Container" style="float:left;">'); 
                         HTML.push('    <div class="DOPBookingSystemPRO_Navigation">');
-                        HTML.push('        <div class="add_btn" title="'+AddtMonthViewText+'"></div>');                        
+                        HTML.push('        <div class="add_btn" title="'+AddMonthViewText+'"></div>');                        
                         HTML.push('        <div class="remove_btn" title="'+RemoveMonthViewText+'"></div>');
                         HTML.push('        <div class="previous_btn" title="'+PreviousMonthText+'"></div>');
                         HTML.push('        <div class="next_btn" title="'+NextMonthText+'"></div>');
@@ -343,12 +374,12 @@
                         
                         // ***************************************************** Sidebar/Form HTML
                         if (!ViewOnly){
-                            if ($('#DOPBookingSystemPRO_SidebarWidget'+ID).length == 0){
+                            if ($('#DOPBookingSystemPRO_OuterSidebar'+ID).length == 0){
                                 HTML.push('<div class="DOPBookingSystemPRO_Sidebar">'+methods.generateSidebar()+'</div>');
                             }
                             else{
                                 HTML.push('<div class="DOPBookingSystemPRO_Sidebar" style="margin-left:0px; width:0px;"></div>');
-                                $('#DOPBookingSystemPRO_SidebarWidget'+ID).html(methods.generateSidebar());
+                                $('#DOPBookingSystemPRO_OuterSidebar'+ID).html(methods.generateSidebar());
                             }
                         }
                         HTML.push('<br class="DOPBookingSystemPRO_Clear" />');
@@ -374,7 +405,8 @@
                         methods.initSettings();
                     },
                     generateSidebar:function(){
-                        var HTML = new Array(), i, j;
+                        var HTML = new Array(), i, j,
+                        bookNowLabel = BookNowLabel;
                         
                         HTML.push('    <div class="section">');
                         HTML.push('        <form name="DOPBookingSystemPRO_Form'+ID+'" id="DOPBookingSystemPRO_Form'+ID+'" action="" method="POST">');
@@ -447,97 +479,109 @@
                         
                         // ***************************************************** Contact Form
                         HTML.push('            <div class="DOPBookingSystemPRO_ContactForm" id="DOPBookingSystemPRO_ContactForm'+ID+'">');
-                        // Title
-                        HTML.push('                <div class="section-item title">'+FormTitle+'</div>');
-
-                        for (i=0; i<Form.length; i++){
-                            HTML.push('                <div class="section-item">');
-                            
-                            switch (Form[i]['type']){
-                                case 'checkbox':
-                                    HTML.push('                    <input type="checkbox" name="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" id="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" />');
-                                    HTML.push('                    <label class="checkbox" for="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'">'+Form[i]['translation']+(Form[i]['required'] == 'true' ? ' *':'')+'</label>');
-                                    break;
-                                case 'text':
-                                    HTML.push('                    <label for="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'">'+Form[i]['translation']+(Form[i]['required'] == 'true' ? ' *':'')+'</label>');
-                                    HTML.push('                    <input type="text" name="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" id="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" value="" />');
-                                    break;
-                                case 'select':
-                                    HTML.push('                    <label for="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'">'+Form[i]['translation']+(Form[i]['required'] == 'true' ? ' *':'')+'</label>');
-                                    HTML.push('                    <select name="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+(Form[i]['multiple_select'] == 'true' ? '[]':'')+'" id="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" value=""'+(Form[i]['multiple_select'] == 'true' ? ' multiple':'')+'>');
-                                    
-                                    for (j=0; j<Form[i]['options'].length; j++){
-                                        if (Form[i]['options'][j]['translation'] != ''){
-                                            HTML.push('<option value="'+Form[i]['options'][j]['id']+'">'+Form[i]['options'][j]['translation']+'</option>');
-                                        }
-                                    }
-                                    HTML.push('                    </select>');
-                                    break;
-                                case 'textarea':
-                                    HTML.push('                    <label for="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'">'+Form[i]['translation']+(Form[i]['required'] == 'true' ? ' *':'')+'</label>');
-                                    HTML.push('                    <textarea name="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" id="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" col="" rows="6"></textarea>');
-                                    break;
-                            }
-                            HTML.push('                </div>');
-                        }
                         
-                        if (NoPeopleEnabled){
-                            // No People
-                            HTML.push('                <div class="section-item left">');
-                            HTML.push('                    <label for="DOPBookingSystemPRO_NoPeople'+ID+'">'+(NoChildrenEnabled ? NoAdultsLabel:NoPeopleLabel)+'</label>');
-                            HTML.push('                    <select name="DOPBookingSystemPRO_NoPeople'+ID+'" id="DOPBookingSystemPRO_NoPeople'+ID+'" class="small">');
-                            
-                            for (i=MinNoPeople; i<=MaxNoPeople; i++){
-                                HTML.push('                    <option value="'+i+'">'+i+'</option>');
+                        if (!WooCommerceEnabled){
+                            // Title
+                            HTML.push('                <div class="section-item title">'+FormTitle+'</div>');
+
+                            for (i=0; i<Form.length; i++){
+                                HTML.push('                <div class="section-item">');
+
+                                switch (Form[i]['type']){
+                                    case 'checkbox':
+                                        HTML.push('                    <input type="checkbox" name="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" id="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" />');
+                                        HTML.push('                    <label class="checkbox" for="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'">'+Form[i]['translation']+(Form[i]['required'] == 'true' ? ' *':'')+'</label>');
+                                        break;
+                                    case 'text':
+                                        HTML.push('                    <label for="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'">'+Form[i]['translation']+(Form[i]['required'] == 'true' ? ' *':'')+'</label>');
+                                        HTML.push('                    <input type="text" name="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" id="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" value="" />');
+                                        break;
+                                    case 'select':
+                                        HTML.push('                    <label for="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'">'+Form[i]['translation']+(Form[i]['required'] == 'true' ? ' *':'')+'</label>');
+                                        HTML.push('                    <select name="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+(Form[i]['multiple_select'] == 'true' ? '[]':'')+'" id="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" value=""'+(Form[i]['multiple_select'] == 'true' ? ' multiple':'')+'>');
+
+                                        for (j=0; j<Form[i]['options'].length; j++){
+                                            if (Form[i]['options'][j]['translation'] != ''){
+                                                HTML.push('<option value="'+Form[i]['options'][j]['id']+'">'+Form[i]['options'][j]['translation']+'</option>');
+                                            }
+                                        }
+                                        HTML.push('                    </select>');
+                                        break;
+                                    case 'textarea':
+                                        HTML.push('                    <label for="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'">'+Form[i]['translation']+(Form[i]['required'] == 'true' ? ' *':'')+'</label>');
+                                        HTML.push('                    <textarea name="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" id="DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']+'" col="" rows="6"></textarea>');
+                                        break;
+                                }
+                                HTML.push('                </div>');
                             }
-                            HTML.push('                    </select>');
-                            HTML.push('                </div>');  
-                            
-                            // No Children
-                            if (NoChildrenEnabled){
-                                HTML.push('                <div class="section-item left second">');
-                                HTML.push('                    <label for="DOPBookingSystemPRO_NoChildren'+ID+'">'+NoChildrenLabel+'</label>');
-                                HTML.push('                    <select name="DOPBookingSystemPRO_NoChildren'+ID+'" id="DOPBookingSystemPRO_NoChildren'+ID+'" class="small">');
-                                
-                                for (i=MinNoChildren; i<=MaxNoChildren; i++){
+
+                            if (NoPeopleEnabled){
+                                // No People
+                                HTML.push('                <div class="section-item left">');
+                                HTML.push('                    <label for="DOPBookingSystemPRO_NoPeople'+ID+'">'+(NoChildrenEnabled ? NoAdultsLabel:NoPeopleLabel)+'</label>');
+                                HTML.push('                    <select name="DOPBookingSystemPRO_NoPeople'+ID+'" id="DOPBookingSystemPRO_NoPeople'+ID+'" class="small">');
+
+                                for (i=MinNoPeople; i<=MaxNoPeople; i++){
                                     HTML.push('                    <option value="'+i+'">'+i+'</option>');
                                 }
                                 HTML.push('                    </select>');
+                                HTML.push('                </div>');  
+
+                                // No Children
+                                if (NoChildrenEnabled){
+                                    HTML.push('                <div class="section-item left second">');
+                                    HTML.push('                    <label for="DOPBookingSystemPRO_NoChildren'+ID+'">'+NoChildrenLabel+'</label>');
+                                    HTML.push('                    <select name="DOPBookingSystemPRO_NoChildren'+ID+'" id="DOPBookingSystemPRO_NoChildren'+ID+'" class="small">');
+
+                                    for (i=MinNoChildren; i<=MaxNoChildren; i++){
+                                        HTML.push('                    <option value="'+i+'">'+i+'</option>');
+                                    }
+                                    HTML.push('                    </select>');
+                                    HTML.push('                </div>');
+                                    HTML.push('                <br class="DOPBookingSystemPRO_Clear" />');
+                                }
+                                else{                                
+                                    HTML.push('                <br class="DOPBookingSystemPRO_Clear" />');
+                                }
+                            }
+
+                            // Pay on Arrival
+                            if (PaymentArrivalEnabled){
+                                HTML.push('                <div class="section-item" id="DOPBookingSystemPRO_PaymentArrival'+ID+'">');
+                                HTML.push('                    <input type="radio" name="DOPBookingSystemPRO_Payment'+ID+'" value="1" checked="checked" />');
+                                HTML.push('                    <label class="radio">'+PaymentArrivalLabel+'</label>');
+                                HTML.push('                    <br class="DOPBookingSystemPRO_Clear" />');
                                 HTML.push('                </div>');
-                                HTML.push('                <br class="DOPBookingSystemPRO_Clear" />');
                             }
-                            else{                                
-                                HTML.push('                <br class="DOPBookingSystemPRO_Clear" />');
+
+                            // PayPal 
+                            if (PaymentPayPalEnabled){
+                                HTML.push('                <div class="section-item" id="DOPBookingSystemPRO_PaymentPayPal'+ID+'">');
+                                HTML.push('                    <input type="radio" name="DOPBookingSystemPRO_Payment'+ID+'" value="2"'+(!PaymentArrivalEnabled ? ' checked="checked"':'')+' />');
+                                HTML.push('                    <label class="radio">'+PaymentPayPalLabel+'</label>');
+                                HTML.push('                    <br class="DOPBookingSystemPRO_Clear" />');
+                                HTML.push('                </div>');
+                            }
+
+                            // Terms & Conditions
+                            if (TermsAndConditionsEnabled){
+                                HTML.push('                <div class="section-item">');
+                                HTML.push('                    <input type="checkbox" name="DOPBookingSystemPRO_TermsAndConditions'+ID+'" id="DOPBookingSystemPRO_TermsAndConditions'+ID+'" />');
+                                HTML.push('                    <label class="checkbox"><a href="'+TermsAndConditionsLink+'" target="_blank">'+TermsAndConditionsLabel+'</a></label>');
+                                HTML.push('                </div>');
                             }
                         }
                         
-                        // Pay on Arrival
-                        if (PaymentArrivalEnabled){
-                            HTML.push('                <div class="section-item" id="DOPBookingSystemPRO_PaymentArrival'+ID+'">');
-                            HTML.push('                    <input type="radio" name="DOPBookingSystemPRO_Payment'+ID+'" value="1" checked="checked" />');
-                            HTML.push('                    <label class="radio">'+PaymentArrivalLabel+'</label>');
-                            HTML.push('                </div>');
-                        }
                         
-                        // PayPal 
-                        if (PaymentPayPalEnabled){
-                            HTML.push('                <div class="section-item" id="DOPBookingSystemPRO_PaymentPayPal'+ID+'">');
-                            HTML.push('                    <input type="radio" name="DOPBookingSystemPRO_Payment'+ID+'" value="2"'+(!PaymentArrivalEnabled ? ' checked="checked"':'')+' />');
-                            HTML.push('                    <label class="radio">'+PaymentPayPalLabel+'</label>');
-                            HTML.push('                </div>');
-                        }
-                        
-                        // Terms & Conditions
-                        if (TermsAndConditionsEnabled){
-                            HTML.push('                <div class="section-item">');
-                            HTML.push('                    <input type="checkbox" name="DOPBookingSystemPRO_TermsAndConditions'+ID+'" id="DOPBookingSystemPRO_TermsAndConditions'+ID+'" />');
-                            HTML.push('                    <label class="checkbox"><a href="'+TermsAndConditionsLink+'" target="_blank">'+TermsAndConditionsLabel+'</a></label>');
-                            HTML.push('                </div>');
-                        }
                         
                         // Submit
+                        if (WooCommerceEnabled){
+                            bookNowLabel = WooCommerceAddToCartLabel;
+                        }
+                        
                         HTML.push('                <div class="section-item">');
-                        HTML.push('                    <input type="submit" name="DOPBookingSystemPRO_Submit'+ID+'" id="DOPBookingSystemPRO_Submit'+ID+'" value="'+BookNowLabel+'" />');
+                        HTML.push('                    <input type="submit" name="DOPBookingSystemPRO_Submit'+ID+'" id="DOPBookingSystemPRO_Submit'+ID+'" value="'+bookNowLabel+'" />');
+                        HTML.push('                    <div class="DOPBookingSystemPRO_SubmitLoader" id="DOPBookingSystemPRO_SubmitLoader'+ID+'"></div>');
                         HTML.push('                </div>');
                         HTML.push('            </div>');
                         HTML.push('        </form>');
@@ -616,7 +660,9 @@
                         }
                         
                         $('.DOPBookingSystemPRO_Navigation .previous_btn', Container).bind('click', function(){
-                            methods.resetSidebar(); 
+                            if (!dayFirstSelected){
+                                methods.resetSidebar();
+                            }
                             methods.generateCalendar(StartYear, CurrMonth-1);
 
                             if (CurrMonth == StartMonth){
@@ -625,20 +671,22 @@
                         });
                         
                         $('.DOPBookingSystemPRO_Navigation .next_btn', Container).bind('click', function(){
-                            methods.resetSidebar(); 
+                            if (!dayFirstSelected){
+                                methods.resetSidebar();
+                            }
                             methods.generateCalendar(StartYear, CurrMonth+1);
                             $('.DOPBookingSystemPRO_Navigation .previous_btn', Container).css('display', 'block');
                         });
                         
                         $('.DOPBookingSystemPRO_Navigation .add_btn', Container).bind('click', function(){
-                            methods.resetSidebar(); 
+                            methods.resetSidebar();
                             noMonths++;
                             methods.generateCalendar(StartYear, CurrMonth);
                             $('.DOPBookingSystemPRO_Navigation .remove_btn', Container).css('display', 'block');
                         });
                                                 
                         $('.DOPBookingSystemPRO_Navigation .remove_btn', Container).bind('click', function(){
-                            methods.resetSidebar(); 
+                            methods.resetSidebar();
                             noMonths--;
                             methods.generateCalendar(StartYear, CurrMonth);
                             
@@ -692,19 +740,17 @@
                         }         
                         $('.DOPBookingSystemPRO_Calendar', Container).html('<div class="loader"></div>');
 
-//                        setTimeout(function(){
-                            for (var i=1; i<=noMonths; i++){
-                                methods.initMonth(CurrYear, startMonth = startMonth%12 != 0 ? startMonth%12:12, i);
-                                startMonth++;
+                        for (var i=1; i<=noMonths; i++){
+                            methods.initMonth(CurrYear, startMonth = startMonth%12 != 0 ? startMonth%12:12, i);
+                            startMonth++;
 
-                                if (startMonth % 12 == 1){
-                                    CurrYear++;
-                                    startMonth = 1;
-                                }                            
-                            }
-                            
-                            $('.DOPBookingSystemPRO_Calendar .loader', Container).remove();
-//                        }, 10);
+                            if (startMonth % 12 == 1){
+                                CurrYear++;
+                                startMonth = 1;
+                            }                            
+                        }
+
+                        $('.DOPBookingSystemPRO_Calendar .loader', Container).remove();
                     },
                     initMonth:function(year, month, position){// Init Month
                         var i, d, cyear, cmonth, cday, start, totalDays = 0,
@@ -827,11 +873,11 @@
                         dayNo++;
                         
                         if (price > 0 && (bind == 0 || bind == 1)){
-                            contentLine1 = Currency+price;
+                            contentLine1 = Currency+prototypes.getWithDecimals(price);
                         }
                                                 
                         if (promo > 0 && (bind == 0 || bind == 1)){
-                            contentLine1 = Currency+promo;
+                            contentLine1 = Currency+prototypes.getWithDecimals(promo);
                         }
                         
                         if (type != 'past_day'){
@@ -865,6 +911,9 @@
                                         else if (available == 1){
                                             contentLine2 = available+' '+'<span class="no-available-text">'+AvailableOneText+'</span>';
                                         }
+                                        else{
+                                            contentLine2 = '<span class="text">'+AvailableOneText+'</span>';
+                                        }
                                     }
                                     break;
                                 case 'unavailable':
@@ -893,7 +942,7 @@
                         dayHTML.push('            <div class="ci '+status+'"></div>');
                         dayHTML.push('            <div class="day">'+day+'</div>');
                        
-                        if (info != '' && type != 'past_day'){
+                        if (info != '' && type.indexOf('past_day') == -1){
                             switch (status){
                                 case 'available':
                                     if (bind == 0 || bind == 3 || HoursEnabled){
@@ -911,6 +960,8 @@
                                 case 'unavailable':
                                     dayHTML.push('            <div class="info" id="'+id+'_info"></div>');
                                     break;
+                                default:
+                                    dayHTML.push('            <div class="info" id="'+id+'_info"></div>');
                             }
                         }
                         
@@ -922,7 +973,7 @@
                         dayHTML.push('            <div class="price">'+contentLine1+'</div>');
                         
                         if (promo > 0 && (bind == 0 || bind == 1)){
-                            dayHTML.push('            <div class="old-price">'+Currency+price+'</div>');
+                            dayHTML.push('            <div class="old-price">'+Currency+prototypes.getWithDecimals(price)+'</div>');
                         }
                         dayHTML.push('            <br class="DOPBookingSystemPRO_Clear" />');
                         dayHTML.push('            <div class="available">'+contentLine2+'</div>');
@@ -954,7 +1005,7 @@
                                 "notes": "",
                                 "price": "", 
                                 "promo": "",
-                                "status": AvailableDays[day] ? "none":"unavailable"}
+                                "status": AvailableDays[day] ? "none":"unavailable"};
                     },
                     rpDays:function(){
                         var maxHeight = 0,
@@ -1265,7 +1316,7 @@
                                         methods.showDaySelection(day.attr('id'));
                                     }
                                     
-                                    if (HoursEnabled && HoursInfoEnabled && !day.hasClass('selected')){
+                                    if (HoursEnabled && HoursInfoEnabled && !day.hasClass('selected') && !day.hasClass('past_day')){
                                         methods.showInfo($(this).attr('id').split('_')[1], '', 'hours', methods.initHoursInfo(day.attr('id')));
                                     }
                                 }, function(){
@@ -1536,11 +1587,11 @@
                         
                         if (status != 'past_hour'){
                             if (price > 0 && (bind == 0 || bind == 1)){
-                                priceContent = Currency+price;
+                                priceContent = Currency+prototypes.getWithDecimals(price);
                             }
 
                             if (promo > 0 && (bind == 0 || bind == 1)){
-                                priceContent = Currency+promo;
+                                priceContent = Currency+prototypes.getWithDecimals(promo);
                             }
 
                             switch (status){
@@ -1576,6 +1627,9 @@
                                         else if (available == 1){
                                             availableContent = available+' '+AvailableOneText;
                                         }
+                                        else{
+                                            availableContent = AvailableOneText;
+                                        }
                                     }
                                     break;
                                 case 'unavailable':
@@ -1601,7 +1655,7 @@
                         }
                         
                         if (promo > 0 && type != 'past_hour' && (bind == 0 || bind == 1)){                                      
-                            hourHTML.push('        <div class="old-price">'+Currency+price+'</div>');
+                            hourHTML.push('        <div class="old-price">'+Currency+prototypes.getWithDecimals(price)+'</div>');
                         }                        
                         hourHTML.push('        <div class="available">'+availableContent+'</div>');
                                                 
@@ -1622,7 +1676,7 @@
                                 "notes": "",
                                 "price": "", 
                                 "promo": "",
-                                "status": "none"}
+                                "status": "none"};
                     },
                     initHourEvents:function(){// Init Events for the days of the Calendar.                        
                         $('.DOPBookingSystemPRO_Hour', Container).unbind('click');
@@ -1842,7 +1896,7 @@
                             if ($('input[name=DOPBookingSystemPRO_Payment'+ID+']:checked', '#DOPBookingSystemPRO_ContactForm'+ID).val() == 2){
                                 if (methods.validForm()){
                                     $('#DOPBookingSystemPRO_Submit'+ID).attr('disabled', 'disabled');
-                                    $('#DOPBookingSystemPRO_Form'+ID).attr('action', PluginURL+'assets/paypal/expresscheckout.php');
+                                    $('#DOPBookingSystemPRO_Form'+ID).attr('action', PluginURL+'addons/paypal/expresscheckout.php');
                                     return true;
                                 }
                                 else{
@@ -1851,13 +1905,25 @@
                             }
                             else{
                                 $('#DOPBookingSystemPRO_ContactForm'+ID).attr('action', '');
-                                methods.book();
+                                
+                                if (WooCommerceEnabled){
+                                    methods.woocommerceAddToCart();
+                                }
+                                else{
+                                    methods.book();
+                                }
                                 return false;
                             }
                         });
+                        
+                        if (WooCommerceEnabled && $('input[name="add-to-cart"]').val() == undefined){
+                            $('#DOPBookingSystemPRO_Submit'+ID).css('display', 'none');
+                        }
                                 
                         if (PaymentPayPalEnabled){
-                            $.post(ajaxURL, {action: 'dopbsp_paypal_check', calendar_id:ID}, function(data){
+                            $.post(ajaxURL, {action: 'dopbsp_paypal_check',
+                                             dopbsp_frontend_ajax_request: true,
+                                             calendar_id: ID}, function(data){
                                 if (data == 'success'){
                                     $('#DOPBookingSystemPRO_InfoMessage'+ID).html('<span class="success">'+PaymentPayPalSuccess+'</span>');
                                     $('#DOPBookingSystemPRO_InfoMessage'+ID).css('display', 'block');
@@ -2160,8 +2226,8 @@
 
                                     for (d=firstDay; d<=lastDay; d++){
                                         currYear = String(y);
-                                        currMonth = m <= 9 ? '0'+String(m):String(m);
-                                        currDay = d <= 9 ? '0'+String(d):String(d);
+                                        currMonth = prototypes.timeLongItem(m);
+                                        currDay = prototypes.timeLongItem(d);
 
                                         bookedDays.push(currYear+'-'+currMonth+'-'+currDay);
                                     }
@@ -2279,14 +2345,14 @@
                                     $('#DOPBookingSystemPRO_PriceToPayValue'+ID).val(totalToPay);
                                     $('#DOPBookingSystemPRO_PriceDepositValue'+ID).val(depositToPay);
                                     
-                                    $('#DOPBookingSystemPRO_Price'+ID+' .value').html(Currency+totalToPay);
+                                    $('#DOPBookingSystemPRO_Price'+ID+' .value').html(Currency+prototypes.getWithDecimals(totalToPay, 2));
                                     
                                     if (discountValue != 0){
-                                        $('#DOPBookingSystemPRO_Price'+ID+' .value').append('<br /><span class="small"><span class="cut">'+Currency+totalPrice+'</span> ('+discountValue+'% '+DiscountText+')</span>');
+                                        $('#DOPBookingSystemPRO_Price'+ID+' .value').append('<br /><span class="small"><span class="cut">'+Currency+prototypes.getWithDecimals(totalPrice*discountValue/100, 2)+'</span> ('+discountValue+'% '+DiscountText+')</span>');
                                     }
                                     
                                     if (depositToPay != 0){
-                                        $('#DOPBookingSystemPRO_Price'+ID+' .value').append('<br /><span class="medium">'+Currency+depositToPay+' '+DepositText+' ('+Deposit+'%)</span>');
+                                        $('#DOPBookingSystemPRO_Price'+ID+' .value').append('<br /><span class="medium">'+Currency+prototypes.getWithDecimals(depositToPay, 2)+' '+DepositText+' ('+Deposit+'%)</span>');
                                     }
                                     $('#DOPBookingSystemPRO_Price'+ID).css('display', 'block');
                                 }
@@ -2412,10 +2478,10 @@
                                         $('#DOPBookingSystemPRO_PriceToPayValue'+ID).val(totalToPay);
                                         $('#DOPBookingSystemPRO_PriceDepositValue'+ID).val(depositToPay);
                                         
-                                        $('#DOPBookingSystemPRO_Price'+ID+' .value').html(Currency+totalToPay);
+                                        $('#DOPBookingSystemPRO_Price'+ID+' .value').html(Currency+prototypes.getWithDecimals(totalToPay, 2));
                                     
                                         if (depositToPay != 0){
-                                            $('#DOPBookingSystemPRO_Price'+ID+' .value').append('<br /><span class="medium">'+Currency+depositToPay+' deposit ('+Deposit+'%)</span>');
+                                            $('#DOPBookingSystemPRO_Price'+ID+' .value').append('<br /><span class="medium">'+Currency+prototypes.getWithDecimals(depositToPay, 2)+' deposit ('+Deposit+'%)</span>');
                                         }
                                         $('#DOPBookingSystemPRO_Price'+ID).css('display', 'block');
                                     }
@@ -2434,7 +2500,9 @@
                         $('#DOPBookingSystemPRO_NoItemsSelect'+ID).css('display', 'none');
                         $('#DOPBookingSystemPRO_Price'+ID).css('display', 'none');
                         $('#DOPBookingSystemPRO_InfoMessage'+ID).css('display', 'none');
-                        $('#DOPBookingSystemPRO_ContactForm'+ID).css('display', 'none');                        
+                        $('#DOPBookingSystemPRO_ContactForm'+ID).css('display', 'none');
+                        $('#DOPBookingSystemPRO_Submit'+ID).css('display', 'block');
+                        $('#DOPBookingSystemPRO_SubmitLoader'+ID).css('display', 'none');
                     },
                       
                     previousDay:function(date){
@@ -2455,22 +2523,33 @@
                                         
                     book:function(){
                         if (methods.validForm()){
-                            var formData = new Array(), i, j, o, email = '',
-                            hoursDef = Schedule[$('#DOPBookingSystemPRO_CheckIn'+ID).val()] != undefined ? Schedule[$('#DOPBookingSystemPRO_CheckIn'+ID).val()]['hours_definitions']:HoursDefinitions;
+                            var formData = new Array(), 
+                            history = {},
+                            i, j, o, y, d, m,
+                            bookedDays = new Array(),
+                            ciDay, ciy, cim, cid,
+                            coDay, coy, com, cod,
+                            firstMonth, lastMonth, firstDay, lastDay,
+                            currYear, currMonth, currDay, currBookedDay,
+                            bookedHours = new Array(),
+                            sHour, eHour, currBookedHour,
+                            email = '';
+                
+                            $('#DOPBookingSystemPRO_Submit'+ID).css('display', 'none');
+                            $('#DOPBookingSystemPRO_SubmitLoader'+ID).css('display', 'block');
                             
+                            // Form data
                             for (i=0; i<Form.length; i++){
-                                formData[i] = {
-                                                "id": "",
-                                                "name": "",
-                                                "value": ""
-                                              };
+                                formData[i] = {"id": "",
+                                               "name": "",
+                                               "value": ""};
                                 formData[i]['id'] = Form[i]['id'];
                                 formData[i]['name'] = Form[i]['translation'];
-                                
+
                                 if (Form[i]['is_email'] == 'true' && email == ''){
                                     email = $('#DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']).val();
                                 }
-                                
+
                                 switch (Form[i]['type']){
                                     case 'checkbox':
                                         formData[i]['value'] = $('#DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']).is(':checked');
@@ -2480,7 +2559,7 @@
                                             if (Form[i]['multiple_select'] == 'true'){
                                                 var selectedOptions = $('#DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']).val();
                                                 formData[i]['value'] = new Array();
-                                                
+
                                                 for (j=0; j<selectedOptions.length; j++){
                                                     for (o=0; o<Form[i]['options'].length; o++){
                                                         if (Form[i]['options'][o]['id'] == selectedOptions[j]){
@@ -2492,7 +2571,7 @@
                                             else{
                                                 var selectedOption = $('#DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']).val();
                                                 formData[i]['value'] = new Array();
-                                                
+
                                                 for (o=0; o<Form[i]['options'].length; o++){
                                                     if (Form[i]['options'][o]['id'] == selectedOption){
                                                         formData[i]['value'][0] = Form[i]['options'][o];
@@ -2506,7 +2585,94 @@
                                 }
                             }
                             
-                            $.post(ajaxURL, {action:'dopbsp_book_request', 
+                            // History Data
+                            if (!HoursEnabled){
+                                if (MultipleDaysSelect){
+                                    ciDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val();
+                                    coDay = $('#DOPBookingSystemPRO_CheckOut'+ID).val();
+                                }
+                                else{                            
+                                    ciDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val();
+                                    coDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val();
+                                }
+
+                                ciy = parseInt(ciDay.split('-')[0], 10);
+                                cim = parseInt(ciDay.split('-')[1], 10);
+                                cid = parseInt(ciDay.split('-')[2], 10);
+                                coy = parseInt(coDay.split('-')[0], 10);
+                                com = parseInt(coDay.split('-')[1], 10);
+                                cod = parseInt(coDay.split('-')[2], 10);
+
+                                for (y=ciy; y<=coy; y++){
+                                    firstMonth = y == ciy ? cim:1;
+                                    lastMonth = y == coy ? com:12;
+
+                                    for (m=firstMonth; m<=lastMonth; m++){
+                                        firstDay = y == ciy && m == cim ? cid:1;
+                                        lastDay = y == coy && m == com ? cod:new Date(y,m,0).getDate();
+
+                                        for (d=firstDay; d<=lastDay; d++){
+                                            currYear = String(y);
+                                            currMonth = prototypes.timeLongItem(m);
+                                            currDay = prototypes.timeLongItem(d);
+
+                                            bookedDays.push(currYear+'-'+currMonth+'-'+currDay);
+                                        }
+                                    }
+                                }
+
+                                for (i=0; i<bookedDays.length-(MorningCheckOut ? 1:0); i++){
+                                    currBookedDay = bookedDays[i];
+
+                                    history[currBookedDay] = {"available": "",
+                                                              "bind": "",
+                                                              "price": "",
+                                                              "promo": "",
+                                                              "status": ""};
+                                    history[currBookedDay]['available'] = Schedule[currBookedDay]['available'];
+                                    history[currBookedDay]['bind'] = Schedule[currBookedDay]['bind'];
+                                    history[currBookedDay]['price'] = Schedule[currBookedDay]['price'];
+                                    history[currBookedDay]['promo'] = Schedule[currBookedDay]['promo'];
+                                    history[currBookedDay]['status'] = Schedule[currBookedDay]['status'];
+                                }
+                            }
+                            else{
+                                ciDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val();
+                                    
+                                if (MultipleHoursSelect){
+                                    sHour = $('#DOPBookingSystemPRO_StartHour'+ID).val();
+                                    eHour = $('#DOPBookingSystemPRO_EndHour'+ID).val();
+                                }
+                                else{                            
+                                    sHour = $('#DOPBookingSystemPRO_StartHour'+ID).val();
+                                    eHour = $('#DOPBookingSystemPRO_StartHour'+ID).val();
+                                }
+
+                                $.each(Schedule[ciDay]['hours_definitions'], function(index){
+                                    if (sHour <= Schedule[ciDay]['hours_definitions'][index]['value'] && Schedule[ciDay]['hours_definitions'][index]['value'] <= eHour){
+                                        bookedHours.push(Schedule[ciDay]['hours_definitions'][index]['value']);
+                                    }
+                                });
+                                
+                                for (i=0; i<bookedHours.length-((!AddLastHourToTotalPrice || HoursIntervalEnabled) && MultipleHoursSelect && Schedule[ciDay]['hours'][bookedHours[0]]['bind'] == 0 ? 1:0); i++){
+                                    currBookedHour = bookedHours[i];
+                                    
+                                    history[currBookedHour] = {"available": "",
+                                                               "bind": "",
+                                                               "price": "",
+                                                               "promo": "",
+                                                               "status": ""};
+                                    history[currBookedHour]['available'] = Schedule[ciDay]['hours'][currBookedHour]['available'];
+                                    history[currBookedHour]['bind'] = Schedule[ciDay]['hours'][currBookedHour]['bind'];
+                                    history[currBookedHour]['price'] = Schedule[ciDay]['hours'][currBookedHour]['price'];
+                                    history[currBookedHour]['promo'] = Schedule[ciDay]['hours'][currBookedHour]['promo'];
+                                    history[currBookedHour]['status'] = Schedule[ciDay]['hours'][currBookedHour]['status'];
+                                }
+                            }
+                            
+                            $.post(ajaxURL, {action: 'dopbsp_book_request',
+                                             dopbsp_frontend_ajax_request: true,
+                                             language: Language,
                                              calendar_id: ID,
                                              check_in: $('#DOPBookingSystemPRO_CheckIn'+ID).val(),
                                              check_out: !HoursEnabled && MultipleDaysSelect ? $('#DOPBookingSystemPRO_CheckOut'+ID).val():'',
@@ -2523,13 +2689,16 @@
                                              no_people: NoPeopleEnabled ? $('#DOPBookingSystemPRO_NoPeople'+ID).val():'',
                                              no_children: NoPeopleEnabled & NoChildrenEnabled ? $('#DOPBookingSystemPRO_NoChildren'+ID).val():'',
                                              form: formData,
+                                             days_hours_history: history,
                                              payment_method: $('#DOPBookingSystemPRO_PriceValue'+ID).val() != '' ? $('input[name=DOPBookingSystemPRO_Payment'+ID+']').val():0}, function(data){
+                                console.log(data);
                                 data = $.trim(data);
                                 
                                 var year, month,
                                 currYear = $('#DOPBookingSystemPRO_CheckIn'+ID).val().split('-')[0],
                                 currMonth = $('#DOPBookingSystemPRO_CheckIn'+ID).val().split('-')[1],
-                                currDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val().split('-')[2];
+                                currDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val().split('-')[2],
+                                scheduleBuffer = {};
                                 
                                 methods.resetSidebar();
                                 $('#DOPBookingSystemPRO_InfoMessage'+ID).html('<span class="success">'+(data != '' ? PaymentArrivalSuccessInstantBooking:PaymentArrivalSuccess)+'</span>');
@@ -2545,11 +2714,19 @@
                                         }                            
                                     }
 
-                                    $.post(ajaxURL, {action:'dopbsp_load_schedule', calendar_id:ID, year:year}, function(data){
+                                    $.post(ajaxURL, {action: 'dopbsp_load_schedule',
+                                                     dopbsp_frontend_ajax_request: true,
+                                                     calendar_id: ID,
+                                                     year: year}, function(data){
                                         if ($.trim(data) != ''){
-                                            $.extend(Schedule, JSON.parse($.trim(data)));
+                                            scheduleBuffer = JSON.parse($.trim(data));
+
+                                            for (var day in scheduleBuffer){
+                                                scheduleBuffer[day] = JSON.parse(scheduleBuffer[day]);
+                                            }
+                                            $.extend(Schedule, scheduleBuffer);
                                         }
-                                        
+
                                         methods.generateCalendar(StartYear, (year-StartYear)*12+month);
                                         
                                         if (HoursEnabled){
@@ -2562,6 +2739,129 @@
                             });
                         }
                     },
+                    woocommerceAddToCart:function(){
+                        var history = {},
+                        i, y, d, m,
+                        bookedDays = new Array(),
+                        ciDay, ciy, cim, cid,
+                        coDay, coy, com, cod,
+                        firstMonth, lastMonth, firstDay, lastDay,
+                        currYear, currMonth, currDay, currBookedDay,
+                        bookedHours = new Array(),
+                        sHour, eHour, currBookedHour;
+                
+                        $('#DOPBookingSystemPRO_Submit'+ID).css('display', 'none');
+                        $('#DOPBookingSystemPRO_SubmitLoader'+ID).css('display', 'block');
+
+                        // History Data
+                        if (!HoursEnabled){
+                            if (MultipleDaysSelect){
+                                ciDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val();
+                                coDay = $('#DOPBookingSystemPRO_CheckOut'+ID).val();
+                            }
+                            else{                            
+                                ciDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val();
+                                coDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val();
+                            }
+
+                            ciy = parseInt(ciDay.split('-')[0], 10);
+                            cim = parseInt(ciDay.split('-')[1], 10);
+                            cid = parseInt(ciDay.split('-')[2], 10);
+                            coy = parseInt(coDay.split('-')[0], 10);
+                            com = parseInt(coDay.split('-')[1], 10);
+                            cod = parseInt(coDay.split('-')[2], 10);
+
+                            for (y=ciy; y<=coy; y++){
+                                firstMonth = y == ciy ? cim:1;
+                                lastMonth = y == coy ? com:12;
+
+                                for (m=firstMonth; m<=lastMonth; m++){
+                                    firstDay = y == ciy && m == cim ? cid:1;
+                                    lastDay = y == coy && m == com ? cod:new Date(y,m,0).getDate();
+
+                                    for (d=firstDay; d<=lastDay; d++){
+                                        currYear = String(y);
+                                        currMonth = prototypes.timeLongItem(m);
+                                        currDay = prototypes.timeLongItem(d);
+
+                                        bookedDays.push(currYear+'-'+currMonth+'-'+currDay);
+                                    }
+                                }
+                            }
+
+                            for (i=0; i<bookedDays.length-(MorningCheckOut ? 1:0); i++){
+                                currBookedDay = bookedDays[i];
+
+                                history[currBookedDay] = {"available": "",
+                                                          "bind": "",
+                                                          "price": "",
+                                                          "promo": "",
+                                                          "status": ""};
+                                history[currBookedDay]['available'] = Schedule[currBookedDay]['available'];
+                                history[currBookedDay]['bind'] = Schedule[currBookedDay]['bind'];
+                                history[currBookedDay]['price'] = Schedule[currBookedDay]['price'];
+                                history[currBookedDay]['promo'] = Schedule[currBookedDay]['promo'];
+                                history[currBookedDay]['status'] = Schedule[currBookedDay]['status'];
+                            }
+                        }
+                        else{
+                            ciDay = $('#DOPBookingSystemPRO_CheckIn'+ID).val();
+
+                            if (MultipleHoursSelect){
+                                sHour = $('#DOPBookingSystemPRO_StartHour'+ID).val();
+                                eHour = $('#DOPBookingSystemPRO_EndHour'+ID).val();
+                            }
+                            else{                            
+                                sHour = $('#DOPBookingSystemPRO_StartHour'+ID).val();
+                                eHour = $('#DOPBookingSystemPRO_StartHour'+ID).val();
+                            }
+
+                            $.each(Schedule[ciDay]['hours_definitions'], function(index){
+                                if (sHour <= Schedule[ciDay]['hours_definitions'][index]['value'] && Schedule[ciDay]['hours_definitions'][index]['value'] <= eHour){
+                                    bookedHours.push(Schedule[ciDay]['hours_definitions'][index]['value']);
+                                }
+                            });
+
+                            for (i=0; i<bookedHours.length-((!AddLastHourToTotalPrice || HoursIntervalEnabled) && MultipleHoursSelect && Schedule[ciDay]['hours'][bookedHours[0]]['bind'] == 0 ? 1:0); i++){
+                                currBookedHour = bookedHours[i];
+
+                                history[currBookedHour] = {"available": "",
+                                                           "bind": "",
+                                                           "price": "",
+                                                           "promo": "",
+                                                           "status": ""};
+                                history[currBookedHour]['available'] = Schedule[ciDay]['hours'][currBookedHour]['available'];
+                                history[currBookedHour]['bind'] = Schedule[ciDay]['hours'][currBookedHour]['bind'];
+                                history[currBookedHour]['price'] = Schedule[ciDay]['hours'][currBookedHour]['price'];
+                                history[currBookedHour]['promo'] = Schedule[ciDay]['hours'][currBookedHour]['promo'];
+                                history[currBookedHour]['status'] = Schedule[ciDay]['hours'][currBookedHour]['status'];
+                            }
+                        }
+
+                        $.post(ajaxURL, {action: 'dopbsp_woocommerce_add_to_cart',
+                                         dopbsp_frontend_ajax_request: true,
+                                         language: Language,
+                                         product_id: $('input[name="add-to-cart"]').val(),
+                                         calendar_id: ID,
+                                         check_in: $('#DOPBookingSystemPRO_CheckIn'+ID).val(),
+                                         check_out: !HoursEnabled && MultipleDaysSelect ? $('#DOPBookingSystemPRO_CheckOut'+ID).val():'',
+                                         start_hour: HoursEnabled ? $('#DOPBookingSystemPRO_StartHour'+ID).val():'',
+                                         end_hour: HoursEnabled && MultipleHoursSelect ? $('#DOPBookingSystemPRO_EndHour'+ID).val():(HoursEnabled && !MultipleHoursSelect && HoursIntervalEnabled ? $('#DOPBookingSystemPRO_EndHour'+ID).val():''),
+                                         no_items: $('#DOPBookingSystemPRO_NoItems'+ID).val(),
+                                         currency: Currency,
+                                         currency_code: CurrencyCode,
+                                         total_price: $('#DOPBookingSystemPRO_PriceValue'+ID).val(),
+                                         discount: $('#DOPBookingSystemPRO_DiscountValue'+ID).val(),
+                                         price: $('#DOPBookingSystemPRO_PriceToPayValue'+ID).val(),
+                                         deposit: $('#DOPBookingSystemPRO_PriceDepositValue'+ID).val(),
+                                         days_hours_history: history}, function(data){
+                                data = $.trim(data);
+                                
+                                methods.resetSidebar();
+                                $('#DOPBookingSystemPRO_InfoMessage'+ID).html('<span class="success">'+WooCommerceAddToCartSuccess+'</span>');
+                                $('#DOPBookingSystemPRO_InfoMessage'+ID).css('display', 'block');
+                            });
+                    },
                     validForm:function(){
                         var validForm = true, i;
                         
@@ -2572,7 +2872,7 @@
                             for (i=0; i<Form.length; i++){
                                 switch (Form[i]['type']){
                                     case 'checkbox':
-                                        if (Form[i]['required'] == 'true' && $('#DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']).is(':checked')){
+                                        if (Form[i]['required'] == 'true' && !$('#DOPBookingSystemPRO_FormField'+ID+'_'+Form[i]['id']).is(':checked')){
                                             $('#DOPBookingSystemPRO_InfoMessage'+ID).html(Form[i]['translation']+' '+FormRequired);
                                             $('#DOPBookingSystemPRO_InfoMessage'+ID).css('display', 'block');
                                             return false;
@@ -2609,7 +2909,6 @@
                             }
                             
                             if (TermsAndConditionsEnabled && !$('#DOPBookingSystemPRO_TermsAndConditions'+ID).is(':checked')){
-                                
                                 $('#DOPBookingSystemPRO_InfoMessage'+ID).html(TermsAndConditionsInvalid);
                                 $('#DOPBookingSystemPRO_InfoMessage'+ID).css('display', 'block');
                                 return false;
@@ -3120,6 +3419,11 @@
                             
                             $(input).val(returnStr);
                         },
+                        getWithDecimals:function(number, length){
+                            length = length == undefined ? 2:length;
+                            
+                            return parseInt(number) == number ? String(number):parseFloat(number).toFixed(length);
+                        },
                         validEmail:function(email){// Validate email
                             var filter = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
                             
@@ -3147,38 +3451,56 @@
                             var topURL = window.location.href,
                             pathPiece1 = '', pathPiece2 = '';
                             
-                            if (dataURL.indexOf('https') != -1 || dataURL.indexOf('http') != -1){
-                                if (topURL.indexOf('http://www.') != -1){
-                                    pathPiece1 = prototypes.isSubdomain(dataURL) ? 'http://':'http://www.';
+                            if (prototypes.getDomain(topURL) == prototypes.getDomain(dataURL)){
+                                if (dataURL.indexOf('https') != -1 || dataURL.indexOf('http') != -1){
+                                    if (topURL.indexOf('http://www.') != -1){
+                                        pathPiece1 = 'http://www.';
+                                    }
+                                    else if (topURL.indexOf('http://') != -1){
+                                        pathPiece1 = 'http://';
+                                    }
+                                    else if (topURL.indexOf('https://www.') != -1){
+                                        pathPiece1 = 'https://www.';
+                                    }
+                                    else if (topURL.indexOf('https://') != -1){
+                                        pathPiece1 = 'https://';
+                                    }
+
+                                    if (dataURL.indexOf('http://www.') != -1){
+                                        pathPiece2 = dataURL.split('http://www.')[1];
+                                    }
+                                    else if (dataURL.indexOf('http://') != -1){
+                                        pathPiece2 = dataURL.split('http://')[1];
+                                    }
+                                    else if (dataURL.indexOf('https://www.') != -1){
+                                        pathPiece2 = dataURL.split('https://www.')[1];
+                                    }
+                                    else if (dataURL.indexOf('https://') != -1){
+                                        pathPiece2 = dataURL.split('https://')[1];
+                                    }
+
+                                    return pathPiece1+pathPiece2;
                                 }
-                                else if (topURL.indexOf('http://') != -1){
-                                    pathPiece1 = 'http://';
+                                else{
+                                    return dataURL;
                                 }
-                                else if (topURL.indexOf('https://www.') != -1){
-                                    pathPiece1 = prototypes.isSubdomain(dataURL) ? 'https://':'https://www.';
-                                }
-                                else if (topURL.indexOf('https://') != -1){
-                                    pathPiece1 = 'https://';
-                                }
-                                    
-                                if (dataURL.indexOf('http://www.') != -1){
-                                    pathPiece2 = dataURL.split('http://www.')[1];
-                                }
-                                else if (dataURL.indexOf('http://') != -1){
-                                    pathPiece2 = dataURL.split('http://')[1];
-                                }
-                                else if (dataURL.indexOf('https://www.') != -1){
-                                    pathPiece2 = dataURL.split('https://www.')[1];
-                                }
-                                else if (dataURL.indexOf('https://') != -1){
-                                    pathPiece2 = dataURL.split('https://')[1];
-                                }
-                                
-                                return pathPiece1+pathPiece2;
                             }
                             else{
                                 return dataURL;
                             }
+                        },
+                        getDomain:function(url, includeSubdomain){
+                            var domain = url;
+                            includeSubdomain = includeSubdomain == undefined ? true:false;
+ 
+                            domain = domain.replace(new RegExp(/^\s+/),""); // Remove white spaces from the begining of the url.
+                            domain = domain.replace(new RegExp(/\s+$/),""); // Remove white spaces from the end of the url.
+                            domain = domain.replace(new RegExp(/\\/g),"/"); // If found , convert back slashes to forward slashes.
+                            domain = domain.replace(new RegExp(/^http\:\/\/|^https\:\/\/|^ftp\:\/\//i),""); // If there, removes 'http://', 'https://' or 'ftp://' from the begining.
+                            domain = domain.replace(new RegExp(/^www\./i),""); // If there, removes 'www.' from the begining.
+                            domain = domain.replace(new RegExp(/\/(.*)/),""); // Remove complete string from first forward slaash on.
+
+                            return domain;
                         },
                         isSubdomain:function(url){
                             var subdomain;
@@ -3255,5 +3577,5 @@
                     };
 
         return methods.init.apply(this);
-    }
+    };
 })(jQuery);

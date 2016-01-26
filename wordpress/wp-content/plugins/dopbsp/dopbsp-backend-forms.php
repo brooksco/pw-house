@@ -2,10 +2,10 @@
 
 /*
 * Title                   : Booking System Pro (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 2.0
 * File                    : dopbsp-backend-forms.php
-* File Version            : 1.0
-* Created / Last Modified : 15 June 2013
+* File Version            : 1.3
+* Created / Last Modified : 21 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -14,19 +14,19 @@
 
     if (!class_exists("DOPBookingSystemPROBackEndForms")){
         class DOPBookingSystemPROBackEndForms extends DOPBookingSystemPROBackEnd{
-            private $DOPBSP_AddEditCalendars;
+            private $DOPBSP_templates;
 
             function DOPBookingSystemPROBackEndForms(){// Constructor.
                 if (is_admin()){
                     if ($this->validPage()){
-                        $this->DOPBSP_AddEditCalendars = new DOPBSPTemplates();
+                        $this->DOPBSP_templates = new DOPBSPTemplates();
                     }
                 }
             }
 
 // Pages            
             function printBookingFormsPage(){// Prints out the settings page.
-                $this->DOPBSP_AddEditCalendars->bookingForms();
+                $this->DOPBSP_templates->bookingForms();
             }
             
 // Options
@@ -114,7 +114,7 @@
             function editBookingForm(){// Edit Booking Form Settings.
                 global $wpdb;  
                 
-                $wpdb->update(DOPBSP_Forms_table, array('name' => $_POST['name']), array(id => $_POST['id']));
+                $wpdb->update(DOPBSP_Forms_table, array('name' => $_POST['name']), array('id' => $_POST['id']));
                 echo '';
                 
             	die();
@@ -189,7 +189,7 @@
                         // Name
                         echo '      <div class="settings-box">
                                         <label for="booking-form-field-name-'.$field->id.'">'.DOPBSP_BOOKING_FORM_FIELDS_NAME_LABEL.' *</label>
-                                        <input type="text" name="booking-form-field-name-'.$field->id.'" id="booking-form-field-name-'.$field->id.'" value="'.$translations->$language.'" onkeyup="dopbspBookingFormFieldChange(\'translation\', '.$field->id.', this.value, \''.$current_backend_language.'\', \'\')" onblur="dopbspBookingFormFieldChange(\'translation\', '.$field->id.', this.value, \''.$current_backend_language.'\', \'\')" />
+                                        <input type="text" name="booking-form-field-name-'.$field->id.'" id="booking-form-field-name-'.$field->id.'" value="'.$translations->$language.'" onkeyup="dopbspBookingFormFieldEdit(\'translation\', '.$field->id.', this.value, \''.$current_backend_language.'\')" onblur="dopbspBookingFormFieldEdit(\'translation\', '.$field->id.', this.value, \''.$current_backend_language.'\', \'\', true)" />
                                         <a href="javascript:void()" class="help"><span>'.DOPBSP_BOOKING_FORM_FIELDS_NAME_INFO.'</span></a>
                                         <span class="loader" id="booking-form-loader-field-name-'.$field->id.'"></span>
                                         <br class="DOPBSP-clear" />
@@ -210,7 +210,7 @@
                                 $optiontranslationsok = str_replace('"','#',$option->translation);
                                 
                                 echo '      <div class="option-box" id="booking-form-field-select-option-'.$option->id.'">
-                                                <input type="text" class="form_name form_options_name_cls" name="booking-form-field-select-option-id-'.$option->id.'" id="booking-form-field-select-option-id-'.$option->id.'" value="'.$optiontranslations->$language.'" onkeyup="dopbspBookingFormFieldOptionChange('.$option->id.', this.value)" onblur="dopbspBookingFormFieldOptionChange('.$option->id.', this.value)" />
+                                                <input type="text" class="form_name form_options_name_cls" name="booking-form-field-select-option-id-'.$option->id.'" id="booking-form-field-select-option-id-'.$option->id.'" value="'.$optiontranslations->$language.'" onkeyup="dopbspBookingFormFieldOptionEdit('.$option->id.', this.value)" onblur="dopbspBookingFormFieldOptionEdit('.$option->id.', this.value, true)" />
                                                 <a href="javascript:dopbspBookingFormFieldSelectDeleteOption('.$option->id.')" class="remove" id="booking-form-field-select-option-remove-'.$option->id.'" title="'.DOPBSP_BOOKING_FORM_FIELDS_SELECT_DELETE_OPTION.'"></a>
                                                 <span class="loader" id="booking-form-loader-field-select-option-'.$option->id.'"></span>
                                                 <input type="hidden" class="dopbsp-booking-form-options-translations" id="booking-form-field-select-option-translation-'.$option->id.'" name="option" value="'.$optiontranslationsok.'"/>
@@ -225,7 +225,7 @@
                             // Multiple Select    
                             echo '  <div class="settings-box">
                                         <label for="booking-form-field-multiple-select-'.$field->id.'">'.DOPBSP_BOOKING_FORM_FIELDS_SELECT_MULTIPLE_SELECT_LABEL.'</label>
-                                        <input type="checkbox" name="booking-form-field-multiple-select-'.$field->id.'" id="booking-form-field-multiple-select-'.$field->id.'" onclick="dopbspBookingFormFieldChange(\'multiple_select\', \''.$field->id.'\', \'false\', \'\')"'.($field->multiple_select != 'false' ? ' checked=""checked':'').' />
+                                        <input type="checkbox" name="booking-form-field-multiple-select-'.$field->id.'" id="booking-form-field-multiple-select-'.$field->id.'" onclick="dopbspBookingFormFieldEdit(\'multiple_select\', \''.$field->id.'\', \'false\', \'\', true)"'.($field->multiple_select != 'false' ? ' checked=""checked':'').' />
                                         <a href="javascript:void()" class="help"><span>'.DOPBSP_BOOKING_FORM_FIELDS_SELECT_MULTIPLE_SELECT_INFO.'</span></a>
                                         <span class="loader" id="booking-form-loader-field-multiple-select-'.$field->id.'"></span>   
                                         <br class="DOPBSP-clear" />
@@ -236,7 +236,7 @@
                             // Allowed Characters    
                             echo '  <div class="settings-box">
                                         <label for="booking-form-field-allowed-characters-'.$field->id.'">'.DOPBSP_BOOKING_FORM_FIELDS_ALLOWED_CHARACTERS_LABEL.'</label>
-                                        <input type="text" name="booking-form-field-allowed-characters-'.$field->id.'" id="booking-form-field-allowed-characters-'.$field->id.'" value="'.$field->allowed_characters.'" onkeyup="dopbspBookingFormFieldChange(\'allowed_characters\', \''.$field->id.'\', this.value, \'\')" onblur="dopbspBookingFormFieldChange(\'allowed_characters\', \''.$field->id.'\', this.value, \'\')" />
+                                        <input type="text" name="booking-form-field-allowed-characters-'.$field->id.'" id="booking-form-field-allowed-characters-'.$field->id.'" value="'.$field->allowed_characters.'" onkeyup="dopbspBookingFormFieldEdit(\'allowed_characters\', \''.$field->id.'\', this.value, \'\')" onblur="dopbspBookingFormFieldEdit(\'allowed_characters\', \''.$field->id.'\', this.value, \'\', true)" />
                                         <a href="javascript:void()" class="help"><span>'.DOPBSP_BOOKING_FORM_FIELDS_ALLOWED_CHARACTERS_INFO.'</span></a>
                                         <span class="loader" id="booking-form-loader-field-allowed-characters-'.$field->id.'"></span>   
                                         <br class="DOPBSP-clear" />
@@ -244,7 +244,7 @@
                             //Size
                             echo '  <div class="settings-box">
                                         <label for="booking-form-field-size-'.$field->id.'">'.DOPBSP_BOOKING_FORM_FIELDS_SIZE_LABEL.'</label>
-                                        <input type="text" name="booking-form-field-size-'.$field->id.'" id="booking-form-field-size-'.$field->id.'" value="'.($field->size < 1 ? '':$field->size).'" onkeyup="dopbspBookingFormFieldChange(\'size\', \''.$field->id.'\', this.value, \'\')" onblur="dopbspBookingFormFieldChange(\'size\', \''.$field->id.'\', this.value, \'\')" />
+                                        <input type="text" name="booking-form-field-size-'.$field->id.'" id="booking-form-field-size-'.$field->id.'" value="'.($field->size < 1 ? '':$field->size).'" onkeyup="dopbspBookingFormFieldEdit(\'size\', \''.$field->id.'\', this.value, \'\')" onblur="dopbspBookingFormFieldEdit(\'size\', \''.$field->id.'\', this.value, \'\', true)" />
                                         <a href="javascript:void()" class="help"><span>'.DOPBSP_BOOKING_FORM_FIELDS_SIZE_INFO.'</span></a>
                                         <span class="loader" id="booking-form-loader-field-size-'.$field->id.'"></span>   
                                         <br class="DOPBSP-clear" />
@@ -255,7 +255,7 @@
                             // Email
                             echo '  <div class="settings-box">
                                         <label for="booking-form-field-email-'.$field->id.'">'.DOPBSP_BOOKING_FORM_FIELDS_EMAIL_LABEL.'</label>
-                                        <input type="checkbox" name="booking-form-field-email-'.$field->id.'" id="booking-form-field-email-'.$field->id.'" onclick="dopbspBookingFormFieldChange(\'is_email\', \''.$field->id.'\', \'false\', \'\')"'.($field->is_email != 'false' ? ' checked=""checked':'').' />
+                                        <input type="checkbox" name="booking-form-field-email-'.$field->id.'" id="booking-form-field-email-'.$field->id.'" onclick="dopbspBookingFormFieldEdit(\'is_email\', \''.$field->id.'\', \'false\', \'\', true)"'.($field->is_email != 'false' ? ' checked=""checked':'').' />
                                         <a href="javascript:void()" class="help"><span>'.DOPBSP_BOOKING_FORM_FIELDS_EMAIL_INFO.'</span></a>
                                         <span class="loader" id="booking-form-loader-field-is-email-'.$field->id.'"></span>    
                                         <br class="DOPBSP-clear" />
@@ -265,7 +265,7 @@
                         // Required
                         echo '      <div class="settings-box">
                                         <label for="booking-form-field-required-'.$field->id.'">'.DOPBSP_BOOKING_FORM_FIELDS_REQUIRED_LABEL.'</label>
-                                        <input type="checkbox" name="booking-form-field-required-'.$field->id.'" id="booking-form-field-required-'.$field->id.'" onclick="dopbspBookingFormFieldChange(\'required\', \''.$field->id.'\', \'false\', \'\')"'.($field->required != 'false' ? ' checked=""checked':'').' />
+                                        <input type="checkbox" name="booking-form-field-required-'.$field->id.'" id="booking-form-field-required-'.$field->id.'" onclick="dopbspBookingFormFieldEdit(\'required\', \''.$field->id.'\', \'false\', \'\', true)"'.($field->required != 'false' ? ' checked=""checked':'').' />
                                         <a href="javascript:void()" class="help"><span>'.DOPBSP_BOOKING_FORM_FIELDS_REQUIRED_INFO.'</span></a>
                                         <span class="loader" id="booking-form-loader-field-required-'.$field->id.'"></span>
                                         <br class="DOPBSP-clear" />
@@ -282,7 +282,7 @@
                 $current_backend_language = get_option('DOPBSP_backend_language_'.wp_get_current_user()->ID);
                 
                 if ($current_backend_language == ''){
-                    $current_backend_language = 'en';
+                    $current_backend_language = DOPBSP_CONFIG_BACKEND_DEFAULT_LANGUAGE;
                 }
 ?>
                 <select id="DOPBSP-admin-form-field-language-<?=$field_id?>" onchange="dopbspChangeTranslationBookingFormField(<?=$field_id?>, this.value)">
@@ -371,6 +371,7 @@
                 $wpdb->insert(DOPBSP_Forms_Fields_table, array('form_id' => $_POST['form_id'],
                                                                'type' => $_POST['type'],
                                                                'position' => $_POST['position'],
+                                                               'allowed_characters' => '',
                                                                'translation' => $translation));
                 $id = mysql_insert_id();
                 mysql_query('COMMIT');
@@ -383,7 +384,7 @@
                 global $wpdb;
                 
                 $data = array($_POST['name'] => $_POST['value']);
-                $wpdb->update(DOPBSP_Forms_Fields_table, $data, array(id => $_POST['id']));
+                $wpdb->update(DOPBSP_Forms_Fields_table, $data, array('id' => $_POST['id']));
                 
                 echo '';
                 die();
@@ -404,13 +405,13 @@
                         $data = array(
                             'position' => $positionok
                         );
-                        $wpdb->update(DOPBSP_Forms_Fields_table, $data, array(id => $posid));
+                        $wpdb->update(DOPBSP_Forms_Fields_table, $data, array('id' => $posid));
                     }
                     
                 }
                 
                 $datasec = array('position' => $_POST['position']);
-                $wpdb->update(DOPBSP_Forms_Fields_table, $datasec, array(id => $_POST['fieldId']));
+                $wpdb->update(DOPBSP_Forms_Fields_table, $datasec, array('id' => $_POST['fieldId']));
                 
                 echo '';
                 die();
@@ -448,7 +449,7 @@
                 $data = array('translation' => $new_translation);
                 
                 
-                $wpdb->update(DOPBSP_Forms_Select_Options_table, $data, array(id => $_POST['id']));
+                $wpdb->update(DOPBSP_Forms_Select_Options_table, $data, array('id' => $_POST['id']));
                 
                 echo '';
                 die();

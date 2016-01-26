@@ -2,10 +2,10 @@
 
 /*
 * Title                   : Booking System PRO (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 2,0
 * File                    : dopbsp-frontend.php
-* File Version            : 1.7
-* Created / Last Modified : 31 July 2013
+* File Version            : 2.0
+* Created / Last Modified : 25 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -18,144 +18,142 @@
 
     if (!class_exists("DOPBookingSystemPROFrontEnd")){
         class DOPBookingSystemPROFrontEnd{
-            private $woocommerce_enabled = false;
-            
             function DOPBookingSystemPROFrontEnd(){// Constructor.
                 add_action('wp_enqueue_scripts', array(&$this, 'addScripts'));
-
-//add_action('init', 'woocommerce_add_to_cart', array(&$this, 'add_to_cart_action_fbwd'));
-
-                add_filter('pre_get_posts', array(&$this, 'getCustomPosts')); // Get custom Post
-                add_filter('the_content', array(&$this, 'addBookingSystemPROInCustomPosts')); // Add calendar in dopbsp posts
                 
-                if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))){
-                    $this->woocommerce_enabled = true;
-                    
-//                    global $woocommerce;
-//                    
-//                    print_r($woocommerce);
-//                    
-//                    if (function_exists('woocommerce_add_to_cart_action')){
-//                        echo 'test';
-//                    }
+                add_action('init', array(&$this, 'init'));
+                add_action('init', array(&$this, 'initCustomPostsType'));
+                
+                if (DOPBSP_CONFIG_CUSTOM_POST_OVERWRITE_POSTS_LOOP){
+                    add_filter('pre_get_posts', array(&$this, 'getCustomPosts')); // Get custom Post
                 }
-                $this->init();
+                add_filter('the_content', array(&$this, 'addBookingSystemPROInCustomPosts')); // Add calendar in dopbsp posts
             }
-            
-            function add_to_cart_action_fbwd( $url = false ) {
-// per Gerhard use $woocommerce->cart->add_to_cart( $product_id, $quantity = 1, $variation_id = '', $variation = '', $cart_item_data = array() )
-	global $woocommerce;
-        
-        print_r($woocommerce);
-
-//	$quantity       = (isset($_REQUEST['qty'])) ? (int) $_REQUEST['qty'] : 1;
-//	$product_id     = (int) apply_filters('woocommerce_add_to_cart_product_id', $_REQUEST['pid']);
-//	$vid            = (int) apply_filters('woocommerce_add_to_cart_product_id', $_REQUEST['vid']);   
-//
-//	if ($vid > 0) $woocommerce->cart->add_to_cart( $product_id, $quantity, $vid );
-//	else $woocommerce->cart->add_to_cart( $product_id, $quantity );
-
-}//end of function definition
-            
-            
-            
             
             function addScripts(){
                 wp_register_script('DOPBSP_DOPBookingSystemPROJS', plugins_url('assets/js/jquery.dop.FrontendBookingSystemPRO.js', __FILE__), array('jquery'), false, true);
 
                 // Enqueue JavaScript.
+                if (!wp_script_is('jquery', 'queue')){
+                    wp_enqueue_script('jquery');
+                }
                 
                 if (!wp_script_is('jquery-ui-datepicker', 'queue')){
                     wp_enqueue_script('jquery-ui-datepicker');
                 }
-                if (!wp_script_is('jquery', 'queue')){
-                    wp_enqueue_script('jquery');
-                }
                 wp_enqueue_script('DOPBSP_DOPBookingSystemPROJS');
             }
-            
-            function getCustomPosts($query){ // Get Custom Post
-                if ((is_home() && $query->is_main_query()) || is_single()){
-                    $post_types = array();
-                    $curr_post_types = get_post_types();
 
-                    foreach ($curr_post_types as $post_type){
-                        if ($post_type != 'page' &&
-                            $post_type != 'attachment' && 
-                            $post_type != 'revision'){
-                                array_push($post_types, $post_type);
-                            }
-                    }	
-
-                    array_push($post_types, 'dopbsp');
-                    $query->set('post_type', $post_types);
-                }
-                        
-                return $query;
-            }
-            
-            function addBookingSystemPROInCustomPosts($content){ // Add calendar in dopbsp posts
-                global $wpdb;
-                $post_type = get_post_type();
-                
-                $custom_content = $content;
-
-                $calendar = $wpdb->get_results('SELECT * FROM '.DOPBSP_Calendars_table.' WHERE post_id="'.get_the_ID().'" ORDER BY id');
-
-                if (isset($calendar[0]->id)){
-                    $custom_content .= do_shortcode('[dopbsp id="'.$calendar[0]->id.'"]');
-                }
-                return $custom_content;
-            }
-
-            function init(){// Init Gallery.
+            function init(){// Init Booking System.
                 $this->initConstants();
-                add_shortcode('dopbsp', array(&$this, 'captionShortcode'));
+                add_shortcode('dopbsp', array(&$this, 'calendarShortcode'));
             }
 
             function initConstants(){// Constants init.
                 global $wpdb;
-
-                // Paths
-                define('DOPBSP_Plugin_AbsPath', ABSPATH.'wp-content/plugins/dopbsp/');
-                define('DOPBSP_Plugin_URL', WP_PLUGIN_URL.'/dopbsp/');
                 
-                // Tables
-                define('DOPBSP_Settings_table', $wpdb->prefix.'dopbsp_settings');
-                define('DOPBSP_Calendars_table', $wpdb->prefix.'dopbsp_calendars');
-                define('DOPBSP_Days_table', $wpdb->prefix.'dopbsp_days');
-                define('DOPBSP_Reservations_table', $wpdb->prefix.'dopbsp_reservations');
-                define('DOPBSP_Users_table', $wpdb->prefix.'dopbsp_users');
-                define('DOPBSP_Forms_table', $wpdb->prefix.'dopbsp_forms');
-                define('DOPBSP_Forms_Fields_table', $wpdb->prefix.'dopbsp_forms_fields');
-                define('DOPBSP_Forms_Select_Options_table', $wpdb->prefix.'dopbsp_forms_select_options');
+                // Translation Table
+                if (!defined('DOPBSP_Translation_table')){
+                    define('DOPBSP_Translation_table', $wpdb->prefix.'dopbsp_translation');
+                }
+                
+                // Settings Table
+                if (!defined('DOPBSP_Settings_table')){
+                    define('DOPBSP_Settings_table', $wpdb->prefix.'dopbsp_settings');
+                }
+                
+                // Calendars Table
+                if (!defined('DOPBSP_Calendars_table')){
+                    define('DOPBSP_Calendars_table', $wpdb->prefix.'dopbsp_calendars');
+                }
+                
+                // Days Table
+                if (!defined('DOPBSP_Days_table')){
+                    define('DOPBSP_Days_table', $wpdb->prefix.'dopbsp_days');
+                }
+                
+                // Users Table
+                if (!defined('DOPBSP_Reservations_table')){
+                    define('DOPBSP_Reservations_table', $wpdb->prefix.'dopbsp_reservations');
+                }
+                
+                // Users Table
+                if (!defined('DOPBSP_Users_table')){
+                    define('DOPBSP_Users_table', $wpdb->prefix.'dopbsp_users');
+                }
+                
+                // Booking Forms Tables
+                if (!defined('DOPBSP_Forms_table')){
+                    define('DOPBSP_Forms_table', $wpdb->prefix.'dopbsp_forms');
+                }
+                
+                if (!defined('DOPBSP_Forms_Fields_table')){
+                    define('DOPBSP_Forms_Fields_table', $wpdb->prefix.'dopbsp_forms_fields');
+                }
+                
+                if (!defined('DOPBSP_Forms_Select_Options_table')){
+                    define('DOPBSP_Forms_Select_Options_table', $wpdb->prefix.'dopbsp_forms_select_options');
+                }
+                
+                // WooCommerce Table
+                if (!defined('DOPBSP_WooCommerce_table')){
+                    define('DOPBSP_WooCommerce_table', $wpdb->prefix.'dopbsp_woocommerce');
+                }
             }
 
-            function captionShortcode($atts){// Read Shortcodes.
+            function calendarShortcode($atts){// Read Shortcodes.
                 extract(shortcode_atts(array(
                     'class' => 'dopbsp',
                 ), $atts));
                                 
-                if (array_key_exists('lang', $atts)){
-                    $language = $atts['lang'];
+                if (!array_key_exists('id', $atts)){
+                    $atts['id'] = 1;
                 }
-                else{
-                    $language = 'en';
+                                
+                if (!array_key_exists('lang', $atts)){
+                    $atts['lang'] = DOPBSP_CONFIG_FRONTEND_DEFAULT_LANGUAGE;
+                }
+                                
+                if (!array_key_exists('woocommerce', $atts)){
+                    $atts['woocommerce'] = 'false';
                 }
                 
-                $_SESSION['DOPBookingSystemPROFrontEndLanguage'.$atts['id']] = $language;
+                $id = $atts['id'];
+                $language = $atts['lang'];
+                //$woocommerce = $atts['woocommerce'];
+                
+                $_SESSION['DOPBookingSystemPROFrontEndLanguage'.$id] = $language;
                 $data = array();
-                                
-                array_push($data, '<link rel="stylesheet" type="text/css" href="'.plugins_url('templates/'.$this->getCalendarTemplate($atts['id']).'/css/jquery-ui-1.8.21.customDatepicker.css', __FILE__).'" />');
-                array_push($data, '<link rel="stylesheet" type="text/css" href="'.plugins_url('templates/'.$this->getCalendarTemplate($atts['id']).'/css/jquery.dop.FrontendBookingSystemPRO.css', __FILE__).'" />');
+                
+                //************************************************************** Hook - Add action before calendar init.
+                do_action('dopbsp_frontend_before_calendar_init');
+                
+                //************************************************************** Hook - Add content before calendar.
+                ob_start();
+                    do_action('dopbsp_frontend_content_before_calendar');
+                    $dopbsp_frontend_before_calendar = ob_get_contents();
+                ob_end_clean();
+                array_push($data, $dopbsp_frontend_before_calendar);
+                
+                // Calendar code.
+                array_push($data, '<link rel="stylesheet" type="text/css" href="'.plugins_url('templates/'.$this->getCalendarTemplate($id).'/css/jquery-ui-1.8.21.customDatepicker.css', __FILE__).'" />');
+                array_push($data, '<link rel="stylesheet" type="text/css" href="'.plugins_url('templates/'.$this->getCalendarTemplate($id).'/css/jquery.dop.FrontendBookingSystemPRO.css', __FILE__).'" />');
                 
                 array_push($data, '<script type="text/JavaScript">');
                 array_push($data, '    jQuery(document).ready(function(){');
-                array_push($data, '        jQuery("#DOPBookingSystemPRO'.$atts['id'].'").DOPBookingSystemPRO('.$this->getCalendarSettings($atts['id'], $language).');');
+                array_push($data, '        jQuery("#DOPBookingSystemPRO'.$id.'").DOPBookingSystemPRO('.$this->getCalendarSettings($atts).');');
                 array_push($data, '    });');
                 array_push($data, '</script>');
                 
-                array_push($data, '<div class="DOPBookingSystemPROContainer" id="DOPBookingSystemPRO'.$atts['id'].'"><a href="'.DOPBSP_Plugin_URL.'frontend-ajax.php"></a></div>');
+                array_push($data, '<div class="DOPBookingSystemPROContainer" id="DOPBookingSystemPRO'.$id.'"><a href="'.admin_url('admin-ajax.php').'"></a></div>');
+                
+                
+                //************************************************************** Hook - Add content after calendar.
+                ob_start();
+                    do_action('dopbsp_frontend_content_after_calendar');
+                    $dopbsp_frontend_after_calendar = ob_get_contents();
+                ob_end_clean();
+                array_push($data, $dopbsp_frontend_after_calendar);
                 
                 return implode("\n", $data);
             }
@@ -167,16 +165,18 @@
                 return $settings->template;
             }
 
-            function getCalendarSettings($id, $language='en'){// Get Gallery Info.
-                include_once 'translation/frontend/'.$language.'.php';
+            function getCalendarSettings($atts){// Get Gallery Info.
                 global $wpdb;
+                global $DOPBSP_pluginSeries_translation;
                 global $DOPBSP_currencies;
-                global $DOPBSP_month_names;
-                global $DOPBSP_month_short_names;
-                global $DOPBSP_day_names;
-                global $DOPBSP_day_short_names;
                 $data = array();
-                                
+                
+                $id = $atts['id'];
+                $language = $atts['lang'];
+                $woocommerce = $atts['woocommerce'];
+                
+                $DOPBSP_pluginSeries_translation->setTranslation('frontend', $language);
+                
                 $settings = $wpdb->get_row('SELECT * FROM '.DOPBSP_Settings_table.' WHERE calendar_id="'.$id.'"');
                 $form = $wpdb->get_results('SELECT * FROM '.DOPBSP_Forms_Fields_table.' WHERE form_id="'.$settings->form.'" ORDER BY position');
                 
@@ -212,8 +212,8 @@
                               'CheckOutLabel' => DOPBSP_CHECK_OUT_LABEL,
                               'Currency' => $DOPBSP_currencies[(int)$settings->currency-1]['sign'],
                               'CurrencyCode' => $DOPBSP_currencies[(int)$settings->currency-1]['code'],
-                              'DayNames' => $DOPBSP_day_names,
-                              'DayShortNames' => $DOPBSP_day_short_names,
+                              'DayNames' => array(DOPBSP_DAY_SUNDAY, DOPBSP_DAY_MONDAY, DOPBSP_DAY_TUESDAY, DOPBSP_DAY_WEDNESDAY, DOPBSP_DAY_THURSDAY, DOPBSP_DAY_FRIDAY, DOPBSP_DAY_SATURDAY),
+                              'DayShortNames' => array(DOPBSP_SHORT_DAY_SUNDAY, DOPBSP_SHORT_DAY_MONDAY, DOPBSP_SHORT_DAY_TUESDAY, DOPBSP_SHORT_DAY_WEDNESDAY, DOPBSP_SHORT_DAY_THURSDAY, DOPBSP_SHORT_DAY_FRIDAY, DOPBSP_SHORT_DAY_SATURDAY),
                               'DateType' => $settings->date_type,
                               'Deposit' => $settings->deposit,
                               'DepositText' => DOPBSP_DEPOSIT_TEXT,
@@ -242,8 +242,8 @@
                               'MinNoPeople' => $settings->min_no_people,
                               'MinStay' => $settings->min_stay,
                               'MinStayWarning' => DOPBSP_MIN_STAY_WARNING,
-                              'MonthNames' => $DOPBSP_month_names,
-                              'MonthShortNames' => $DOPBSP_month_short_names,
+                              'MonthNames' => array(DOPBSP_MONTH_JANUARY, DOPBSP_MONTH_FEBRUARY, DOPBSP_MONTH_MARCH, DOPBSP_MONTH_APRIL, DOPBSP_MONTH_MAY, DOPBSP_MONTH_JUNE, DOPBSP_MONTH_JULY, DOPBSP_MONTH_AUGUST, DOPBSP_MONTH_SEPTEMBER, DOPBSP_MONTH_OCTOBER, DOPBSP_MONTH_NOVEMBER, DOPBSP_MONTH_DECEMBER),
+                              'MonthShortNames' => array(DOPBSP_SHORT_MONTH_JANUARY, DOPBSP_SHORT_MONTH_FEBRUARY, DOPBSP_SHORT_MONTH_MARCH, DOPBSP_SHORT_MONTH_APRIL, DOPBSP_SHORT_MONTH_MAY, DOPBSP_SHORT_MONTH_JUNE, DOPBSP_SHORT_MONTH_JULY, DOPBSP_SHORT_MONTH_AUGUST, DOPBSP_SHORT_MONTH_SEPTEMBER, DOPBSP_SHORT_MONTH_OCTOBER, DOPBSP_SHORT_MONTH_NOVEMBER, DOPBSP_SHORT_MONTH_DECEMBER),
                               'MorningCheckOut' => $settings->morning_check_out,
                               'MultipleDaysSelect' => $settings->multiple_days_select,
                               'MultipleHoursSelect' => $settings->multiple_hours_select,
@@ -257,7 +257,7 @@
                               'NoPeopleEnabled' => $settings->no_people_enabled,
                               'NoServicesAvailableText' => DOPBSP_NO_SERVICES_AVAILABLE,
                               'PaymentArrivalEnabled' => $settings->payment_arrival_enabled,
-                              'PaymentArrivalLabel' => $settings->instant_booking ? DOPBSP_PAYMENT_ARRIVAL_LABEL:DOPBSP_PAYMENT_ARRIVAL_WITH_APPROVAL_LABEL,
+                              'PaymentArrivalLabel' => $settings->instant_booking == 'true' ? DOPBSP_PAYMENT_ARRIVAL_LABEL:DOPBSP_PAYMENT_ARRIVAL_WITH_APPROVAL_LABEL,
                               'PaymentArrivalSuccess' => DOPBSP_PAYMENT_ARRIVAL_SUCCESS,
                               'PaymentArrivalSuccessInstantBooking' => DOPBSP_PAYMENT_ARRIVAL_SUCCESS_INSTANT_BOOKING,
                               'PaymentPayPalEnabled' => $settings->payment_paypal_enabled,
@@ -275,7 +275,10 @@
                               'TermsAndConditionsLabel' => DOPBSP_TERMS_AND_CONDITIONS_LABEL,
                               'TermsAndConditionsLink' => $settings->terms_and_conditions_link,
                               'UnavailableText' => DOPBSP_UNAVAILABLE_TEXT,
-                              'ViewOnly' => $settings->view_only);
+                              'ViewOnly' => $settings->view_only,
+                              'WooCommerceEnabled' => $woocommerce,
+                              'WooCommerceAddToCartLabel' => DOPBSP_WOOCOMMERCE_ADD_TO_CART_LABEL,
+                              'WooCommerceAddToCartSuccess' => DOPBSP_WOOCOMMERCE_ADD_TO_CART_SUCCESS);
                 
                 return json_encode($data);
             }
@@ -288,7 +291,7 @@
                     $days = $wpdb->get_results('SELECT * FROM '.DOPBSP_Days_table.' WHERE calendar_id="'.$_POST['calendar_id'].'"');
                     
                     foreach ($days as $day):
-                        $schedule[$day->day] = json_decode($day->data);
+                        $schedule[$day->day] = $day->data;
                     endforeach;
                     
                     if (count($schedule) > 0){
@@ -297,6 +300,9 @@
                     else{
                         echo '';
                     }
+                    
+                    //********************************************************** Hook - Add action after calendar init.
+                    do_action('dopbsp_frontend_after_calendar_init');
 
                     die();
                 }
@@ -310,8 +316,12 @@
                 if (isset($_POST['calendar_id'])){
                     global $wpdb;
                     
-                    $language = isset($_SESSION['DOPBookingSystemPROFrontEndLanguage'.$_POST['calendar_id']]) ? $_SESSION['DOPBookingSystemPROFrontEndLanguage'.$_POST['calendar_id']]:'en';
+                    //********************************************************** Hook - Add action before booking request.
+                    do_action('dopbsp_frontend_before_booking');
+                    
+                    $language = isset($_SESSION['DOPBookingSystemPROFrontEndLanguage'.$_POST['calendar_id']]) ? $_SESSION['DOPBookingSystemPROFrontEndLanguage'.$_POST['calendar_id']]:DOPBSP_CONFIG_FRONTEND_DEFAULT_LANGUAGE;
                     $form = $_POST['form'];
+                    $days_hours_history = $_POST['days_hours_history'];
                     
                     $settings = $wpdb->get_row('SELECT * FROM '.DOPBSP_Settings_table.' WHERE calendar_id="'.$_POST['calendar_id'].'"');
                     
@@ -331,9 +341,10 @@
                                                                    'email' => $_POST['email'],
                                                                    'no_people' => $_POST['no_people'],
                                                                    'no_children' => $_POST['no_children'],
+                                                                   'payment_method' => $_POST['payment_method'],
                                                                    'status' => $settings->instant_booking == 'false' ? 'pending':'approved',
                                                                    'info' => json_encode($form),
-                                                                   'payment_method' => $_POST['payment_method']));
+                                                                   'days_hours_history' => json_encode($days_hours_history)));
                     $reservationId = $wpdb->insert_id;
                     
                     $DOPemail = new DOPBookingSystemPROEmail();
@@ -388,6 +399,8 @@
                         $ci = explode('-', $_POST['check_in']);
                         echo $ci[0].'-'.(int)$ci[1];
                     }
+                    //********************************************************** Hook - Add action after booking request.
+                    do_action('dopbsp_frontend_after_booking');
                 }
                 
                 echo '';                
@@ -403,12 +416,75 @@
                     $status = $_SESSION['DOPBSP_PayPal'.$_POST['calendar_id']];
                     $_SESSION['DOPBSP_PayPal'.$_POST['calendar_id']] = '';
                     
+                    switch ($status){
+                        case 'success':
+                            //************************************************** Hook - Add action after PayPal success.
+                            do_action('dopbsp_frontend_after_paypal_success');
+                            break;
+                        case 'error':
+                            //************************************************** Hook - Add action after PayPal error.
+                            do_action('dopbsp_frontend_after_paypal_error');
+                            break;
+                    }
+                    
                     echo $status;                    
                 }
                 else{
                     echo 'no';
                 }               
             }
+            
+// Custom Post Type      
+            function initCustomPostsType(){ // Init Custom Post Type in Front End
+                $postdata = array('exclude_from_search' => false,
+                                  'has_archive' => true,
+                                  'menu_icon' => plugins_url('assets/gui/images/custom-post-type-icon.png', __FILE__),
+                                  'public' => true,
+                                  'publicly_queryable' => true,
+                                  'rewrite' => true,
+                                  'taxonomies' => array('category', 'post_tag'),
+                                  'show_in_nav_menus' => true,
+                                  'supports' => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks', 'custom-fields', 'comments', 'revisions'));
+                register_post_type(DOPBSP_CONFIG_CUSTOM_POST_SLUG, $postdata);
+            }
+            
+            function getCustomPosts($query){ // Get Custom Post
+                if ((is_home() && $query->is_main_query())){
+                    $not_allowed_post_types = explode(',', DOPBSP_CONFIG_CUSTOM_POST_NOT_ALLOWED_POST_TYPES_IN_LOOP);
+                    $post_types = array();
+                    $curr_post_types = get_post_types();
+
+                    foreach ($curr_post_types as $post_type){
+                        if (!in_array($post_type, $not_allowed_post_types)){
+                            array_push($post_types, $post_type);
+                        }
+                    }	
+
+                    array_push($post_types, DOPBSP_CONFIG_CUSTOM_POST_SLUG);
+                    $query->set('post_type', $post_types);
+                }
+                        
+                return $query;
+            }
+            
+            function addBookingSystemPROInCustomPosts($content){ // Add calendar in dopbsp posts
+                global $wpdb;
+                $post_type = get_post_type();
+                
+                if ($post_type == DOPBSP_CONFIG_CUSTOM_POST_SLUG){
+                    $custom_content = $content;
+                    
+                    $calendar = $wpdb->get_results('SELECT * FROM '.DOPBSP_Calendars_table.' WHERE post_id="'.get_the_ID().'" ORDER BY id');
+
+                    if (isset($calendar[0]->id)){
+                        $custom_content .= do_shortcode('[dopbsp id="'.$calendar[0]->id.'"]');
+                    }
+                    return $custom_content;
+                }
+                else{
+                    return $content;
+                }
+            }
+
         }
     }
-?>

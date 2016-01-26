@@ -1,17 +1,17 @@
 @charset "UTF-8";
 @import "http://yui.yahooapis.com/pure/0.2.1/grids-min.css";
 @import url(http://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope);
-@import url(http://fonts.googleapis.com/css?family=Lato);
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
 /*
 Theme Name: Point White
-Theme URI: http://wordpress.org/themes/twentythirteen
+Theme URI: 
 Author: Colin Brooks
-Author URI: http://colinbrooks.us/
+Author URI: http://colinbrooks.co/
 Description:  Custom theme for pointwhiteguesthouse.com
-Version: 1.0
+Version: 2.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Tags: pointwhite
+Tags: pointwhiteguesthouse colinbrooks
 
 This theme, like WordPress, is licensed under the GPL.
 Use it to make something cool, have fun, and share what you've learned with others.
@@ -3409,8 +3409,10 @@ h5 {
   -o-filter: grayscale(0%);
   filter: grayscale(0%); }
 
-#map {
-  margin-top: -2.5em; }
+.vrbo-cal {
+  width: auto !important;
+  float: right !important;
+  margin-left: 2em !important; }
 
 .gallery {
   margin: auto; }
@@ -3464,6 +3466,14 @@ footer {
   margin-top: 1.5em; }
 
 .DOPBookingSystemPROContainer {
+  margin-bottom: 1em; }
+
+#vrbo-container {
+  width: 314px;
+  margin-bottom: 1em; }
+
+.header-spacing {
+  margin-top: 1em;
   margin-bottom: 1em; }
 
 #full-width-slider {
@@ -3581,10 +3591,10 @@ footer {
   #comments #submit {
     background-color: #25aae1;
     border: 0px;
-    padding: .75em 2em .75em 2em;
+    padding: .6em 2em .6em 2em;
     color: white;
     border-radius: 5px;
-    font-size: 1.1em; }
+    font-size: 1.05em; }
     #comments #submit:hover {
       background-color: #1b92c4; }
 

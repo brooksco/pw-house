@@ -2,10 +2,10 @@
 
 /*
 * Title                   : Booking System Pro (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 2.0
 * File                    : dopbsp-backend.php
-* File Version            : 1.7
-* Created / Last Modified : 31 July 2013
+* File Version            : 2.0
+* Created / Last Modified : 26 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -14,103 +14,151 @@
 
     if (!class_exists("DOPBookingSystemPROBackEnd")){
         class DOPBookingSystemPROBackEnd{
-            private $DOPBSP_AddEditCalendars;
-            private $DOPBSP_db_version = 1.72;
-
+            private $DOPBSP_templates;
+            private $DOPBSP_db_version = 1.9;
+            private $languages_prefix = array('af', 'al', 'ar', 'az', 'bs', 'by', 'bg', 'ca', 'cn', 'cr', 'cz', 'dk', 'du', 'en', 'eo', 'et', 'fl', 'fi', 'fr', 'gl', 'de', 'gr', 'ha', 'he', 'hi', 'hu', 'is', 'id', 'ir', 'it', 'ja', 'ko', 'lv', 'lt', 'mk', 'mg', 'ma', 'no', 'pe', 'pl', 'pt', 'ro', 'ru', 'sr', 'sk', 'sl', 'sp', 'sw', 'se', 'th', 'tr', 'uk', 'ur', 'vi', 'we', 'yi');
+                    
             function DOPBookingSystemPROBackEnd(){// Constructor.
                 if (is_admin()){
+                    add_action('init', array(&$this, 'init'));
                     add_action('init', array(&$this, 'initCustomPostsType'));
-                    add_action('add_meta_boxes_dopbsp', array(&$this, 'customPostTypeMetaBoxes'));
-                
+                    add_action('add_meta_boxes_'.DOPBSP_CONFIG_CUSTOM_POST_SLUG, array(&$this, 'customPostTypeMetaBoxes'));
+                    add_action('admin_enqueue_scripts', array(&$this, 'addWPAdminStyles'));
+                    
                     if ($this->validPage()){
-                        $this->DOPBSP_AddEditCalendars = new DOPBSPTemplates();
+                        $this->DOPBSP_templates = new DOPBSPTemplates();
                         add_action('admin_enqueue_scripts', array(&$this, 'addStyles'));
                         add_action('admin_enqueue_scripts', array(&$this, 'addScripts'));
                     }
 
                     $this->addDOPBSPtoTinyMCE();
-                    $this->init();
                 }
+            }
+            
+            function addWPAdminStyles(){
+                // Register Styles.
+                wp_register_style('DOPBSP_WPAdminStyle', plugins_url('assets/gui/css/backend-wp-admin-style.css', __FILE__));
+
+                // Enqueue Styles.
+                wp_enqueue_style('DOPBSP_WPAdminStyle');
             }
             
             function addStyles(){
                 // Register Styles.
+                wp_register_style('DOPBSP_DatePickerStyle', plugins_url('assets/gui/css/jquery-ui-1.8.21.customDatepicker.css', __FILE__));
                 wp_register_style('DOPBSP_DOPBookingSystemPROStyle', plugins_url('assets/gui/css/jquery.dop.BackendBookingSystemPRO.css', __FILE__));
+                wp_register_style('DOPBSP_DOPBookingSystemPROReservationsStyle', plugins_url('assets/gui/css/jquery.dop.BackendBookingSystemPROReservations.css', __FILE__));
+                wp_register_style('DOPBSP_DOPBookingSystemPROAddReservationStyle', plugins_url('assets/gui/css/jquery.dop.BackendBookingSystemPROAddReservation.css', __FILE__));
                 wp_register_style('DOPBSP_AdminStyle', plugins_url('assets/gui/css/backend-style.css', __FILE__));
 
                 // Enqueue Styles.
                 wp_enqueue_style('thickbox');
+                wp_enqueue_style('DOPBSP_DatePickerStyle');
                 wp_enqueue_style('DOPBSP_DOPBookingSystemPROStyle');
+                wp_enqueue_style('DOPBSP_DOPBookingSystemPROReservationsStyle');
+                wp_enqueue_style('DOPBSP_DOPBookingSystemPROAddReservationStyle');
                 wp_enqueue_style('DOPBSP_AdminStyle');
             }
             
             function addScripts(){
                 // Register JavaScript.
                 wp_register_script('DOPBSP_DOPBookingSystemPROJS', plugins_url('assets/js/jquery.dop.BackendBookingSystemPRO.js', __FILE__), array('jquery'), false, true);
+                wp_register_script('DOPBSP_DOPBookingSystemPROReservationsJS', plugins_url('assets/js/jquery.dop.BackendBookingSystemPROReservations.js', __FILE__), array('jquery'), false, true);
+                wp_register_script('DOPBSP_DOPBookingSystemPROAddReservationJS', plugins_url('assets/js/jquery.dop.BackendBookingSystemPROAddReservation.js', __FILE__), array('jquery'), false, true);
                 wp_register_script('DOPBSP_DOPBSPJS', plugins_url('assets/js/dopbsp-backend.js', __FILE__), array('jquery'), false, true);
+                wp_register_script('DOPBSP_DOPBSPJS_RESERVATIONS', plugins_url('assets/js/dopbsp-backend-reservations.js', __FILE__), array('jquery'), false, true);
                 wp_register_script('DOPBSP_DOPBSPJS_FORMS', plugins_url('assets/js/dopbsp-backend-forms.js', __FILE__), array('jquery'), false, true);
+                wp_register_script('DOPBSP_DOPBSPJS_TRANSLATION', plugins_url('assets/js/dopbsp-backend-translation.js', __FILE__), array('jquery'), false, true);
 
                 // Enqueue JavaScript.
                 if (!wp_script_is('jquery', 'queue')){
                     wp_enqueue_script('jquery');
                 }
-                //wp_enqueue_script('jqueryUI');
-                wp_enqueue_script('DOPBSP_DOPBookingSystemPROJS');
-                wp_enqueue_script('DOPBSP_DOPBSPJS');
-                wp_enqueue_script('DOPBSP_DOPBSPJS_FORMS');
+                
+                if (!wp_script_is('jquery-ui-datepicker', 'queue')){
+                    wp_enqueue_script('jquery-ui-datepicker');
+                }
                 
                 if (!wp_script_is('jquery-ui-sortable', 'queue')){
                     wp_enqueue_script('jquery-ui-sortable');
                 }
+                //wp_enqueue_script('jqueryUI');
+                wp_enqueue_script('DOPBSP_DOPBookingSystemPROJS');
+                wp_enqueue_script('DOPBSP_DOPBookingSystemPROReservationsJS');
+                wp_enqueue_script('DOPBSP_DOPBookingSystemPROAddReservationJS');
+                wp_enqueue_script('DOPBSP_DOPBSPJS');
+                wp_enqueue_script('DOPBSP_DOPBSPJS_RESERVATIONS');
+                wp_enqueue_script('DOPBSP_DOPBSPJS_FORMS');
+                wp_enqueue_script('DOPBSP_DOPBSPJS_TRANSLATION');
             }
             
             function init(){// Admin init.
+                global $DOPBSP_pluginSeries_translation;
+                
                 $this->initConstants();
                 $this->initTables();
+                $DOPBSP_pluginSeries_translation->setTranslation('backend');
             }
 
             function initConstants(){// Constants init.
                 global $wpdb;
-
-                // Paths
-                if (!defined('DOPBSP_Plugin_AbsPath')){
-                    define('DOPBSP_Plugin_AbsPath', ABSPATH.'wp-content/plugins/dopbsp/');
-                }
-                if (!defined('DOPBSP_Plugin_URL')){
-                    define('DOPBSP_Plugin_URL', WP_PLUGIN_URL.'/dopbsp/');
+                
+                // Translation Table
+                if (!defined('DOPBSP_Translation_table')){
+                    define('DOPBSP_Translation_table', $wpdb->prefix.'dopbsp_translation');
                 }
                 
-                // Tables
+                // Settings Table
                 if (!defined('DOPBSP_Settings_table')){
                     define('DOPBSP_Settings_table', $wpdb->prefix.'dopbsp_settings');
                 }
+                
+                // Calendars Table
                 if (!defined('DOPBSP_Calendars_table')){
                     define('DOPBSP_Calendars_table', $wpdb->prefix.'dopbsp_calendars');
                 }
+                
+                // Days Table
                 if (!defined('DOPBSP_Days_table')){
                     define('DOPBSP_Days_table', $wpdb->prefix.'dopbsp_days');
                 }
+                
+                // Users Table
                 if (!defined('DOPBSP_Reservations_table')){
                     define('DOPBSP_Reservations_table', $wpdb->prefix.'dopbsp_reservations');
                 }
+                
+                // Users Table
                 if (!defined('DOPBSP_Users_table')){
                     define('DOPBSP_Users_table', $wpdb->prefix.'dopbsp_users');
                 }
+                
+                // Booking Forms Tables
                 if (!defined('DOPBSP_Forms_table')){
                     define('DOPBSP_Forms_table', $wpdb->prefix.'dopbsp_forms');
                 }
+                
                 if (!defined('DOPBSP_Forms_Fields_table')){
                     define('DOPBSP_Forms_Fields_table', $wpdb->prefix.'dopbsp_forms_fields');
                 }
+                
                 if (!defined('DOPBSP_Forms_Select_Options_table')){
                     define('DOPBSP_Forms_Select_Options_table', $wpdb->prefix.'dopbsp_forms_select_options');
+                }
+                
+                // WooCommerce Table
+                if (!defined('DOPBSP_WooCommerce_table')){
+                    define('DOPBSP_WooCommerce_table', $wpdb->prefix.'dopbsp_woocommerce');
                 }
             }
 
             function validPage(){// Valid Admin Page.
-                
                 if (isset($_GET['page'])){
-                    if ($_GET['page'] == 'dopbsp' || $_GET['page'] == 'dopbsp-booking-forms' || $_GET['page'] == 'dopbsp-settings'){
+                    if ($_GET['page'] == 'dopbsp'
+                        || $_GET['page'] == 'dopbsp-reservations'
+                        || $_GET['page'] == 'dopbsp-booking-forms'
+                        || $_GET['page'] == 'dopbsp-translation'
+                        || $_GET['page'] == 'dopbsp-settings'){
                         return true;
                     }
                     else{
@@ -118,7 +166,7 @@
                     }
                 }
                 else if (isset($_GET['post_type'])){
-                    if ($_GET['post_type'] == 'dopsbp') {
+                    if ($_GET['post_type'] == DOPBSP_CONFIG_CUSTOM_POST_SLUG) {
                         return true; 
                     } 
                     else{
@@ -139,149 +187,174 @@
             }
 
             function initTables(){// Tables init.
+                if (DOPBSP_CONFIG_INIT_DATABASE){
+                    update_option('DOPBSP_db_version', '1.0');
+                }
                 $current_db_version = get_option('DOPBSP_db_version');
                 
                 if ($this->DOPBSP_db_version != $current_db_version){
-                    require_once(ABSPATH.'wp-admin/includes/upgrade.php');
-
-                    $sql_settings = "CREATE TABLE " . DOPBSP_Settings_table . " (
+                    require_once(str_replace('\\', '/', ABSPATH).'wp-admin/includes/upgrade.php');
+                    
+                    for ($l=0; $l<count($this->languages_prefix); $l++){
+                        $sql_translation = "CREATE TABLE ".DOPBSP_Translation_table."_".$this->languages_prefix[$l]." (
+                                            id INT NOT NULL AUTO_INCREMENT,
+                                            key_data VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_TRANSLATION_DEFAULT_KEY_DATA."' COLLATE utf8_unicode_ci NOT NULL,
+                                            location VARCHAR(8) DEFAULT '".DOPBSP_CONFIG_DATABASE_TRANSLATION_DEFAULT_LOCATION."' COLLATE utf8_unicode_ci NOT NULL,
+                                            position INT DEFAULT ".DOPBSP_CONFIG_DATABASE_TRANSLATION_DEFAULT_POSITION." NOT NULL,
+                                            parent_key VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_TRANSLATION_DEFAULT_PARENT_KEY."' COLLATE utf8_unicode_ci NOT NULL,
+                                            text_data TEXT COLLATE utf8_unicode_ci NOT NULL,
+                                            translation TEXT COLLATE utf8_unicode_ci NOT NULL,
+                                            UNIQUE KEY id (id)
+                                        );";
+                        dbDelta($sql_translation);
+                    }
+                    
+                    $sql_settings = "CREATE TABLE ".DOPBSP_Settings_table." (
                                         id INT NOT NULL AUTO_INCREMENT,
-                                        calendar_id INT NOT NULL,
-                                        available_days VARCHAR(128) DEFAULT 'true,true,true,true,true,true,true' COLLATE utf8_unicode_ci NOT NULL,
-                                        first_day INT DEFAULT 1 NOT NULL,
-                                        currency INT DEFAULT 108 NOT NULL,
-                                        fixed_tax FLOAT(8,4) DEFAULT 0 NOT NULL,
-                                        percent_tax FLOAT(8,4) DEFAULT 0 NOT NULL,
-                                        date_type INT DEFAULT 1 NOT NULL,
-                                        template VARCHAR(128) DEFAULT 'default' COLLATE utf8_unicode_ci NOT NULL,
-                                        template_email VARCHAR(128) DEFAULT 'default' COLLATE utf8_unicode_ci NOT NULL,
-                                        min_stay INT DEFAULT 1 NOT NULL,
-                                        max_stay INT DEFAULT 0 NOT NULL,
-                                        no_items_enabled VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
-                                        view_only VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,  
-                                        page_url VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        notifications_email VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,                                       
-                                        smtp_enabled VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,                                     
-                                        smtp_host_name VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        smtp_host_port INT DEFAULT 25 NOT NULL,
-                                        smtp_ssl VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,                                   
-                                        smtp_user VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,                                   
-                                        smtp_password VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        multiple_days_select VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
-                                        morning_check_out VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        details_from_hours VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
-                                        hours_enabled VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        hours_info_enabled VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
+                                        calendar_id INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_CALENDAR_ID." NOT NULL,
+                                        available_days VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_AVAILABLE_DAYS."' COLLATE utf8_unicode_ci NOT NULL,
+                                        first_day INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_FIRST_DAY." NOT NULL,
+                                        currency INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_CURRENCY." NOT NULL,
+                                        fixed_tax FLOAT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_FIXED_TAX." NOT NULL,
+                                        percent_tax FLOAT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_PERCENT_TAX." NOT NULL,
+                                        date_type INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_DATE_TYPE." NOT NULL,
+                                        template VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_TEMPLATE."' COLLATE utf8_unicode_ci NOT NULL,
+                                        template_email VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_TEMPLATE_EMAIL."' COLLATE utf8_unicode_ci NOT NULL,
+                                        min_stay INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MIN_STAY." NOT NULL,
+                                        max_stay INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MAX_STAY." NOT NULL,
+                                        no_items_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_NO_ITEMS_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
+                                        view_only VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_VIEW_ONLY."' COLLATE utf8_unicode_ci NOT NULL,  
+                                        page_url VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_PAGE_URL."' COLLATE utf8_unicode_ci NOT NULL,
+                                        notifications_email VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_NOTIFICATIONS_EMAIL."' COLLATE utf8_unicode_ci NOT NULL,                                       
+                                        smtp_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_SMTP_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,                                     
+                                        smtp_host_name VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_SMTP_HOST_NAME."' COLLATE utf8_unicode_ci NOT NULL,
+                                        smtp_host_port INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_SMTP_HOST_PORT." NOT NULL,
+                                        smtp_ssl VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_SMTP_SSL."' COLLATE utf8_unicode_ci NOT NULL,                                   
+                                        smtp_user VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_SMTP_USER."' COLLATE utf8_unicode_ci NOT NULL,                                   
+                                        smtp_password VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_SMTP_PASSWORD."' COLLATE utf8_unicode_ci NOT NULL,
+                                        multiple_days_select VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MULTIPLE_DAYS_SELECT."' COLLATE utf8_unicode_ci NOT NULL,
+                                        morning_check_out VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MORNING_CHECK_OUT."' COLLATE utf8_unicode_ci NOT NULL,
+                                        details_from_hours VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_DETAILS_FROM_HOURS."' COLLATE utf8_unicode_ci NOT NULL,
+                                        hours_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_HOURS_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
+                                        hours_info_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_HOURS_INFO_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
                                         hours_definitions TEXT COLLATE utf8_unicode_ci NOT NULL,
-                                        multiple_hours_select VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
-                                        hours_ampm VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        last_hour_to_total_price VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
-                                        hours_interval_enabled VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        discounts_no_days VARCHAR(256) DEFAULT '0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0' COLLATE utf8_unicode_ci NOT NULL,
-                                        deposit FLOAT DEFAULT 0 NOT NULL,
-                                        form int DEFAULT 1 NOT NULL,
-                                        instant_booking VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        no_people_enabled VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
-                                        min_no_people INT DEFAULT 1 NOT NULL,
-                                        max_no_people INT DEFAULT 4 NOT NULL,
-                                        no_children_enabled VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
-                                        min_no_children INT DEFAULT 0 NOT NULL,
-                                        max_no_children INT DEFAULT 2 NOT NULL,
-                                        terms_and_conditions_enabled VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        terms_and_conditions_link VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        payment_arrival_enabled VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
-                                        payment_paypal_enabled VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        payment_paypal_username VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        payment_paypal_password VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        payment_paypal_signature VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        payment_paypal_credit_card VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        payment_paypal_sandbox_enabled VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        max_year INT DEFAULT ".date('Y')." NOT NULL,
+                                        multiple_hours_select VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MULTIPLE_HOURS_SELECT."' COLLATE utf8_unicode_ci NOT NULL,
+                                        hours_ampm VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_HOURS_AMPM."' COLLATE utf8_unicode_ci NOT NULL,
+                                        last_hour_to_total_price VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_LAST_HOUR_TO_TOTAL_PRICE."' COLLATE utf8_unicode_ci NOT NULL,
+                                        hours_interval_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_HOURS_INTERVAL_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
+                                        discounts_no_days VARCHAR(256) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_DISCOUNTS_NO_DAYS."' COLLATE utf8_unicode_ci NOT NULL,
+                                        deposit FLOAT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_DEPOSIT." NOT NULL,
+                                        form int DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_FORM." NOT NULL,
+                                        instant_booking VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_INSTANT_BOOKING."' COLLATE utf8_unicode_ci NOT NULL,
+                                        no_people_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_NO_PEOPLE_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
+                                        min_no_people INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MIN_NO_PEOPLE." NOT NULL,
+                                        max_no_people INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MAX_NO_PEOPLE." NOT NULL,
+                                        no_children_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_NO_CHILDREN_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
+                                        min_no_children INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MIN_NO_CHILDREN." NOT NULL,
+                                        max_no_children INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MAX_NO_CHILDREN." NOT NULL,
+                                        terms_and_conditions_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_TERMS_AND_CONDITIONS_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
+                                        terms_and_conditions_link VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_TERMS_AND_CONDITIONS_LINK."' COLLATE utf8_unicode_ci NOT NULL,
+                                        payment_arrival_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_PAYMENT_ARRIVAL_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
+                                        payment_paypal_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_PAYMENT_PAYPAL_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
+                                        payment_paypal_username VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_PAYMENT_PAYPAL_USERNAME."' COLLATE utf8_unicode_ci NOT NULL,
+                                        payment_paypal_password VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_PAYMENT_PAYPAL_PASSWORD."' COLLATE utf8_unicode_ci NOT NULL,
+                                        payment_paypal_signature VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_PAYMENT_PAYPAL_SIGNATURE."' COLLATE utf8_unicode_ci NOT NULL,
+                                        payment_paypal_credit_card VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_PAYMENT_PAYPAL_CREDIT_CARD."' COLLATE utf8_unicode_ci NOT NULL,
+                                        payment_paypal_sandbox_enabled VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_PAYMENT_PAYPAL_SANDBOX_ENABLED."' COLLATE utf8_unicode_ci NOT NULL,
+                                        max_year INT DEFAULT ".DOPBSP_CONFIG_DATABASE_SETTINGS_DEFAULT_MAX_YEAR." NOT NULL,
                                         UNIQUE KEY id (id)
                                     );";
-
+                    
                     $sql_calendars = "CREATE TABLE " . DOPBSP_Calendars_table . " (
-                                        id int NOT NULL AUTO_INCREMENT,
-                                        user_id int NOT NULL,
-                                        post_id int DEFAULT 0 NOT NULL,
-                                        name VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        min_price int NOT NULL,
-                                        max_price int NOT NULL,
+                                        id INT NOT NULL AUTO_INCREMENT,
+                                        user_id INT DEFAULT ".DOPBSP_CONFIG_DATABASE_CALENDARS_DEFAULT_USER_ID." NOT NULL,
+                                        post_id INT DEFAULT ".DOPBSP_CONFIG_DATABASE_CALENDARS_DEFAULT_POST_ID." NOT NULL,
+                                        name VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_CALENDARS_DEFAULT_NAME."' COLLATE utf8_unicode_ci NOT NULL,
+                                        min_price FLOAT DEFAULT ".DOPBSP_CONFIG_DATABASE_CALENDARS_DEFAULT_MIN_PRICE." NOT NULL,
+                                        max_price FLOAT DEFAULT ".DOPBSP_CONFIG_DATABASE_CALENDARS_DEFAULT_MAX_PRICE." NOT NULL,
                                         availability TEXT COLLATE utf8_unicode_ci NOT NULL,
                                         UNIQUE KEY id (id)
                                     );";
 
-
                     $sql_days = "CREATE TABLE " . DOPBSP_Days_table . " (
-                                        calendar_id int NOT NULL,
-                                        day VARCHAR(16) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        year INT NOT NULL,
-                                        data TEXT COLLATE utf8_unicode_ci NOT NULL
+                                        unique_key VARCHAR(32) NOT NULL,
+                                        calendar_id INT DEFAULT ".DOPBSP_CONFIG_DATABASE_DAYS_DEFAULT_CALENDAR_ID." NOT NULL,
+                                        day VARCHAR(16) DEFAULT '".DOPBSP_CONFIG_DATABASE_DAYS_DEFAULT_DAY."' COLLATE utf8_unicode_ci NOT NULL,
+                                        year INT DEFAULT ".DOPBSP_CONFIG_DATABASE_DAYS_DEFAULT_YEAR." NOT NULL,
+                                        data TEXT COLLATE utf8_unicode_ci NOT NULL,
+                                        UNIQUE KEY id (unique_key)
                                     );";
 
                     $sql_reservations = "CREATE TABLE " . DOPBSP_Reservations_table . " (
-                                        id int NOT NULL AUTO_INCREMENT,
-                                        calendar_id int NOT NULL,
-                                        check_in VARCHAR(16) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        check_out VARCHAR(16) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        start_hour VARCHAR(16) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        end_hour VARCHAR(16) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        no_items int DEFAULT 1 NOT NULL,
-                                        currency VARCHAR(8) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        currency_code VARCHAR(8) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        total_price int DEFAULT 0 NOT NULL,
-                                        discount int DEFAULT 0 NOT NULL,
-                                        price int DEFAULT 0 NOT NULL,
-                                        deposit int DEFAULT 0 NOT NULL,
-                                        language VARCHAR(8) DEFAULT 'en' COLLATE utf8_unicode_ci NOT NULL,
-                                        email VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        no_people int DEFAULT 1 NOT NULL,
-                                        no_children int DEFAULT 0 NOT NULL,
-                                        payment_method int DEFAULT 0 NOT NULL, 
-                                        paypal_transaction_id VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL, 
-                                        status VARCHAR(16) DEFAULT 'pending' COLLATE utf8_unicode_ci NOT NULL,
+                                        id INT NOT NULL AUTO_INCREMENT,
+                                        calendar_id INT DEFAULT ".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_CALENDAR_ID." NOT NULL,
+                                        check_in VARCHAR(16) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_CHECK_IN."' COLLATE utf8_unicode_ci NOT NULL,
+                                        check_out VARCHAR(16) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_CHECK_OUT."' COLLATE utf8_unicode_ci NOT NULL,
+                                        start_hour VARCHAR(16) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_START_HOUR."' COLLATE utf8_unicode_ci NOT NULL,
+                                        end_hour VARCHAR(16) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_END_HOUR."' COLLATE utf8_unicode_ci NOT NULL,
+                                        no_items INT DEFAULT ".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_NO_ITEMS." NOT NULL,
+                                        currency VARCHAR(32) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_CURRENCY."' COLLATE utf8_unicode_ci NOT NULL,
+                                        currency_code VARCHAR(8) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_CURRENCY_CODE."' COLLATE utf8_unicode_ci NOT NULL,
+                                        total_price FLOAT DEFAULT ".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_TOTAL_PRICE." NOT NULL,
+                                        discount FLOAT DEFAULT ".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_DISCOUNT." NOT NULL,
+                                        price FLOAT DEFAULT ".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_PRICE." NOT NULL,
+                                        deposit FLOAT DEFAULT ".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_DEPOSIT." NOT NULL,
+                                        language VARCHAR(8) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_LANGUAGE."' COLLATE utf8_unicode_ci NOT NULL,
+                                        email VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_EMAIL."' COLLATE utf8_unicode_ci NOT NULL,
+                                        no_people INT DEFAULT ".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_NO_PEOPLE." NOT NULL,
+                                        no_children INT DEFAULT ".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_NO_CHILDREN." NOT NULL,
+                                        payment_method INT DEFAULT ".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_PAYMENT_METHOD." NOT NULL, 
+                                        paypal_transaction_id VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_PAYPAL_TRANSACTION_ID."' COLLATE utf8_unicode_ci NOT NULL, 
+                                        status VARCHAR(16) DEFAULT '".DOPBSP_CONFIG_DATABASE_RESERVATIONS_DEFAULT_STATUS."' COLLATE utf8_unicode_ci NOT NULL,
                                         info TEXT COLLATE utf8_unicode_ci NOT NULL,
+                                        days_hours_history TEXT COLLATE utf8_unicode_ci NOT NULL,
                                         date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                                         UNIQUE KEY id (id)
                                     );";
 
                     $sql_users = "CREATE TABLE " . DOPBSP_Users_table . " (
-                                        id int NOT NULL AUTO_INCREMENT,
-                                        user_id int DEFAULT 0 NOT NULL,
-                                        type VARCHAR(16) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        view VARCHAR(6) DEFAULT 'true' COLLATE utf8_unicode_ci NOT NULL,
-                                        view_all VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        view_custom_posts VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
+                                        id INT NOT NULL AUTO_INCREMENT,
+                                        user_id INT DEFAULT ".DOPBSP_CONFIG_DATABASE_USERS_DEFAULT_USER_ID." NOT NULL,
+                                        type VARCHAR(16) DEFAULT '".DOPBSP_CONFIG_DATABASE_USERS_DEFAULT_TYPE."' COLLATE utf8_unicode_ci NOT NULL,
+                                        view VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_USERS_DEFAULT_VIEW."' COLLATE utf8_unicode_ci NOT NULL,
+                                        view_all VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_USERS_DEFAULT_VIEW_ALL."' COLLATE utf8_unicode_ci NOT NULL,
+                                        view_custom_posts VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_USERS_DEFAULT_VIEW_CUSTOM_POSTS."' COLLATE utf8_unicode_ci NOT NULL,
                                         admin_calendars TEXT COLLATE utf8_unicode_ci NOT NULL,
                                         UNIQUE KEY id (id)
                                     );";
-                    
+
                     $sql_forms = "CREATE TABLE " . DOPBSP_Forms_table . " (
-                                        id int NOT NULL AUTO_INCREMENT,
-                                        user_id int DEFAULT 0 NOT NULL,
-                                        name VARCHAR(128) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
+                                        id INT NOT NULL AUTO_INCREMENT,
+                                        user_id INT DEFAULT ".DOPBSP_CONFIG_DATABASE_FORMS_DEFAULT_USER_ID." NOT NULL,
+                                        name VARCHAR(128) DEFAULT '".DOPBSP_CONFIG_DATABASE_FORMS_DEFAULT_NAME."' COLLATE utf8_unicode_ci NOT NULL,
                                         UNIQUE KEY id (id)
                                     );";
                     
                     $sql_forms_fields = "CREATE TABLE " . DOPBSP_Forms_Fields_table . " (
-                                        id int NOT NULL AUTO_INCREMENT,
-                                        form_id int NOT NULL,
-                                        type VARCHAR(20) DEFAULT '' COLLATE utf8_unicode_ci NOT NULL,
-                                        position int NOT NULL,
-                                        multiple_select VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
+                                        id INT NOT NULL AUTO_INCREMENT,
+                                        form_id INT DEFAULT ".DOPBSP_CONFIG_DATABASE_FORMS_FIELDS_DEFAULT_FORM_ID." NOT NULL,
+                                        type VARCHAR(20) DEFAULT '".DOPBSP_CONFIG_DATABASE_FORMS_FIELDS_DEFAULT_TYPE."' COLLATE utf8_unicode_ci NOT NULL,
+                                        position INT DEFAULT ".DOPBSP_CONFIG_DATABASE_FORMS_FIELDS_DEFAULT_POSITION." NOT NULL,
+                                        multiple_select VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_FORMS_FIELDS_DEFAULT_MULTIPLE_SELECT."' COLLATE utf8_unicode_ci NOT NULL,
                                         allowed_characters TEXT COLLATE utf8_unicode_ci NOT NULL,
-                                        size int DEFAULT 0 NOT NULL,
-                                        is_email VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
-                                        required VARCHAR(6) DEFAULT 'false' COLLATE utf8_unicode_ci NOT NULL,
+                                        size INT DEFAULT ".DOPBSP_CONFIG_DATABASE_FORMS_FIELDS_DEFAULT_SIZE." NOT NULL,
+                                        is_email VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_FORMS_FIELDS_DEFAULT_IS_EMAIL."' COLLATE utf8_unicode_ci NOT NULL,
+                                        required VARCHAR(6) DEFAULT '".DOPBSP_CONFIG_DATABASE_FORMS_FIELDS_DEFAULT_REQUIRED."' COLLATE utf8_unicode_ci NOT NULL,
                                         translation TEXT COLLATE utf8_unicode_ci NOT NULL,
                                         UNIQUE KEY id (id)
                                     );";
                     
                     $sql_forms_select_options = "CREATE TABLE " . DOPBSP_Forms_Select_Options_table . " (
-                                        id int NOT NULL AUTO_INCREMENT,
-                                        field_id int NOT NULL,
+                                        id INT NOT NULL AUTO_INCREMENT,
+                                        field_id INT DEFAULT ".DOPBSP_CONFIG_DATABASE_FORMS_SELECT_OPTIONS_DEFAULT_FIELD_ID." NOT NULL,
                                         translation TEXT COLLATE utf8_unicode_ci NOT NULL,
                                         UNIQUE KEY id (id)
+                                    );";
+                    
+                    $sql_woocommerce = "CREATE TABLE " . DOPBSP_WooCommerce_table . " (
+                                        cart_key VARCHAR(64) DEFAULT '".DOPBSP_CONFIG_DATABASE_WOOCOMMERCE_DEFAULT_CART_KEY."' NOT NULL,
+                                        data TEXT COLLATE utf8_unicode_ci NOT NULL,
+                                        UNIQUE KEY id (cart_key)
                                     );";
 
                     dbDelta($sql_settings);
@@ -292,6 +365,7 @@
                     dbDelta($sql_forms);
                     dbDelta($sql_forms_fields);
                     dbDelta($sql_forms_select_options);
+                    dbDelta($sql_woocommerce);
 
                     if ($current_db_version == ''){
                         add_option('DOPBSP_db_version', $this->DOPBSP_db_version);
@@ -299,18 +373,18 @@
                     else{
                         update_option('DOPBSP_db_version', $this->DOPBSP_db_version);
                     }
-                    
-                    if (get_option('DOPBSP_administrators_permissions') == ''){add_option('DOPBSP_administrators_permissions', 0);}
-                    if (get_option('DOPBSP_authors_permissions') == ''){add_option('DOPBSP_authors_permissions', 0);}
-                    if (get_option('DOPBSP_contributors_permissions') == ''){add_option('DOPBSP_contributors_permissions', 0);}
-                    if (get_option('DOPBSP_editors_permissions') == ''){add_option('DOPBSP_editors_permissions', 0);}
-                    if (get_option('DOPBSP_subscribers_permissions') == ''){add_option('DOPBSP_subscribers_permissions', 0);}
+    
+                    if (get_option('DOPBSP_administrators_permissions') == ''){add_option('DOPBSP_administrators_permissions', DOPBSP_CONFIG_ADMINISTRATORS_PERMISSIONS);}
+                    if (get_option('DOPBSP_authors_permissions') == ''){add_option('DOPBSP_authors_permissions', DOPBSP_CONFIG_AUTHORS_PERMISSIONS);}
+                    if (get_option('DOPBSP_contributors_permissions') == ''){add_option('DOPBSP_contributors_permissions', DOPBSP_CONFIG_CONTRIBUTORS_PERMISSIONS);}
+                    if (get_option('DOPBSP_editors_permissions') == ''){add_option('DOPBSP_editors_permissions', DOPBSP_CONFIG_EDITORS_PERMISSIONS);}
+                    if (get_option('DOPBSP_subscribers_permissions') == ''){add_option('DOPBSP_subscribers_permissions', DOPBSP_CONFIG_SUBSCRIBERS_PERMISSIONS);}
                 
-                    if (get_option('DOPBSP_administrators_custom_posts_permissions') == ''){add_option('DOPBSP_administrators_custom_posts_permissions', 1);}
-                    if (get_option('DOPBSP_authors_custom_posts_permissions') == ''){add_option('DOPBSP_authors_custom_posts_permissions', 1);}
-                    if (get_option('DOPBSP_contributors_custom_posts_permissions') == ''){add_option('DOPBSP_contributors_custom_posts_permissions', 1);}
-                    if (get_option('DOPBSP_editors_custom_posts_permissions') == ''){add_option('DOPBSP_editors_custom_posts_permissions', 1);}
-                    if (get_option('DOPBSP_subscribers_custom_posts_permissions') == ''){add_option('DOPBSP_subscribers_custom_posts_permissions', 1);}
+                    if (get_option('DOPBSP_administrators_custom_posts_permissions') == ''){add_option('DOPBSP_administrators_custom_posts_permissions', DOPBSP_CONFIG_ADMINISTRATORS_CUSTOM_POSTS_PERMISSIONS);}
+                    if (get_option('DOPBSP_authors_custom_posts_permissions') == ''){add_option('DOPBSP_authors_custom_posts_permissions', DOPBSP_CONFIG_AUTHORS_CUSTOM_POSTS_PERMISSIONS);}
+                    if (get_option('DOPBSP_contributors_custom_posts_permissions') == ''){add_option('DOPBSP_contributors_custom_posts_permissions', DOPBSP_CONFIG_CONTRIBUTORS_CUSTOM_POSTS_PERMISSIONS);}
+                    if (get_option('DOPBSP_editors_custom_posts_permissions') == ''){add_option('DOPBSP_editors_custom_posts_permissions', DOPBSP_CONFIG_EDITORS_CUSTOM_POSTS_PERMISSIONS);}
+                    if (get_option('DOPBSP_subscribers_custom_posts_permissions') == ''){add_option('DOPBSP_subscribers_custom_posts_permissions', DOPBSP_CONFIG_SUBSCRIBERS_CUSTOM_POSTS_PERMISSIONS);}
                     
                     $this->initTablesData();
                 }
@@ -319,17 +393,21 @@
             
             function initTablesData(){
                 global $wpdb;
-
-                $settings = $wpdb->get_results('SELECT * FROM '.DOPBSP_Forms_table.' WHERE id=0');
+                global $DOPBSP_pluginSeries_translation;
+                
+                $DOPBSP_pluginSeries_translation->initDatabase();
+                $settings = $wpdb->get_results('SELECT * FROM '.DOPBSP_Forms_table.' WHERE id=1');
                 
                 if ($wpdb->num_rows == 0){
+                    $DOPBSP_pluginSeries_translation->setTranslation();
+                    
                     dbDelta($wpdb->insert(DOPBSP_Forms_table, array('id' => 1,
                                                                     'user_id' => 0,
                                                                     'name' => DOPBSP_BOOKING_FORM_NAME_DEFAULT)));
-                    
                     dbDelta($wpdb->insert(DOPBSP_Forms_Fields_table, array('id' => 1,
                                                                            'form_id' => 1,
                                                                            'type' => 'text',
+                                                                           'position' => 1,
                                                                            'multiple_select' => 'false',
                                                                            'allowed_characters' => '',
                                                                            'size' => 0,
@@ -339,6 +417,7 @@
                     dbDelta($wpdb->insert(DOPBSP_Forms_Fields_table, array('id' => 2,
                                                                            'form_id' => 1,
                                                                            'type' => 'text',
+                                                                           'position' => 2,
                                                                            'multiple_select' => 'false',
                                                                            'allowed_characters' => '',
                                                                            'size' => 0,
@@ -348,6 +427,7 @@
                     dbDelta($wpdb->insert(DOPBSP_Forms_Fields_table, array('id' => 3,
                                                                            'form_id' => 1,
                                                                            'type' => 'text',
+                                                                           'position' => 3,
                                                                            'multiple_select' => 'false',
                                                                            'allowed_characters' => '',
                                                                            'size' => 0,
@@ -357,6 +437,7 @@
                     dbDelta($wpdb->insert(DOPBSP_Forms_Fields_table, array('id' => 4,
                                                                            'form_id' => 1,
                                                                            'type' => 'text',
+                                                                           'position' => 4,
                                                                            'multiple_select' => 'false',
                                                                            'allowed_characters' => '0123456789+-().',
                                                                            'size' => 0,
@@ -366,6 +447,7 @@
                     dbDelta($wpdb->insert(DOPBSP_Forms_Fields_table, array('id' => 5,
                                                                            'form_id' => 1,
                                                                            'type' => 'textarea',
+                                                                           'position' => 5,
                                                                            'multiple_select' => 'false',
                                                                            'allowed_characters' => '',
                                                                            'size' => 0,
@@ -377,23 +459,27 @@
 
 // Pages            
             function printAdminPage(){// Prints out the admin page.
-                $this->DOPBSP_AddEditCalendars->calendarsList();
+                $this->DOPBSP_templates->calendarsList();
+            }
+            
+            function printTranslationPage(){// Prints out the translation page.
+                $this->DOPBSP_templates->translation();
             }
             
             function printSettingsPage(){// Prints out the settings page.
-                $this->DOPBSP_AddEditCalendars->settings();
+                $this->DOPBSP_templates->settings();
             }
             
             function printSettingsUsersPermissions(){// Prints out the User Permissions page.
-                $this->DOPBSP_AddEditCalendars = new DOPBSPTemplates();
-                $this->DOPBSP_AddEditCalendars->settingsUsersPermissions();
+                $this->DOPBSP_templates = new DOPBSPTemplates();
+                $this->DOPBSP_templates->settingsUsersPermissions();
                 
                 die();
             }
             
             function printSettingsUsersCustomPostsPermissions(){// Prints out the User Permissions page.
-                $this->DOPBSP_AddEditCalendars = new DOPBSPTemplates();
-                $this->DOPBSP_AddEditCalendars->settingsUsersCustomPostsPermissions();
+                $this->DOPBSP_templates = new DOPBSPTemplates();
+                $this->DOPBSP_templates->settingsUsersCustomPostsPermissions();
                 
                 die();
             }
@@ -403,7 +489,7 @@
                 $current_backend_language = get_option('DOPBSP_backend_language_'.wp_get_current_user()->ID);
                 
                 if ($current_backend_language == ''){
-                    add_option('DOPBSP_backend_language_'.wp_get_current_user()->ID, 'en');
+                    add_option('DOPBSP_backend_language_'.wp_get_current_user()->ID, DOPBSP_CONFIG_BACKEND_DEFAULT_LANGUAGE);
                 }
                 else{
                     update_option('DOPBSP_backend_language_'.wp_get_current_user()->ID, $_POST['language']);
@@ -418,14 +504,11 @@
                                     
                 $calendarsHTML = array();
                 $noCalendars = 0;
-                array_push($calendarsHTML, '<ul>');
                 
-                //array_push($calendarsHTML,$_GET['post'].$_GET['action']); die();
                 if (!isset($_GET['post'])){
                     if ($this->administratorHasPermissions(wp_get_current_user()->ID)){
                         $calendars = $wpdb->get_results('SELECT * FROM '.DOPBSP_Calendars_table.' ORDER BY id DESC');
                         $noCalendars = $wpdb->num_rows;
-
                     }
                     else{
                         if ($this->userHasPermissions(wp_get_current_user()->ID)){
@@ -452,9 +535,6 @@
                                 }
                             }
 
-
-                            //echo $calendarlist; die();
-
                             if ($calendarlist){
                                $calendars_assigned = $wpdb->get_results('SELECT * FROM '.DOPBSP_Calendars_table.' WHERE id IN ('.$calendarlist.') ORDER BY id DESC');   
                             }
@@ -464,6 +544,8 @@
                         }
                     }
                 }
+                
+                array_push($calendarsHTML, '<ul>');
                 
                 if ($noCalendars != 0 || (isset($calendars_assigned) && count($calendars_assigned) != 0)){
                     if ($calendars){
@@ -485,7 +567,6 @@
                             array_push($calendarsHTML, '<li class="item" id="DOPBSP-ID-'.$calendar->id.'"><span class="id">ID '.$calendar->id.':</span> <span class="name">'.$this->shortName($calendar->name, 25).'</span></li>');
                         }
                     }
-                   
                 }
                 else{
                     array_push($calendarsHTML, '<li class="no-data">'.DOPBSP_NO_CALENDARS.'</li>');
@@ -496,12 +577,84 @@
                 
             	die();                
             }
+            
+            function showReservationsCalendars(){// Show Calendars List in Reservations.
+                global $wpdb;
+                                    
+                $calendarsHTML = array();
+                $noCalendars = 0;
+                
+                if (!isset($_GET['post'])){
+                    if ($this->administratorHasPermissions(wp_get_current_user()->ID)){
+                        $calendars = $wpdb->get_results('SELECT * FROM '.DOPBSP_Calendars_table.' ORDER BY id ASC');
+                        $noCalendars = $wpdb->num_rows;
+                    }
+                    else{
+                        if ($this->userHasPermissions(wp_get_current_user()->ID)){
+                            $calendars = $wpdb->get_results('SELECT * FROM '.DOPBSP_Calendars_table.' WHERE user_id="'.wp_get_current_user()->ID.'" ORDER BY id ASC');
+                        }
+
+                        if ($this->userCalendarsIds(wp_get_current_user()->ID)){
+                            $calendarsIds = explode(',', $this->userCalendarsIds(wp_get_current_user()->ID));
+                            $calendarlist = '';
+                            $calendarsfound = array();
+                            $i=0;
+
+                            foreach($calendarsIds as $calendarId){
+                                if ($calendarId){
+                                    if ($i < 1){
+                                        $calendarlist .= $calendarId;
+                                    }
+                                    else{
+                                      $calendarlist .= ", ".$calendarId;  
+                                    }
+
+                                    array_push($calendarsfound, $calendarId);
+                                    $i++;
+                                }
+                            }
+
+                            if ($calendarlist){
+                               $calendars_assigned = $wpdb->get_results('SELECT * FROM '.DOPBSP_Calendars_table.' WHERE id IN ('.$calendarlist.') ORDER BY id ASC');   
+                            }
+                        }
+                        else{
+                            $calendars_assigned = $calendars;
+                        }
+                    }
+                }
+                
+                array_push($calendarsHTML, '<option value="0">'.DOPBSP_RESERVATIONS_FILTERS_CALENDAR_SELECT.'</option>');
+                                
+                if ($calendars){
+                    foreach ($calendars as $calendar){
+                        if (isset($calendarsfound)){
+                            if (!in_array($calendar->id, $calendarsfound)){
+                                array_push($calendarsHTML, '<option value="'.$calendar->id.'">ID '.$calendar->id.': '.$calendar->name.'</option>');
+                            }
+                        }
+
+                        if($this->administratorHasPermissions(wp_get_current_user()->ID)){
+                          array_push($calendarsHTML, '<option value="'.$calendar->id.'">ID '.$calendar->id.': '.$calendar->name.'</option>');  
+                        }
+                    }
+                }
+
+                if (isset($calendars_assigned)){
+                    foreach ($calendars_assigned as $calendar) {
+                        array_push($calendarsHTML, '<option value="'.$calendar->id.'">ID '.$calendar->id.': '.$calendar->name.'</option>');
+                    }
+                }
+                
+                echo implode('', $calendarsHTML);
+            }
         
             function addCalendar(){// Add Calendar.
                 global $wpdb;
                                 
                 $wpdb->insert(DOPBSP_Calendars_table, array('user_id' => wp_get_current_user()->ID,
-                                                            'name' => DOPBSP_ADD_CALENDAR_NAME));
+                                                            'name' => DOPBSP_ADD_CALENDAR_NAME,
+                                                            'availability' => ''));
                 $wpdb->insert(DOPBSP_Settings_table, array('calendar_id' => $wpdb->insert_id,
                                                            'hours_definitions' => '[{"value": "00:00"}]'));                                
                 $this->showCalendars();
@@ -511,8 +664,10 @@
             
             function showCalendarId(){
                 global $wpdb;
+                
                 $calendar = $wpdb->get_results('SELECT * FROM '.DOPBSP_Calendars_table.' WHERE post_id="'.$_POST['post_id'].'" ORDER BY id');
-                echo $calendar[0]->id.';;;;;'.$calendar[0]->name;
+                echo $calendar[0]->id;
+                
                 die();
             }
 
@@ -520,8 +675,6 @@
                 if (isset($_POST['calendar_id'])){
                     global $wpdb;
                     global $DOPBSP_currencies;
-                    global $DOPBSP_month_names;
-                    global $DOPBSP_day_names;
                     $data = array();
                     
                     $settings = $wpdb->get_row('SELECT * FROM '.DOPBSP_Settings_table.' WHERE calendar_id="'.$_POST['calendar_id'].'"');
@@ -537,7 +690,7 @@
                                   'DateEndLabel' => DOPBSP_DATE_END_LABEL,
                                   'DateStartLabel' => DOPBSP_DATE_START_LABEL,
                                   'DateType' => 1,
-                                  'DayNames' => $DOPBSP_day_names,
+                                  'DayNames' => array(DOPBSP_DAY_SUNDAY, DOPBSP_DAY_MONDAY, DOPBSP_DAY_TUESDAY, DOPBSP_DAY_WEDNESDAY, DOPBSP_DAY_THURSDAY, DOPBSP_DAY_FRIDAY, DOPBSP_DAY_SATURDAY),
                                   'DetailsFromHours' => $settings->details_from_hours,
                                   'FirstDay' => $settings->first_day,
                                   'HoursEnabled' => $settings->hours_enabled,
@@ -554,7 +707,7 @@
                                   'ID' => $_POST['calendar_id'],
                                   'InfoLabel' => DOPBSP_HOURS_INFO_LABEL,
                                   'MaxYear' => $settings->max_year,
-                                  'MonthNames' => $DOPBSP_month_names,
+                                  'MonthNames' => array(DOPBSP_MONTH_JANUARY, DOPBSP_MONTH_FEBRUARY, DOPBSP_MONTH_MARCH, DOPBSP_MONTH_APRIL, DOPBSP_MONTH_MAY, DOPBSP_MONTH_JUNE, DOPBSP_MONTH_JULY, DOPBSP_MONTH_AUGUST, DOPBSP_MONTH_SEPTEMBER, DOPBSP_MONTH_OCTOBER, DOPBSP_MONTH_NOVEMBER, DOPBSP_MONTH_DECEMBER),
                                   'NextMonthText' => DOPBSP_NEXT_MONTH,
                                   'NotesLabel' => DOPBSP_HOURS_NOTES_LABEL,
                                   'PreviousMonthText' => DOPBSP_PREVIOUS_MONTH,
@@ -585,7 +738,7 @@
                     $days = $wpdb->get_results('SELECT * FROM '.DOPBSP_Days_table.' WHERE calendar_id="'.$_POST['calendar_id'].'" AND year="'.$_POST['year'].'"');
                     
                     foreach ($days as $day):
-                        $schedule[$day->day] = json_decode($day->data);
+                        $schedule[$day->day] = $day->data;
                     endforeach;
                                             
                     if (count($schedule) > 0){
@@ -603,28 +756,38 @@
                 if (isset($_POST['calendar_id'])){
                     global $wpdb;
                     
-                    $schedule = $_POST['schedule'];
+                    $schedule = json_decode(stripslashes($_POST['schedule']));
                     $calendar_id = $_POST['calendar_id'];
-                                        
+                    $query_update_values = array();
+                    $query_insert_values = array();
+                    $update_data = '';
+                    
                     while ($data = current($schedule)){
                         $day = key($schedule);
                         $day_items = explode('-', $day);
-                        $result = $wpdb->get_results('SELECT * FROM '.DOPBSP_Days_table.' WHERE calendar_id='.$calendar_id.' AND day=\''.$day.'\'');
+                        $result = $wpdb->get_results('SELECT * FROM '.DOPBSP_Days_table.' WHERE calendar_id='.$calendar_id.' AND day="'.$day.'"');
                                                 
-                        if ($wpdb->num_rows != 0){  
-                            $wpdb->update(DOPBSP_Days_table, array('data' => json_encode($data)), array('calendar_id' => $calendar_id, 
-                                                                                                        'day' => $day));
+                        if ($wpdb->num_rows != 0){
+                            if ($update_data == ''){
+                                $update_data = $data;
+                            }
+                            array_push($query_update_values, 'day="'.$day.'"');
                         }
                         else{
-                            $wpdb->insert(DOPBSP_Days_table, array('calendar_id' => $calendar_id,
-                                                                   'day' => $day,
-                                                                   'year' => $day_items[0],
-                                                                   'data' => json_encode($data)));
+                            array_push($query_insert_values, '(\''.$calendar_id.'_'.$day.'\', \''.$calendar_id.'\', \''.$day.'\', \''.$day_items[0].'\', \''.json_encode($data).'\')');
                         }
-                        
                         next($schedule);                        
                     }
                     
+                    if (count($query_update_values) > 0){
+                        $wpdb->query('UPDATE '.DOPBSP_Days_table.' SET data=\''.json_encode($update_data).'\' WHERE calendar_id="'.$calendar_id.'" AND ('.implode(' OR ', $query_update_values).')');
+                    }
+                    
+                    if (count($query_insert_values) > 0){
+                        $wpdb->query('INSERT INTO '.DOPBSP_Days_table.' (unique_key, calendar_id, day, year, data) VALUES '.implode(', ', $query_insert_values));
+                    }
+                    
+                    // Update maximum year data.
                     $max_year = $wpdb->get_row('SELECT MAX(year) AS year FROM '.DOPBSP_Days_table.' WHERE calendar_id="'.$calendar_id.'"');
                     
                     if ($max_year->year > 0){
@@ -646,15 +809,18 @@
                 if (isset($_POST['calendar_id'])){
                     global $wpdb;
                     
-                    $schedule = $_POST['schedule'];
+                    $schedule = json_decode(stripslashes($_POST['schedule']));
                     $calendar_id = $_POST['calendar_id'];
+                    $query = array();
                                         
                     while ($data = current($schedule)){
                         $day = key($schedule);
-                        $wpdb->query('DELETE FROM '.DOPBSP_Days_table.' WHERE calendar_id='.$calendar_id.' AND day=\''.$day.'\'');                        
+                        array_push($query, 'day="'.$day.'"');                
                         next($schedule);                        
                     }
+                    $wpdb->query('DELETE FROM '.DOPBSP_Days_table.' WHERE calendar_id="'.$calendar_id.'" AND ('.implode(' OR ', $query).')');
                     
+                    // Update maximum year data.
                     $max_year = $wpdb->get_row('SELECT MAX(year) AS year FROM '.DOPBSP_Days_table.' WHERE calendar_id="'.$calendar_id.'"'); 
                     
                     if ($max_year->year > 0){
@@ -672,7 +838,7 @@
             
             function cleanSchedule(){
                 global $wpdb;
-                $wpdb->query('DELETE FROM '.DOPBSP_Days_table.' WHERE day<\''.date('Y-m-d').'\'');
+                $wpdb->query('DELETE FROM '.DOPBSP_Days_table.' WHERE day < \''.date('Y-m-d').'\'');
             }
 
             function showCalendarSettings(){// Show Calendar Info.
@@ -841,17 +1007,17 @@
                     $user = $wpdb->get_row('SELECT * FROM '.DOPBSP_Users_table.' WHERE user_id="'.$user_id.'"');
                     $new_admin_calendars = $user->admin_calendars;
                         
-                    if (strpos($user->admin_calendars, ','.$_POST['calendar_id']) !== false){
+                    if (strpos($user->admin_calendars, ','.$calendar_id) !== false){
                         if ($user_status < 1){
-                            $new_admin_calendars = str_replace(','.$_POST['calendar_id'], '', $new_admin_calendars);
+                            $new_admin_calendars = str_replace(','.$calendar_id, '', $new_admin_calendars);
                         }
                     }
                     else{
                         if ($user_status > 0){
-                            $new_admin_calendars .= ",".$_POST['calendar_id'];
+                            $new_admin_calendars .= ",".$calendar_id;
                         }
                     }
-                    $wpdb->update(DOPBSP_Users_table, array('admin_calendars' => $new_admin_calendars), array(user_id => $user_id));
+                    $wpdb->update(DOPBSP_Users_table, array('admin_calendars' => $new_admin_calendars), array('user_id' => $user_id));
                 }
                 
                 die();
@@ -908,7 +1074,7 @@
                                   'payment_paypal_credit_card' => $_POST['payment_paypal_credit_card'],
                                   'payment_paypal_sandbox_enabled' => $_POST['payment_paypal_sandbox_enabled']);     
                 
-                $wpdb->update(DOPBSP_Calendars_table, array('name' => $_POST['name']), array(id => $_POST['calendar_id']));
+                $wpdb->update(DOPBSP_Calendars_table, array('name' => $_POST['name']), array('id' => $_POST['calendar_id']));
                 $wpdb->update(DOPBSP_Settings_table, $settings, array('calendar_id' => $_POST['calendar_id']));
                 
                 echo '';
@@ -1070,7 +1236,7 @@
                 $data = array('min_price' => $min,
                               'max_price' => $max,
                               'availability' => json_encode($availability));
-                $wpdb->update(DOPBSP_Calendars_table, $data, array('calendar_id' => $calendar_id));
+                $wpdb->update(DOPBSP_Calendars_table, $data, array('id' => $calendar_id));
             }
             
             function nextHour($hour, $hours){
@@ -1093,19 +1259,24 @@
                 
                 if (isset($current_user->data->ID)){
                     $user_permissions = $wpdb->get_results('SELECT * FROM '.DOPBSP_Users_table.' WHERE user_id='.$current_user->data->ID);
-
+                    
                     if ($user_permissions[0]->view_custom_posts == 'true'){
-                        $postdata = array('labels' => array('name' => DOPBSP_CUSTOM_POSTS_TYPE,
+                        $postdata = array('exclude_from_search' => false,
+                                          'has_archive' => true,
+                                          'labels' => array('name' => DOPBSP_CUSTOM_POSTS_TYPE,
                                                             'singular_name' => DOPBSP_CUSTOM_POSTS_TYPE,
                                                             'menu_name' => DOPBSP_CUSTOM_POSTS_TYPE,
                                                             'all_items' => DOPBSP_CUSTOM_POSTS_TYPE_ADD_NEW_ITEM_ALL_ITEMS,
                                                             'add_new_item' => DOPBSP_CUSTOM_POSTS_TYPE_ADD_NEW_ITEM,
                                                             'edit_item' => DOPBSP_CUSTOM_POSTS_TYPE_EDIT_ITEM),
+                                          'menu_icon' => plugins_url('assets/gui/images/icon-custom-post-type.png', __FILE__),
                                           'public' => true,
-                                          'has_archive' => true,
-                                          'rewrite' => true);
-                        register_post_type('dopbsp', $postdata);
-                        flush_rewrite_rules();
+                                          'publicly_queryable' => true,
+                                          'rewrite' => true,
+                                          'taxonomies' => array('category', 'post_tag'),
+                                          'show_in_nav_menus' => true,
+                                          'supports' => array('title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks', 'custom-fields', 'comments', 'revisions'));
+                        register_post_type(DOPBSP_CONFIG_CUSTOM_POST_SLUG, $postdata);
                     }
                 }
             }
@@ -1119,7 +1290,7 @@
                     $meta = array('id' => 'dopsbsp-custom-post-meta',
                                   'title' => DOPBSP_CUSTOM_POSTS_TYPE_BOOKING_SYSTEM,
                                   'description' => '',
-                                  'post_type' => 'dopbsp',
+                                  'post_type' => DOPBSP_CONFIG_CUSTOM_POST_SLUG,
                                   'context' => 'normal',
                                   'priority' => 'high');
                     
@@ -1127,11 +1298,12 @@
                 
                     if ($wpdb->num_rows == 0){
                         $wpdb->insert(DOPBSP_Calendars_table, array('post_id' => $post->ID,
+                                                                    'user_id' => $current_user->data->ID,
                                                                     'name' => get_the_title($post->ID),
-                                                                    'user_id' => $current_user->data->ID));
+                                                                    'availability' => ''));
                         $wpdb->insert(DOPBSP_Settings_table, array('calendar_id' => $wpdb->insert_id,
                                                                    'hours_definitions' => '[{"value": "00:00"}]',
-                                                                   'page_url' => get_permalink($post->ID))); 
+                                                                   'page_url' => get_permalink($post->ID)));
                     }
                     
                     $callback = create_function('$post, $meta', 'DOPBookingSystemPROBackEnd::generateCustomPostsTypeMeta($post, $meta["args"]);');
@@ -1223,7 +1395,7 @@
             
 // Settings
             function updateUsers(){
-                require_once(ABSPATH.'wp-includes/pluggable.php');
+                require_once(str_replace('\\', '/', ABSPATH).'wp-includes/pluggable.php');
                 global $wpdb;
                 
                 $users = get_users('orderby=id');
@@ -1232,34 +1404,87 @@
                     $control_data = $wpdb->get_results('SELECT * FROM '.DOPBSP_Users_table.' WHERE user_id='.$user->ID);
 
                     if ($wpdb->num_rows == 0){
-                        if (get_userdata($user->ID)->roles[0] == 'subscriber'){
-                            $wpdb->insert(DOPBSP_Users_table, array('user_id' => $user->ID,
-                                                                    'type' => get_userdata($user->ID)->roles[0],
-                                                                    'view' => 'false'));
+                        switch (get_userdata($user->ID)->roles[0]){
+                            case 'author':
+                                $view = get_option('DOPBSP_authors_permissions') == 1 ? 'true':'false';
+                                $view_all = 'false';
+                                $view_custom_posts = get_option('DOPBSP_authors_custom_posts_permissions') == 1 ? 'true':'false';
+                                break;
+                            case 'contributor':
+                                $view = get_option('DOPBSP_contributors_permissions') == 1 ? 'true':'false';
+                                $view_all = 'false';
+                                $view_custom_posts = get_option('DOPBSP_contributors_custom_posts_permissions') == 1 ? 'true':'false';
+                                break;
+                            case 'editor':
+                                $view = get_option('DOPBSP_editors_permissions') == 1 ? 'true':'false';
+                                $view_all = 'false';
+                                $view_custom_posts = get_option('DOPBSP_editors_custom_posts_permissions') == 1 ? 'true':'false';
+                                break;
+                            case 'subscriber':
+                                $view = get_option('DOPBSP_subscribers_permissions') == 1 ? 'true':'false';
+                                $view_all = 'false';
+                                $view_custom_posts = get_option('DOPBSP_subscribers_custom_posts_permissions') == 1 ? 'true':'false';
+                                break;
+                            default:
+                                $view = 'true';
+                                $view_all = get_option('DOPBSP_administrators_permissions') == 1 ? 'true':'false';
+                                $view_custom_posts = get_option('DOPBSP_administrators_custom_posts_permissions') == 1 ? 'true':'false';
                         }
-                        else{
-                            $wpdb->insert(DOPBSP_Users_table, array('user_id' => $user->ID,
-                                                                    'type' => get_userdata($user->ID)->roles[0]));
-                        }
+
+                        $wpdb->insert(DOPBSP_Users_table, array('user_id' => $user->ID,
+                                                                'type' => get_userdata($user->ID)->roles[0],
+                                                                'view' => $view,
+                                                                'view_all' => $view_all,
+                                                                'view_custom_posts' => $view_custom_posts,
+                                                                'admin_calendars' => ''));
+                    }
+                    else{
+                        $wpdb->update(DOPBSP_Users_table, array('type' => get_userdata($user->ID)->roles[0]), array('user_id' => $user->ID));
                     }
                 }
+                
                 $superusers = get_super_admins();
                 
                 foreach ($superusers as $superuser){
-                    $user = get_user_by( 'login', $superuser ); 
-                    $control_data = $wpdb->get_results('SELECT * FROM '.DOPBSP_Users_table.' WHERE user_id='.$user->ID);
+                    $user = get_user_by('slug', $superuser);
                     
-                    if ($wpdb->num_rows == 0){
-                        $wpdb->insert(DOPBSP_Users_table, array('user_id' => $user->ID,
-                                                                    'type' => 'administrator'));
+                    if (is_object($user)){
+                        $control_data = $wpdb->get_results('SELECT * FROM '.DOPBSP_Users_table.' WHERE user_id='.$user->ID);
+
+                        if ($wpdb->num_rows == 0){
+                            $wpdb->insert(DOPBSP_Users_table, array('user_id' => $user->ID,
+                                                                    'type' => 'administrator',
+                                                                    'view' => 'true',
+                                                                    'view_all' => get_option('DOPBSP_administrators_permissions') == 1 ? 'true':'false',
+                                                                    'view_custom_posts' => get_option('DOPBSP_administrators_custom_posts_permissions') == 1 ? 'true':'false',
+                                                                    'admin_calendars' => ''));
+                        }
                     }
                 } 
+                
+                $table_users = $wpdb->get_results('SELECT * FROM '.DOPBSP_Users_table);
+                
+                foreach ($table_users as $table_user){
+                    $user_found = false;
+                    
+                    foreach ($users as $user){
+                        if ($table_user->user_id == $user->ID){
+                            $user_found = true;
+                        }
+                    }
+                    
+                    if (!$user_found){
+                        $wpdb->update(DOPBSP_Calendars_table, array('user_id' => 1), array('user_id' => $table_user->user_id));
+                        $wpdb->update(DOPBSP_Forms_table, array('user_id' => 1), array('user_id' => $table_user->user_id));
+                        $wpdb->delete(DOPBSP_Users_table, array('user_id' => $table_user->user_id));
+                    }
+                }
             }
 
             function administratorHasPermissions($id){
                 global $wpdb;     
                 
-                $user = $wpdb->get_row('SELECT * FROM '.DOPBSP_Users_table.' WHERE id='.$id);
+                $user = $wpdb->get_row('SELECT * FROM '.DOPBSP_Users_table.' WHERE user_id='.$id);
                 
                 if ($user->view_all == 'true'){
                     return true;                    
@@ -1314,7 +1539,7 @@
                 else{
                     $data = array('view_all' => $_POST['value']);
                 }
-                $wpdb->update(DOPBSP_Users_table, $data, array(user_id => $_POST['id']));
+                $wpdb->update(DOPBSP_Users_table, $data, array('user_id' => $_POST['id']));
                 
                 echo '';
                 
@@ -1325,7 +1550,7 @@
                 global $wpdb;
                 
                 $data = array('view_custom_posts' => $_POST['value']);
-                $wpdb->update(DOPBSP_Users_table, $data, array(user_id => $_POST['id']));
+                $wpdb->update(DOPBSP_Users_table, $data, array('user_id' => $_POST['id']));
                 
                 echo '';
                 
@@ -1345,7 +1570,7 @@
                 }
                 
                 switch ($_POST['type']){
-                    case "administrator":
+                    case 'administrator':
                         if (get_option('DOPBSP_administrators_permissions') == ''){
                             add_option('DOPBSP_administrators_permissions', $permissions);
                         }
@@ -1355,7 +1580,7 @@
                         $data = array('view_all' => $permissions_value);
                         $wpdb->update(DOPBSP_Users_table, $data, array('type' => 'administrator'));
                         break;
-                    case "author":
+                    case 'author':
                         if (get_option('DOPBSP_authors_permissions') == ''){
                             add_option('DOPBSP_authors_permissions', $permissions);
                         }
@@ -1365,7 +1590,7 @@
                         $data = array('view' => $permissions_value);
                         $wpdb->update(DOPBSP_Users_table, $data, array('type' => 'author'));
                         break;
-                    case "contributor":
+                    case 'contributor':
                         if (get_option('DOPBSP_contributors_permissions') == ''){
                             add_option('DOPBSP_contributors_permissions', $permissions);
                         }
@@ -1375,7 +1600,7 @@
                         $data = array('view' => $permissions_value);
                         $wpdb->update(DOPBSP_Users_table, $data, array('type' => 'contributor'));
                         break;
-                    case "editor":
+                    case 'editor':
                         if (get_option('DOPBSP_editors_permissions') == ''){
                             add_option('DOPBSP_editors_permissions', $permissions);
                         }
@@ -1385,7 +1610,7 @@
                         $data = array('view' => $permissions_value);
                         $wpdb->update(DOPBSP_Users_table, $data, array('type' => 'editor'));
                         break;
-                    case "subscriber":
+                    case 'subscriber':
                         if (get_option('DOPBSP_subscribers_permissions') == ''){
                             add_option('DOPBSP_subscribers_permissions', $permissions);
                         }
@@ -1413,7 +1638,7 @@
                 }
                 
                 switch ($_POST['type']){
-                    case "administrator":
+                    case 'administrator':
                         if (get_option('DOPBSP_administrators_custom_posts_permissions') == ''){
                             add_option('DOPBSP_administrators_custom_posts_permissions', $DOPBSP_permissions);
                         }
@@ -1423,7 +1648,7 @@
                         $data = array('view_custom_posts' => $DOPBSP_permissions_value);
                         $wpdb->update(DOPBSP_Users_table, $data, array('type' => 'administrator'));
                         break;
-                    case "author":
+                    case 'author':
                         if (get_option('DOPBSP_authors_custom_posts_permissions') == ''){
                             add_option('DOPBSP_authors_custom_posts_permissions', $DOPBSP_permissions);
                         }
@@ -1433,7 +1658,7 @@
                         $data = array('view_custom_posts' => $DOPBSP_permissions_value);
                         $wpdb->update(DOPBSP_Users_table, $data, array('type' => 'author'));
                         break;
-                    case "contributor":
+                    case 'contributor':
                         if (get_option('DOPBSP_contributors_custom_posts_permissions') == ''){
                             add_option('DOPBSP_contributors_custom_posts_permissions', $DOPBSP_permissions);
                         }
@@ -1443,7 +1668,7 @@
                         $data = array('view_custom_posts' => $DOPBSP_permissions_value);
                         $wpdb->update(DOPBSP_Users_table, $data, array('type' => 'contributor'));
                         break;
-                    case "editor":
+                    case 'editor':
                         if (get_option('DOPBSP_editors_custom_posts_permissions') == ''){
                             add_option('DOPBSP_editors_custom_posts_permissions', $DOPBSP_permissions);
                         }
@@ -1453,7 +1678,7 @@
                         $data = array('view_custom_posts' => $DOPBSP_permissions_value);
                         $wpdb->update(DOPBSP_Users_table, $data, array('type' => 'editor'));
                         break;
-                    case "subscriber":
+                    case 'subscriber':
                         if (get_option('DOPBSP_subscribers_custom_posts_permissions') == ''){
                             add_option('DOPBSP_subscribers_custom_posts_permissions', $DOPBSP_permissions);
                         }
@@ -1520,14 +1745,14 @@
             
 // Prototypes
             function dateToFormat($date, $type){
-                global $DOPBSP_month_names;  
+                $month_names = array(DOPBSP_MONTH_JANUARY, DOPBSP_MONTH_FEBRUARY, DOPBSP_MONTH_MARCH, DOPBSP_MONTH_APRIL, DOPBSP_MONTH_MAY, DOPBSP_MONTH_JUNE, DOPBSP_MONTH_JULY, DOPBSP_MONTH_AUGUST, DOPBSP_MONTH_SEPTEMBER, DOPBSP_MONTH_OCTOBER, DOPBSP_MONTH_NOVEMBER, DOPBSP_MONTH_DECEMBER);
                 $dayPieces = explode('-', $date);
 
                 if ($type == '1'){
-                    return $DOPBSP_month_names[(int)$dayPieces[1]-1].' '.$dayPieces[2].', '.$dayPieces[0];
+                    return $month_names[(int)$dayPieces[1]-1].' '.$dayPieces[2].', '.$dayPieces[0];
                 }
                 else{
-                    return $dayPieces[2].' '.$DOPBSP_month_names[(int)$dayPieces[1]-1].' '.$dayPieces[0];
+                    return $dayPieces[2].' '.$month_names[(int)$dayPieces[1]-1].' '.$dayPieces[0];
                 }
             }
             
@@ -1568,6 +1793,10 @@
                 else{
                     return false;
                 }
+            }
+            
+            function getWithDecimals($number, $length = 2){
+                return (int)$number == $number ? (string)$number:number_format($number, $length, '.', '');
             }
         }
     }

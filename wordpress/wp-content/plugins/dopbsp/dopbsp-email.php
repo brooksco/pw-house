@@ -2,10 +2,10 @@
 
 /*
 * Title                   : Booking System Pro (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 2.0
 * File                    : dopbsp-backend.php
-* File Version            : 1.4
-* Created / Last Modified : 15 June 2013
+* File Version            : 1.7
+* Created / Last Modified : 21 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -42,8 +42,9 @@
                                  $email_to_user = true,
                                  $transaction_id = ''){
                 global $wpdb;
+                global $DOPBSP_pluginSeries_translation;
                 
-                include_once "translation/frontend/".$language.".php";
+                $DOPBSP_pluginSeries_translation->setTranslation('frontend', $language);
                 
                 $settings = $wpdb->get_row('SELECT * FROM '.DOPBSP_Settings_table.' WHERE calendar_id="'.$calendar_id.'"');
                 $calendar = $wpdb->get_row('SELECT * FROM '.DOPBSP_Calendars_table.' WHERE id="'.$calendar_id.'"');
@@ -100,10 +101,10 @@
                 $message_date .= $end_hour != '' ? '<br /><strong>'.DOPBSP_END_HOURS_LABEL.':</strong> '.($settings->hours_ampm == 'true' ? $this->timeToAMPM($end_hour):$end_hour):'';
 
                 $message_price = $no_items != '' && $settings->no_items_enabled == 'true' ? '<strong>'.DOPBSP_NO_ITEMS_LABEL.':</strong> '.$no_items:'';
-                $message_price .= $price != 0 ? '<br /><strong>'.DOPBSP_TOTAL_PRICE_LABEL.'</strong> '.$currency.$price:'';
-                $message_price .= $deposit != 0 ? '<br /><strong>'.DOPBSP_DEPOSIT_PRICE_LABEL.'</strong> '.$currency.$deposit.' ('.$settings->deposit.'%)'.
-                                                  '<br /><strong>'.DOPBSP_DEPOSIT_PRICE_LEFT_LABEL.'</strong> '.$currency.($price-$deposit):'';
-                $message_price .= $total_price != 0 && $total_price != $price ? '<br /><strong>'.DOPBSP_DISCOUNT_PRICE_LABEL.'</strong> <span style="text-decoration: line-through;">'.$currency.$total_price.'</span> ('.$discount.'% '.DOPBSP_DISCOUNT_TEXT.')':'';
+                $message_price .= $price != 0 ? '<br /><strong>'.DOPBSP_TOTAL_PRICE_LABEL.'</strong> '.$currency.$this->getWithDecimals($price):'';
+                $message_price .= $deposit != 0 ? '<br /><strong>'.DOPBSP_DEPOSIT_PRICE_LABEL.'</strong> '.$currency.$this->getWithDecimals($deposit).' ('.$settings->deposit.'%)'.
+                                                  '<br /><strong>'.DOPBSP_DEPOSIT_PRICE_LEFT_LABEL.'</strong> '.$currency.$this->getWithDecimals($price-$deposit):'';
+                $message_price .= $total_price != 0 && $total_price != $price ? '<br /><strong>'.DOPBSP_DISCOUNT_PRICE_LABEL.'</strong> <span style="text-decoration: line-through;">'.$currency.$this->getWithDecimals($total_price).'</span> ('.$discount.'% '.DOPBSP_DISCOUNT_TEXT.')':'';
 
                 $message_form = '';
 
@@ -331,14 +332,14 @@
             
 // Prototypes
             function dateToFormat($date, $type){
-                global $DOPBSP_month_names;  
+                $month_names = array(DOPBSP_MONTH_JANUARY, DOPBSP_MONTH_FEBRUARY, DOPBSP_MONTH_MARCH, DOPBSP_MONTH_APRIL, DOPBSP_MONTH_MAY, DOPBSP_MONTH_JUNE, DOPBSP_MONTH_JULY, DOPBSP_MONTH_AUGUST, DOPBSP_MONTH_SEPTEMBER, DOPBSP_MONTH_OCTOBER, DOPBSP_MONTH_NOVEMBER, DOPBSP_MONTH_DECEMBER);  
                 $dayPieces = explode('-', $date);
 
                 if ($type == '1'){
-                    return $DOPBSP_month_names[(int)$dayPieces[1]-1].' '.$dayPieces[2].', '.$dayPieces[0];
+                    return $month_names[(int)$dayPieces[1]-1].' '.$dayPieces[2].', '.$dayPieces[0];
                 }
                 else{
-                    return $dayPieces[2].' '.$DOPBSP_month_names[(int)$dayPieces[1]-1].' '.$dayPieces[0];
+                    return $dayPieces[2].' '.$month_names[(int)$dayPieces[1]-1].' '.$dayPieces[0];
                 }
             }
             
@@ -371,7 +372,9 @@
                     return $item;
                 }
             }
+            
+            function getWithDecimals($number, $length = 2){
+                return (int)$number == $number ? (string)$number:number_format($number, $length, '.', '');
+            }
         }
     }
-        
-?>

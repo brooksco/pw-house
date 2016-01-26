@@ -2,10 +2,10 @@
 
 /*
 * Title                   : Booking System Pro (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 2.0
 * File                    : doptg-widget.php
-* File Version            : 1.1
-* Created / Last Modified : 03 June 2013
+* File Version            : 1.3
+* Created / Last Modified : 21 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -14,8 +14,24 @@
   
     class DOPBookingSystemPROWidget extends WP_Widget{
         function DOPBookingSystemPROWidget(){
-            $widget_ops = array('classname' => 'DOPBookingSystemPROWidget', 'description' => !is_admin() ? '':DOPBSP_WIDGET_DESCRIPTION);
-            $this->WP_Widget('DOPBookingSystemPROWidget', !is_admin() ? '':DOPBSP_WIDGET_TITLE, $widget_ops);
+            if (is_admin()){
+                global $wpdb;
+
+                $tables = $wpdb->get_results('SHOW TABLES');
+
+                foreach ($tables as $table){
+                    $object_name = 'Tables_in_'.DB_NAME;
+                    $table_name = $table->$object_name;
+                    
+                    if (strrpos($table_name, 'dopbsp_translation') !== false){
+                        global $DOPBSP_pluginSeries_translation;
+                        $DOPBSP_pluginSeries_translation->setTranslation('backend');
+                        break;
+                    }
+                }
+            }
+            $widget_ops = array('classname' => 'DOPBookingSystemPROWidget', 'description' => !is_admin() || !defined('DOPBSP_WIDGET_DESCRIPTION') ? '':DOPBSP_WIDGET_DESCRIPTION);
+            $this->WP_Widget('DOPBookingSystemPROWidget', !is_admin() || !defined('DOPBSP_WIDGET_TITLE') ? '':DOPBSP_WIDGET_TITLE, $widget_ops);
         }
  
         function form($instance){
@@ -24,8 +40,7 @@
             $instance = wp_parse_args((array)$instance, array('title' => '',
                                                               'selection' => 'calendar',
                                                               'id' => '0',
-//                                                              'ids' => '0',
-                                                              'lang' => 'en'));
+                                                              'lang' => DOPBSP_CONFIG_BACKEND_DEFAULT_LANGUAGE));
             $title = $instance['title'];
             $selection = $instance['selection'];
             $id = $instance['id'];
@@ -80,7 +95,7 @@
 
 <!-- Language Field -->
             <p id="DOPBSP-widget-lang-<?php echo $this->get_field_id('selection')?>">
-                <label for="<?$this->get_field_id('lang')?>"><?php echo DOPBSP_WIDGET_LABEL_LANGUAGE. ' '.esc_attr($lang)?></label>
+                <label for="<?$this->get_field_id('lang')?>"><?php echo DOPBSP_WIDGET_LABEL_LANGUAGE?></label>
                 <select class="widefat" id="<?php echo $this->get_field_id('lang')?>" name="<?php echo $this->get_field_name('lang')?>">
                 <?php echo $this->returnLanguages(esc_attr($lang))?>
                 </select>
@@ -129,7 +144,7 @@
             $selection = empty($instance['selection']) ? 'calendar':$instance['selection'];
             $id = empty($instance['id']) ? '0':$instance['id'];
 //            $ids = empty($instance['ids']) ? '0':$instance['ids'];
-            $lang = empty($instance['lang']) ? 'en':$instance['lang'];
+            $lang = empty($instance['lang']) ? DOPBSP_CONFIG_FRONTEND_DEFAULT_LANGUAGE:$instance['lang'];
  
             if (!empty($title)){
                 echo $before_title.$title.$after_title;        
@@ -140,7 +155,7 @@
                     echo do_shortcode('[dopbsp id="'.$id.'" lang="'.$lang.'"]');
                     break;
                 case 'sidebar':
-                    echo '<div class="DOPBookingSystemPRO_SidebarWidget" id="DOPBookingSystemPRO_SidebarWidget'.$id.'"></div>';
+                    echo '<div class="DOPBookingSystemPRO_OuterSidebar" id="DOPBookingSystemPRO_OuterSidebar'.$id.'"></div>';
                     break;
             }
 
@@ -223,5 +238,3 @@
             return implode('', $html);
         }
     }
-
-?>

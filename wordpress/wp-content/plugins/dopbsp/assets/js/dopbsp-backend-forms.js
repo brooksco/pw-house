@@ -1,9 +1,9 @@
 /*
 * Title                   : Booking System PRO (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 1.9
 * File                    : dopbsp-backend-forms.js
-* File Version            : 1.0
-* Created / Last Modified : 15 June 2013
+* File Version            : 1.2
+* Created / Last Modified : 03 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -82,7 +82,7 @@ function dopbspShowBookingForm(id){// Show Form
             HeaderHTML.push('<a href="javascript:void()" class="header-help last"><span>'+DOPBSP_BOOKING_FORM_SETTINGS_HELP+'</span></a>');
             
             $jDOPBSP('.column-header', '.column2', '.DOPBSP-admin').html(HeaderHTML.join(''));
-;
+            
             dopbspSettingsBookingForm(data, 2);
             
             clearClick = true;
@@ -137,8 +137,7 @@ function dopbspDeleteBookingForm(id){// Delete Form
 
 // Form Generator
 function dopbspSettingsBookingForm(name, column){// Settings Form.
-    var HTML = new Array(), 
-    nameTranslation = new Array(),
+    var HTML = new Array(),
     copyHelper;
     
     HTML.push('<form method="post" class="settings" action="" onsubmit="return false;">');
@@ -452,7 +451,7 @@ function dopsbsGenerateBookingFormFieldSettings(id, type, namesSec){
     // Name
     HTML.push(' <div class="settings-box">');
     HTML.push('     <label for="booking-form-field-name-'+id+'">'+DOPBSP_BOOKING_FORM_FIELDS_NAME_LABEL+' *</label>');
-    HTML.push('     <input type="text" name="booking-form-field-name-'+id+'" id="booking-form-field-name-'+id+'" value="'+label+'" onkeyup="dopbspBookingFormFieldChange(\'translation\', '+id+', this.value, \''+$jDOPBSP('#DOPBSP-admin-translation').val()+'\', \'\')" onblur="dopbspBookingFormFieldChange(\'translation\', '+id+', this.value, \''+$jDOPBSP('#DOPBSP-admin-translation').val()+'\', \'\')" />');
+    HTML.push('     <input type="text" name="booking-form-field-name-'+id+'" id="booking-form-field-name-'+id+'" value="'+label+'" onkeyup="dopbspBookingFormFieldEdit(\'translation\', '+id+', this.value, \''+$jDOPBSP('#DOPBSP-admin-translation').val()+'\')" onblur="dopbspBookingFormFieldEdit(\'translation\', '+id+', this.value, \''+$jDOPBSP('#DOPBSP-admin-translation').val()+'\', \'\', true)" />');
     HTML.push('     <a href="javascript:void()" class="help"><span>'+DOPBSP_BOOKING_FORM_FIELDS_NAME_INFO+'</span></a>');
     HTML.push('     <span class="loader" id="booking-form-loader-field-name-'+id+'"></span>');
     HTML.push('     <br class="DOPBSP-clear" />');
@@ -474,7 +473,7 @@ function dopsbsGenerateBookingFormFieldSettings(id, type, namesSec){
         // Multiple Select    
         HTML.push(' <div class="settings-box">');
         HTML.push('     <label for="booking-form-field-multiple-select-'+id+'">'+DOPBSP_BOOKING_FORM_FIELDS_SELECT_MULTIPLE_SELECT_LABEL+'</label>');
-        HTML.push('     <input type="checkbox" name="booking-form-field-multiple-select-'+id+'" id="booking-form-field-multiple-select-'+id+'" onclick="dopbspBookingFormFieldChange(\'multiple_select\', \''+id+'\', \'false\', \'\')" />');
+        HTML.push('     <input type="checkbox" name="booking-form-field-multiple-select-'+id+'" id="booking-form-field-multiple-select-'+id+'" onclick="dopbspBookingFormFieldEdit(\'multiple_select\', \''+id+'\', \'false\', \'\', true)" />');
         HTML.push('     <a href="javascript:void()" class="help"><span>'+DOPBSP_BOOKING_FORM_FIELDS_SELECT_MULTIPLE_SELECT_INFO+'</span></a>');
         HTML.push('     <span class="loader" id="booking-form-loader-field-multiple-select-'+id+'"></span>');
         HTML.push('     <br class="DOPBSP-clear" />');
@@ -485,7 +484,7 @@ function dopsbsGenerateBookingFormFieldSettings(id, type, namesSec){
         // Allowed Characters    
         HTML.push(' <div class="settings-box">');
         HTML.push('     <label for="booking-form-field-allowed-characters-'+id+'">'+DOPBSP_BOOKING_FORM_FIELDS_ALLOWED_CHARACTERS_LABEL+'</label>');
-        HTML.push('     <input type="text" name="booking-form-field-allowed-characters-'+id+'" id="booking-form-field-allowed-characters-'+id+'" value="" onkeyup="dopbspBookingFormFieldChange(\'allowed_characters\', \''+id+'\', this.value, \'\')" onblur="dopbspBookingFormFieldChange(\'allowed_characters\', \''+id+'\', this.value, \'\')" />');
+        HTML.push('     <input type="text" name="booking-form-field-allowed-characters-'+id+'" id="booking-form-field-allowed-characters-'+id+'" value="" onkeyup="dopbspBookingFormFieldEdit(\'allowed_characters\', \''+id+'\', this.value, \'\')" onblur="dopbspBookingFormFieldEdit(\'allowed_characters\', \''+id+'\', this.value, \'\', true)" />');
         HTML.push('     <a href="javascript:void()" class="help"><span>'+DOPBSP_BOOKING_FORM_FIELDS_ALLOWED_CHARACTERS_INFO+'</span></a>');
         HTML.push('     <span class="loader" id="booking-form-loader-field-allowed-characters-'+id+'"></span>');
         HTML.push('     <br class="DOPBSP-clear" />');
@@ -493,7 +492,7 @@ function dopsbsGenerateBookingFormFieldSettings(id, type, namesSec){
         //Size
         HTML.push(' <div class="settings-box">');
         HTML.push('     <label for="booking-form-field-size-'+id+'">'+DOPBSP_BOOKING_FORM_FIELDS_SIZE_LABEL+'</label>');
-        HTML.push('     <input type="text" name="booking-form-field-size-'+id+'" id="booking-form-field-size-'+id+'" value="" onkeyup="dopbspBookingFormFieldChange(\'size\', \''+id+'\', this.value, \'\')" onblur="dopbspBookingFormFieldChange(\'size\', \''+id+'\', this.value, \'\')" />');
+        HTML.push('     <input type="text" name="booking-form-field-size-'+id+'" id="booking-form-field-size-'+id+'" value="" onkeyup="dopbspBookingFormFieldEdit(\'size\', \''+id+'\', this.value, \'\')" onblur="dopbspBookingFormFieldEdit(\'size\', \''+id+'\', this.value, \'\', true)" />');
         HTML.push('     <a href="javascript:void()" class="help"><span>'+DOPBSP_BOOKING_FORM_FIELDS_SIZE_INFO+'</span></a>');
         HTML.push('     <span class="loader" id="booking-form-loader-field-size-'+id+'"></span>');
         HTML.push('     <br class="DOPBSP-clear" />');
@@ -504,7 +503,7 @@ function dopsbsGenerateBookingFormFieldSettings(id, type, namesSec){
         // Email
         HTML.push(' <div class="settings-box">');
         HTML.push('     <label for="booking-form-field-email-'+id+'">'+DOPBSP_BOOKING_FORM_FIELDS_EMAIL_LABEL+'</label>');
-        HTML.push('     <input type="checkbox" name="booking-form-field-email-'+id+'" id="booking-form-field-email-'+id+'" onclick="dopbspBookingFormFieldChange(\'is_email\', \''+id+'\', \'false\', \'\')" />');
+        HTML.push('     <input type="checkbox" name="booking-form-field-email-'+id+'" id="booking-form-field-email-'+id+'" onclick="dopbspBookingFormFieldEdit(\'is_email\', \''+id+'\', \'false\', \'\', true)" />');
         HTML.push('     <a href="javascript:void()" class="help"><span>'+DOPBSP_BOOKING_FORM_FIELDS_EMAIL_INFO+'</span></a>');
         HTML.push('     <span class="loader" id="booking-form-loader-field-is-email-'+id+'"></span>');
         HTML.push('     <br class="DOPBSP-clear" />');
@@ -514,7 +513,7 @@ function dopsbsGenerateBookingFormFieldSettings(id, type, namesSec){
     // Required
     HTML.push(' <div class="settings-box">');
     HTML.push('     <label for="booking-form-field-required-'+id+'">'+DOPBSP_BOOKING_FORM_FIELDS_REQUIRED_LABEL+'</label>');
-    HTML.push('     <input type="checkbox" name="booking-form-field-required-'+id+'" id="booking-form-field-required-'+id+'" onclick="dopbspBookingFormFieldChange(\'required\', \''+id+'\', \'false\', \'\')" />');
+    HTML.push('     <input type="checkbox" name="booking-form-field-required-'+id+'" id="booking-form-field-required-'+id+'" onclick="dopbspBookingFormFieldEdit(\'required\', \''+id+'\', \'false\', \'\', true)" />');
     HTML.push('     <a href="javascript:void()" class="help"><span>'+DOPBSP_BOOKING_FORM_FIELDS_REQUIRED_INFO+'</span></a>');
     HTML.push('     <span class="loader" id="booking-form-loader-field-required-'+id+'"></span>');
     HTML.push('     <br class="DOPBSP-clear" />');
@@ -532,16 +531,32 @@ function dopbspBookingFormShowFields(){
     });
 }
 
-function dopbspBookingFormFieldChange(name, id, value, language){
+function dopbspBookingFormFieldEdit(name, id, value, language, onBlur){
     var alphaValue = value;
+    console.log(onBlur);
+    onBlur = onBlur == undefined ? false:true;
+    
+    if (ajaxRequestInProgress != undefined && !onBlur){
+        ajaxRequestInProgress.abort();
+    }
+    
+    if (saveTranslationTimeout != undefined){
+        clearTimeout(saveTranslationTimeout);
+    }
     
     if (name == 'translation'){
         var fieldTranslation = $jDOPBSP('#booking-form-field-translation-'+id).val(),
-        newFieldTranslation = new Array()
-        ;
+        newFieldTranslation = new Array();
+
+        value = dopbspReplaceAll("'", '', value);
+        value = dopbspReplaceAll('"', '', value);
+
         $jDOPBSP('#booking-form-field-'+id+' .booking-form-field-name').html(value+' <span></span>');
         
+        fieldTranslation = dopbspReplaceAll("'", '', fieldTranslation);
+        fieldTranslation = dopbspReplaceAll('"', '', fieldTranslation);
         fieldTranslation = dopbspReplaceAll('#', '"', fieldTranslation);
+        
         fieldTranslation = JSON.parse(fieldTranslation);
 
         $jDOPBSP.each(fieldTranslation, function(key){
@@ -597,31 +612,64 @@ function dopbspBookingFormFieldChange(name, id, value, language){
             break;
     }
     
-    $jDOPBSP.post(ajaxurl, {action:'dopbsp_edit_booking_form_field',
-                            id: id,
-                            name: name,
-                            value: alphaValue}, function(data){
-        switch (name){
-            case 'translation':
-                $jDOPBSP('#booking-form-loader-field-name-'+id).css('display', 'none');
-                break;
-            case 'multiple_select':
-                $jDOPBSP('#booking-form-loader-field-multiple-select-'+id).css('display', 'none');
-                break;
-            case 'allowed_characters':
-                $jDOPBSP('#booking-form-loader-field-allowed-characters-'+id).css('display', 'none');
-                break;
-            case 'size':
-                $jDOPBSP('#booking-form-loader-field-size-'+id).css('display', 'none');
-                break;
-            case 'is_email':
-                $jDOPBSP('#booking-form-loader-field-is-email-'+id).css('display', 'none');
-                break;
-            case 'required':
-                $jDOPBSP('#booking-form-loader-field-required-'+id).css('display', 'none');
-                break;
-        }
-    });
+    if (onBlur){
+        $jDOPBSP.post(ajaxurl, {action:'dopbsp_edit_booking_form_field',
+                                id: id,
+                                name: name,
+                                value: alphaValue}, function(data){
+            switch (name){
+                case 'translation':
+                    $jDOPBSP('#booking-form-loader-field-name-'+id).css('display', 'none');
+                    break;
+                case 'multiple_select':
+                    $jDOPBSP('#booking-form-loader-field-multiple-select-'+id).css('display', 'none');
+                    break;
+                case 'allowed_characters':
+                    $jDOPBSP('#booking-form-loader-field-allowed-characters-'+id).css('display', 'none');
+                    break;
+                case 'size':
+                    $jDOPBSP('#booking-form-loader-field-size-'+id).css('display', 'none');
+                    break;
+                case 'is_email':
+                    $jDOPBSP('#booking-form-loader-field-is-email-'+id).css('display', 'none');
+                    break;
+                case 'required':
+                    $jDOPBSP('#booking-form-loader-field-required-'+id).css('display', 'none');
+                    break;
+            }
+        });
+    }
+    else{
+        saveTranslationTimeout = setTimeout(function(){
+            clearTimeout(saveTranslationTimeout);
+            
+            ajaxRequestInProgress = $jDOPBSP.post(ajaxurl, {action:'dopbsp_edit_booking_form_field',
+                                                            id: id,
+                                                            name: name,
+                                                            value: alphaValue}, function(data){
+                switch (name){
+                    case 'translation':
+                        $jDOPBSP('#booking-form-loader-field-name-'+id).css('display', 'none');
+                        break;
+                    case 'multiple_select':
+                        $jDOPBSP('#booking-form-loader-field-multiple-select-'+id).css('display', 'none');
+                        break;
+                    case 'allowed_characters':
+                        $jDOPBSP('#booking-form-loader-field-allowed-characters-'+id).css('display', 'none');
+                        break;
+                    case 'size':
+                        $jDOPBSP('#booking-form-loader-field-size-'+id).css('display', 'none');
+                        break;
+                    case 'is_email':
+                        $jDOPBSP('#booking-form-loader-field-is-email-'+id).css('display', 'none');
+                        break;
+                    case 'required':
+                        $jDOPBSP('#booking-form-loader-field-required-'+id).css('display', 'none');
+                        break;
+                }
+            });
+        }, 600);
+    }
 }
 
 function dopbspExpandBookingFormField(id){
@@ -643,8 +691,8 @@ function dopbspChangeTranslationBookingFormField(fieldId, language){
     fieldTranslation = dopbspReplaceAll('#', '"', fieldTranslation);
     fieldTranslation = JSON.parse(fieldTranslation);
     
-    $jDOPBSP('#booking-form-field-name-'+fieldId).attr('onkeyup', "dopbspBookingFormFieldChange('translation', "+fieldId+", this.value, '"+language+"')");
-    $jDOPBSP('#booking-form-field-name-'+fieldId).attr('onblur', "dopbspBookingFormFieldChange('translation', "+fieldId+", this.value, '"+language+"')");
+    $jDOPBSP('#booking-form-field-name-'+fieldId).attr('onkeyup', "dopbspBookingFormFieldEdit('translation', "+fieldId+", this.value, '"+language+"')");
+    $jDOPBSP('#booking-form-field-name-'+fieldId).attr('onblur', "dopbspBookingFormFieldEdit('translation', "+fieldId+", this.value, '"+language+"', true)");
     $jDOPBSP('#booking-form-field-'+fieldId+' .booking-form-field-name').html(fieldTranslation[language]+' <span></span>');
     $jDOPBSP('#booking-form-field-name-'+fieldId).val(fieldTranslation[language]);
     
@@ -815,7 +863,7 @@ function dopbspBookingFormFieldSelectAddOption(fieldId){
         
         if (data){
             HTML.push('<div class="option-box" id="booking-form-field-select-option-'+data+'">');
-            HTML.push(' <input type="text" class="form_name form_options_name_cls" id="booking-form-field-select-option-id-'+data+'" value="'+DOPBSP_BOOKING_FORM_FIELDS_SELECT_NEW_OPTION_LABEL+'" onkeyup="dopbspBookingFormFieldOptionChange('+data+', this.value)" onblur="dopbspBookingFormFieldOptionChange('+data+', this.value)" />');
+            HTML.push(' <input type="text" class="form_name form_options_name_cls" id="booking-form-field-select-option-id-'+data+'" value="'+DOPBSP_BOOKING_FORM_FIELDS_SELECT_NEW_OPTION_LABEL+'" onkeyup="dopbspBookingFormFieldOptionEdit('+data+', this.value)" onblur="dopbspBookingFormFieldOptionEdit('+data+', this.value, true)" />');
             HTML.push(' <a href="javascript:dopbspBookingFormFieldSelectDeleteOption('+data+')" title="'+DOPBSP_BOOKING_FORM_FIELDS_SELECT_DELETE_OPTION+'" class="remove" id="booking-form-field-select-option-remove-'+data+'"></a>');
             HTML.push(' <span class="loader" id="booking-form-loader-field-select-option-'+data+'"></span>');
             HTML.push(' <input type="hidden" class="dopbsp-booking-form-options-translations" id="booking-form-field-select-option-translation-'+data+'" name="option" value="'+namesSec+'"/>');
@@ -829,16 +877,30 @@ function dopbspBookingFormFieldSelectAddOption(fieldId){
     });
 }
 
-function dopbspBookingFormFieldOptionChange(id, value){
+function dopbspBookingFormFieldOptionEdit(id, value, onBlur){
     var fieldTranslation = $jDOPBSP('#booking-form-field-select-option-translation-'+id).val(),
     fieldLanguage = $jDOPBSP('#booking-form-field-select-option-language-'+id).val(),
     fieldNewTranslation = new Array();
+    
+    onBlur = onBlur == undefined ? false:true;
 
+    if (ajaxRequestInProgress != undefined && !onBlur){
+        ajaxRequestInProgress.abort();
+    }
+    
+    if (saveTranslationTimeout != undefined){
+        clearTimeout(saveTranslationTimeout);
+    }
+    
+    fieldTranslation = dopbspReplaceAll("'", '', fieldTranslation);
+    fieldTranslation = dopbspReplaceAll('"', '', fieldTranslation);
     fieldTranslation = dopbspReplaceAll('#', '"', fieldTranslation);
     fieldTranslation = JSON.parse(fieldTranslation);
 
     $jDOPBSP.each(fieldTranslation, function(key){
         if (key == fieldLanguage){
+            value = dopbspReplaceAll("'", '', value);
+            value = dopbspReplaceAll('"', '', value);
             fieldTranslation[key] = value;
         }
         fieldNewTranslation.push('#'+key+'#: #'+fieldTranslation[key]+'#');
@@ -848,13 +910,27 @@ function dopbspBookingFormFieldOptionChange(id, value){
 
     $jDOPBSP('#booking-form-field-select-option-translation-'+id).val(fieldNewTranslation); 
     $jDOPBSP('#booking-form-loader-field-select-option-'+id).css('display', 'block');
-
-    $jDOPBSP.post(ajaxurl, {action:'dopbsp_edit_booking_form_field_select_option',
-                            id: id,
-                            translation: fieldNewTranslation}, function(data){
-        $jDOPBSP('#booking-form-loader-field-select-option-'+id).css('display', 'none');
-        $jDOPBSP('#booking-form-field-option-demo-'+id).html(value);
-    });
+    
+    if (onBlur){
+        $jDOPBSP.post(ajaxurl, {action:'dopbsp_edit_booking_form_field_select_option',
+                                id: id,
+                                translation: fieldNewTranslation}, function(data){
+            $jDOPBSP('#booking-form-loader-field-select-option-'+id).css('display', 'none');
+            $jDOPBSP('#booking-form-field-option-demo-'+id).html(value);
+        });
+    }
+    else{
+        saveTranslationTimeout = setTimeout(function(){
+            clearTimeout(saveTranslationTimeout);
+            
+            ajaxRequestInProgress = $jDOPBSP.post(ajaxurl, {action:'dopbsp_edit_booking_form_field_select_option',
+                                                            id: id,
+                                                            translation: fieldNewTranslation}, function(data){
+                $jDOPBSP('#booking-form-loader-field-select-option-'+id).css('display', 'none');
+                $jDOPBSP('#booking-form-field-option-demo-'+id).html(value);
+            });
+        }, 600);
+    }
 }
 
 function dopbspBookingFormFieldSelectDeleteOption(id){

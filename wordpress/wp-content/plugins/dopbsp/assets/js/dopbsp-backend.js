@@ -1,9 +1,9 @@
 /*
 * Title                   : Booking System PRO (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 2.0
 * File                    : dopbsp-backend.js
-* File Version            : 1.7
-* Created / Last Modified : 31 July 2013
+* File Version            : 2.0
+* Created / Last Modified : 27 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -14,48 +14,59 @@
 var currCalendar = 0,
 currBookingForm = 0,
 clearClick = true,
+clearReservationsClick = true,
 calendarLoaded = false,
 messageTimeout,
-$jDOPBSP = jQuery.noConflict();
+messageReservationsTimeout,
+saveTranslationTimeout,
+$jDOPBSP = jQuery.noConflict(),
+ajaxRequestInProgress;
 
 $jDOPBSP(document).ready(function(){
-    dopbspResize();
+    if (typeof DOPBSP_curr_page !== 'undefined'){
+        dopbspResize();
 
-    switch (DOPBSP_curr_page){
-        case 'Calendars List':
-            dopbspShowCalendars();
-            break;
-        case 'Forms List':
-            dopbspShowBookingForms();
-            break;
-        case 'Settings':
-            dopbspShowUsersPermissions();
-            break;
-        case 'Settings Post':
-            dopbspShowUsersCustomPostsPermissions();
-            break;
+        switch (DOPBSP_curr_page){
+            case 'Calendars List':
+                dopbspShowCalendars();
+                break;
+            case 'Reservations List':
+                dopbspShowReservations();
+                break;
+            case 'Forms List':
+                dopbspShowBookingForms();
+                break;
+            case 'Translation':
+                dopbspShowTranslation();
+                break;
+            case 'Settings':
+                dopbspShowUsersPermissions();
+                break;
+            case 'Settings Post':
+                dopbspShowUsersCustomPostsPermissions();
+                break;
+        }
     }
-    
 });
 
-function dopbspResize(){// ResiE admin panel.
+function dopbspResize(){// Resize admin panel.
     if (DOPBSP_curr_page == 'Calendars List'){
         if (!calendarLoaded){
-            $jDOPBSP('.column2', '.DOPBSP-admin').width(($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-2)/2);
-            $jDOPBSP('.column3', '.DOPBSP-admin').width(($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-2)/2);
+            $jDOPBSP('.column2', '.DOPBSP-admin').width(($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-4)/2);
+            $jDOPBSP('.column3', '.DOPBSP-admin').width(($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-4)/2);
         }
         else{
             $jDOPBSP('.column2', '.DOPBSP-admin').width(620);
-            $jDOPBSP('.column3', '.DOPBSP-admin').width($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-$jDOPBSP('.column2', '.DOPBSP-admin').width()-2);
+            $jDOPBSP('.column3', '.DOPBSP-admin').width($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-$jDOPBSP('.column2', '.DOPBSP-admin').width()-4);
         }
     }
     else{
-        $jDOPBSP('.column2', '.DOPBSP-admin').width($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-2);
+        $jDOPBSP('.column2', '.DOPBSP-admin').width($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-3);
         $jDOPBSP('.column3', '.DOPBSP-admin').width(0);
     }
     
     $jDOPBSP('.column-separator', '.DOPBSP-admin').height(0);
-    $jDOPBSP('.column-separator', '.DOPBSP-admin').height($jDOPBSP('.DOPBSP-admin').height()-$jDOPBSP('h2', '.DOPBSP-admin').height()-parseInt($jDOPBSP('h2', '.DOPBSP-admin').css('padding-top'))-parseInt($jDOPBSP('h2', '.DOPBSP-admin').css('padding-bottom')));
+    $jDOPBSP('.column-separator', '.DOPBSP-admin').height($jDOPBSP('.main', '.DOPBSP-admin').height());
     $jDOPBSP('.main', '.DOPBSP-admin').css('display', 'block');
     
     setTimeout(function(){
@@ -63,32 +74,19 @@ function dopbspResize(){// ResiE admin panel.
     }, 100);
 }
 
-function dopbspResizeOneTime(){// ResiE admin panel.
+function dopbspResizeOneTime(){// Resize admin panel.
     if (!calendarLoaded){
-        $jDOPBSP('.column2', '.DOPBSP-admin').width(($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-2)/2);
-        $jDOPBSP('.column3', '.DOPBSP-admin').width(($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-2)/2);
+        $jDOPBSP('.column2', '.DOPBSP-admin').width(($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-4)/2);
+        $jDOPBSP('.column3', '.DOPBSP-admin').width(($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-4)/2);
     }
     else{
         $jDOPBSP('.column2', '.DOPBSP-admin').width(620);
-        $jDOPBSP('.column3', '.DOPBSP-admin').width($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-$jDOPBSP('.column2', '.DOPBSP-admin').width()-2);
+        $jDOPBSP('.column3', '.DOPBSP-admin').width($jDOPBSP('.DOPBSP-admin').width()-$jDOPBSP('.column1', '.DOPBSP-admin').width()-$jDOPBSP('.column2', '.DOPBSP-admin').width()-4);
     }
     
     $jDOPBSP('.column-separator', '.DOPBSP-admin').height(0);
-    $jDOPBSP('.column-separator', '.DOPBSP-admin').height($jDOPBSP('.DOPBSP-admin').height()-$jDOPBSP('h2', '.DOPBSP-admin').height()-parseInt($jDOPBSP('h2', '.DOPBSP-admin').css('padding-top'))-parseInt($jDOPBSP('h2', '.DOPBSP-admin').css('padding-bottom')));
+    $jDOPBSP('.column-separator', '.DOPBSP-admin').height($jDOPBSP('.main', '.DOPBSP-admin').height());
     $jDOPBSP('.main', '.DOPBSP-admin').css('display', 'block');
-}
-
-//****************************************************************************** Translation
-
-function dopbspChangeTranslation(){
-    if (clearClick){
-        dopbspToggleMessage('show', DOPBSP_SAVE);
-        clearClick = false;
-        $jDOPBSP.post(ajaxurl, {action: 'dopbsp_change_translation',
-                                language: $jDOPBSP('#DOPBSP-admin-translation').val()}, function(data){
-            window.location.reload();
-        });
-    }
 }
 
 //****************************************************************************** Calendars
@@ -117,8 +115,7 @@ function dopbspShowCalendars(){// Show all calendars.
                 // Show Post calendar
                 $jDOPBSP.post(ajaxurl, {action: 'dopbsp_show_calendar_id', post_id: post_id}, function(data){
                     var id = data.split(';;;;;')[0];
-                    var name = data.split(';;;;;')[1];
-                    dopbspShowCalendar(id);
+                    dopbspShowCalendar(id, true);
                 });
             }
             clearClick = true;
@@ -129,6 +126,7 @@ function dopbspShowCalendars(){// Show all calendars.
 
 function dopbspAddCalendar(){// Add calendar via AJAX.
     if (clearClick){
+        $jDOPBSP('#DOPBSP-admin-reservations').css('display', 'none');
         dopbspRemoveColumns(2);
         dopbspToggleMessage('show', DOPBSP_ADD_CALENDAR_SUBMITED);
         
@@ -149,36 +147,43 @@ function dopbspCalendarsEvents(){// Init Calendar Events.
                 currCalendar = id;
                 $jDOPBSP('li', '.column1', '.DOPBSP-admin').removeClass('item-selected');
                 $jDOPBSP(this).addClass('item-selected');
-                dopbspShowCalendar(id);
+                dopbspShowCalendar(id, true);
             }
         }
     });
 }
 
-function dopbspShowCalendar(calendar_id){// Show Images List.
+function dopbspShowCalendar(calendarId, reloadReservations){// Show Images List.
     if (clearClick){
-        $jDOPBSP('#calendar_id').val(calendar_id);
+        $jDOPBSP('#calendar_id').val(calendarId);
         dopbspRemoveColumns(2);
         calendarLoaded = true;            
         dopbspToggleMessage('show', DOPBSP_LOAD);
         
-        $jDOPBSP.post(ajaxurl, {action:'dopbsp_show_calendar', calendar_id:calendar_id}, function(data){
+        if (reloadReservations){
+            dopbspShowReservations();
+            $jDOPBSP('#DOPBSP-admin-reservations').css('display', 'block');
+        }
+        
+        $jDOPBSP.post(ajaxurl, {action: 'dopbsp_show_calendar',
+                                calendar_id: calendarId}, function(data){
             var HeaderHTML = new Array();
             
             HeaderHTML.push('<div class="edit-button">');
             HeaderHTML.push('    <a href="javascript:dopbspShowCalendarSettings()" title="'+DOPBSP_EDIT_CALENDAR_SUBMIT+'"></a>');
             HeaderHTML.push('</div>');
             HeaderHTML.push('<div class="reservations-button">');
-            HeaderHTML.push('    <a href="javascript:void(0)" id="DOPBSP-reservations" title="'+DOPBSP_SHOW_RESERVATIONS+'"><span></span></a>');
+            HeaderHTML.push('    <a href="javascript:void(0)" id="DOPBSP-new-reservations" title="'+DOPBSP_SHOW_NEW_RESERVATIONS+'"><span></span></a>');
             HeaderHTML.push('</div>');
             
             if (DOPBSP_user_role == 'administrator'){
                 var post_type = dopbspGetUrlVars()["post_type"];
                 var post_action = dopbspGetUrlVars()["action"];
+                
                 if (post_type != 'dopbsp' && post_action != 'edit') {
-                HeaderHTML.push('<div class="users-permissions-button">');
-                HeaderHTML.push('    <a href="javascript:dopbspCalendarUsersPermissionsSettings()" title="'+DOPBSP_EDIT_CALENDAR_USERS_PERMISSIONS+'"></a>');
-                HeaderHTML.push('</div>');
+                    HeaderHTML.push('<div class="users-permissions-button">');
+                    HeaderHTML.push('    <a href="javascript:dopbspCalendarUsersPermissionsSettings()" title="'+DOPBSP_EDIT_CALENDAR_USERS_PERMISSIONS+'"></a>');
+                    HeaderHTML.push('</div>');
                 }
             }
             
@@ -193,13 +198,13 @@ function dopbspShowCalendar(calendar_id){// Show Images List.
             $jDOPBSP('.column-content', '.column2', '.DOPBSP-admin').html('<div id="DOPBSP-Calendar"></div>');
             
             $jDOPBSP('#DOPBSP-Calendar').DOPBookingSystemPRO($jDOPBSP.parseJSON(data));
-                        
-            $jDOPBSP.post(ajaxurl, {action:'dopbsp_show_no_reservations', calendar_id:calendar_id}, function(data){
+                     
+            $jDOPBSP.post(ajaxurl, {action:'dopbsp_show_new_reservations', calendar_id:calendarId}, function(data){
                 if (parseInt(data) != 0){
-                    $jDOPBSP('#DOPBSP-reservations').addClass('new');
-                    $jDOPBSP('#DOPBSP-reservations span').html(data);
+                    $jDOPBSP('#DOPBSP-new-reservations').addClass('new');
+                    $jDOPBSP('#DOPBSP-new-reservations span').html(data);
                 }
-            });            
+            });
         });
     }
 }
@@ -289,46 +294,46 @@ function dopbspEditCalendar(){// Edit Calendar Settings.
                                 template: $jDOPBSP('#template').val(),
                                 min_stay: $jDOPBSP('#min_stay').val(),
                                 max_stay: $jDOPBSP('#max_stay').val(),
-                                no_items_enabled: $jDOPBSP('#no_items_enabled').val(),
-                                view_only: $jDOPBSP('#view_only').val(),
+                                no_items_enabled: $jDOPBSP('#no_items_enabled').is(':checked') ? 'true':'false',
+                                view_only: $jDOPBSP('#view_only').is(':checked') ? 'true':'false',
                                 page_url: $jDOPBSP('#page_url').val(),
                                 template_email: $jDOPBSP('#template_email').val(),
                                 notifications_email: $jDOPBSP('#notifications_email').val(),
-                                smtp_enabled: $jDOPBSP('#smtp_enabled').val(),
+                                smtp_enabled: $jDOPBSP('#smtp_enabled').is(':checked') ? 'true':'false',
                                 smtp_host_name: $jDOPBSP('#smtp_host_name').val(),
                                 smtp_host_port: $jDOPBSP('#smtp_host_port').val(),
-                                smtp_ssl: $jDOPBSP('#smtp_ssl').val(),
+                                smtp_ssl: $jDOPBSP('#smtp_ssl').is(':checked') ? 'true':'false',
                                 smtp_user: $jDOPBSP('#smtp_user').val(),
                                 smtp_password: $jDOPBSP('#smtp_password').val(),
-                                multiple_days_select: $jDOPBSP('#multiple_days_select').val(),
-                                morning_check_out: $jDOPBSP('#morning_check_out').val(),
-                                details_from_hours: $jDOPBSP('#details_from_hours').val(),
-                                hours_enabled: $jDOPBSP('#hours_enabled').val(),
-                                hours_info_enabled: $jDOPBSP('#hours_info_enabled').val(),
+                                multiple_days_select: $jDOPBSP('#multiple_days_select').is(':checked') ? 'true':'false',
+                                morning_check_out: $jDOPBSP('#morning_check_out').is(':checked') ? 'true':'false',
+                                details_from_hours: $jDOPBSP('#details_from_hours').is(':checked') ? 'true':'false',
+                                hours_enabled: $jDOPBSP('#hours_enabled').is(':checked') ? 'true':'false',
+                                hours_info_enabled: $jDOPBSP('#hours_info_enabled').is(':checked') ? 'true':'false',
                                 hours_definitions: hours,
-                                multiple_hours_select: $jDOPBSP('#multiple_hours_select').val(),
-                                hours_ampm: $jDOPBSP('#hours_ampm').val(),
-                                last_hour_to_total_price: $jDOPBSP('#last_hour_to_total_price').val(),
-                                hours_interval_enabled: $jDOPBSP('#hours_interval_enabled').val(),
+                                multiple_hours_select: $jDOPBSP('#multiple_hours_select').is(':checked') ? 'true':'false',
+                                hours_ampm: $jDOPBSP('#hours_ampm').is(':checked') ? 'true':'false',
+                                last_hour_to_total_price: $jDOPBSP('#last_hour_to_total_price').is(':checked') ? 'true':'false',
+                                hours_interval_enabled: $jDOPBSP('#hours_interval_enabled').is(':checked') ? 'true':'false',
                                 discounts_no_days: discountsNoDays.join(','),
                                 deposit: $jDOPBSP('#deposit').val(),
                                 form: $jDOPBSP('#form').val(),
-                                instant_booking: $jDOPBSP('#instant_booking').val(),
-                                no_people_enabled: $jDOPBSP('#no_people_enabled').val(),
+                                instant_booking: $jDOPBSP('#instant_booking').is(':checked') ? 'true':'false',
+                                no_people_enabled: $jDOPBSP('#no_people_enabled').is(':checked') ? 'true':'false',
                                 min_no_people: $jDOPBSP('#min_no_people').val(),
                                 max_no_people: $jDOPBSP('#max_no_people').val(),
-                                no_children_enabled: $jDOPBSP('#no_children_enabled').val(),
+                                no_children_enabled: $jDOPBSP('#no_children_enabled').is(':checked') ? 'true':'false',
                                 min_no_children: $jDOPBSP('#min_no_children').val(),
                                 max_no_children: $jDOPBSP('#max_no_children').val(),
-                                terms_and_conditions_enabled: $jDOPBSP('#terms_and_conditions_enabled').val(),
+                                terms_and_conditions_enabled: $jDOPBSP('#terms_and_conditions_enabled').is(':checked') ? 'true':'false',
                                 terms_and_conditions_link: $jDOPBSP('#terms_and_conditions_link').val(),
-                                payment_arrival_enabled: $jDOPBSP('#payment_arrival_enabled').val(),
-                                payment_paypal_enabled: $jDOPBSP('#payment_paypal_enabled').val(),
+                                payment_arrival_enabled: $jDOPBSP('#payment_arrival_enabled').is(':checked') ? 'true':'false',
+                                payment_paypal_enabled: $jDOPBSP('#payment_paypal_enabled').is(':checked') ? 'true':'false',
                                 payment_paypal_username: $jDOPBSP('#payment_paypal_username').val(),
                                 payment_paypal_password: $jDOPBSP('#payment_paypal_password').val(),
                                 payment_paypal_signature: $jDOPBSP('#payment_paypal_signature').val(),
-                                payment_paypal_credit_card: $jDOPBSP('#payment_paypal_credit_card').val(),
-                                payment_paypal_sandbox_enabled: $jDOPBSP('#payment_paypal_sandbox_enabled').val()}, function(data){
+                                payment_paypal_credit_card: $jDOPBSP('#payment_paypal_credit_card').is(':checked') ? 'true':'false',
+                                payment_paypal_sandbox_enabled: $jDOPBSP('#payment_paypal_sandbox_enabled').is(':checked') ? 'true':'false'}, function(data){
             if ($jDOPBSP('#calendar_id').val() != '0'){
                 $jDOPBSP('.name', '#DOPBSP-ID-'+$jDOPBSP('#calendar_id').val()).html(dopbspShortName($jDOPBSP('#name').val(), 25));
                 dopbspToggleMessage('hide', DOPBSP_EDIT_CALENDAR_SUCCESS);
@@ -369,6 +374,7 @@ function dopbspDeleteCalendar(id){// Delete calendar
             
             $jDOPBSP.post(ajaxurl, {action:'dopbsp_delete_calendar', id:id}, function(data){
                 dopbspRemoveColumns(2);
+                $jDOPBSP('#DOPBSP-admin-reservations').css('display', 'none');
                 
                 $jDOPBSP('#DOPBSP-ID-'+id).stop(true, true).animate({'opacity':0}, 600, function(){
                     $jDOPBSP(this).remove();
@@ -380,42 +386,6 @@ function dopbspDeleteCalendar(id){// Delete calendar
                 });
             });
         }
-    }
-}
-
-function dopbspRemoveColumns(no){// Clear columns content.
-    if (no <= 1){
-        $jDOPBSP('.column-content', '.column1', '.DOPBSP-admin').html('');
-    }
-    if (no <= 2){
-        $jDOPBSP('.column-header', '.column2', '.DOPBSP-admin').html('');
-        $jDOPBSP('.column-content', '.column2', '.DOPBSP-admin').html('');
-        calendarLoaded = false;
-    }
-    if (no <= 3){
-        $jDOPBSP('.column-header', '.column3', '.DOPBSP-admin').html('');
-        $jDOPBSP('.column-content', '.column3', '.DOPBSP-admin').html('');        
-    }
-}
-
-function dopbspToggleMessage(action, message){// Display Info Messages.
-    if (action == 'show'){
-        clearClick = false;        
-        clearTimeout(messageTimeout);
-        $jDOPBSP('#DOPBSP-admin-message').addClass('loader');
-        $jDOPBSP('#DOPBSP-admin-message').html(message);
-        $jDOPBSP('#DOPBSP-admin-message').stop(true, true).animate({'opacity':1}, 600);
-    }
-    else{
-        clearClick = true;
-        $jDOPBSP('#DOPBSP-admin-message').removeClass('loader');
-        $jDOPBSP('#DOPBSP-admin-message').html(message);
-        
-        messageTimeout = setTimeout(function(){
-            $jDOPBSP('#DOPBSP-admin-message').stop(true, true).animate({'opacity':0}, 600, function(){
-                $jDOPBSP('#DOPBSP-admin-message').html('');
-            });
-        }, 2000);
     }
 }
 
@@ -441,43 +411,43 @@ function dopbspSettingsForm(data, column){// Settings Form.
     if ($jDOPBSP('#calendar_id').val() != '0'){
         HTML.push(dopbspSettingsFormInput('name', data['name'], DOPBSP_CALENDAR_NAME, '', '', '', 'help', DOPBSP_CALENDAR_NAME_INFO));
     }
-    HTML.push(dopbspSettingsFormAvailableDays('available_days', data['available_days'], DOPBSP_AVAILABLE_DAYS, '', '', '', 'help', DOPBSP_AVAILABLE_DAYS_INFO));
-    HTML.push(dopbspSettingsFormSelect('first_day', data['first_day'], DOPBSP_FIRST_DAY, '', '', '', 'help', DOPBSP_FIRST_DAY_INFO, '1;;2;;3;;4;;5;;6;;7', DOPBSP_day_names[1]+';;'+DOPBSP_day_names[2]+';;'+DOPBSP_day_names[3]+';;'+DOPBSP_day_names[4]+';;'+DOPBSP_day_names[5]+';;'+DOPBSP_day_names[6]+';;'+DOPBSP_day_names[0]));
-    HTML.push(dopbspSettingsFormSelect('currency', data['currency'], DOPBSP_CURRENCY, '', '', '', 'help', DOPBSP_CURRENCY_INFO, data['currencies_ids'], data['currencies_labels']));
-    HTML.push(dopbspSettingsFormSelect('date_type', data['date_type'], DOPBSP_DATE_TYPE, '', '', '', 'help', DOPBSP_DATE_TYPE_INFO, '1;;2', DOPBSP_DATE_TYPE_AMERICAN+';;'+DOPBSP_DATE_TYPE_EUROPEAN));
-    HTML.push(dopbspSettingsFormSelect('template', data['template'], DOPBSP_TEMPLATE, '', '', '', 'help', DOPBSP_TEMPLATE_INFO, data['templates'], data['templates']));
+    HTML.push(dopbspSettingsFormAvailableDays('available_days', data['available_days'], DOPBSP_AVAILABLE_DAYS, '', '', 'help', DOPBSP_AVAILABLE_DAYS_INFO));
+    HTML.push(dopbspSettingsFormSelect('first_day', data['first_day'], DOPBSP_FIRST_DAY, '', '', 'help', DOPBSP_FIRST_DAY_INFO, '1;;2;;3;;4;;5;;6;;7', DOPBSP_DAY_MONDAY+';;'+DOPBSP_DAY_TUESDAY+';;'+DOPBSP_DAY_WEDNESDAY+';;'+DOPBSP_DAY_THURSDAY+';;'+DOPBSP_DAY_FRIDAY+';;'+DOPBSP_DAY_SATURDAY+';;'+DOPBSP_DAY_SUNDAY));
+    HTML.push(dopbspSettingsFormSelect('currency', data['currency'], DOPBSP_CURRENCY, '', '', 'help', DOPBSP_CURRENCY_INFO, data['currencies_ids'], data['currencies_labels']));
+    HTML.push(dopbspSettingsFormSelect('date_type', data['date_type'], DOPBSP_DATE_TYPE, '', '', 'help', DOPBSP_DATE_TYPE_INFO, '1;;2', DOPBSP_DATE_TYPE_AMERICAN+';;'+DOPBSP_DATE_TYPE_EUROPEAN));
+    HTML.push(dopbspSettingsFormSelect('template', data['template'], DOPBSP_TEMPLATE, '', '', 'help', DOPBSP_TEMPLATE_INFO, data['templates'], data['templates']));
     HTML.push(dopbspSettingsFormInput('min_stay', data['min_stay'], DOPBSP_MIN_STAY, '', '', '', 'help', DOPBSP_MIN_STAY_INFO));  
     HTML.push(dopbspSettingsFormInput('max_stay', data['max_stay'], DOPBSP_MAX_STAY, '', '', '', 'help', DOPBSP_MAX_STAY_INFO));  
-    HTML.push(dopbspSettingsFormSelect('no_items_enabled', data['no_items_enabled'], DOPBSP_NO_ITEMS_ENABLED, '', '', '', 'help', DOPBSP_NO_ITEMS_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
-    HTML.push(dopbspSettingsFormSelect('view_only', data['view_only'], DOPBSP_VIEW_ONLY, '', '', '', 'help', DOPBSP_VIEW_ONLY_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
+    HTML.push(dopbspSettingFormSwitch('no_items_enabled', data['no_items_enabled'], DOPBSP_NO_ITEMS_ENABLED, '', '', 'help', DOPBSP_NO_ITEMS_ENABLED_INFO));
+    HTML.push(dopbspSettingFormSwitch('view_only', data['view_only'], DOPBSP_VIEW_ONLY, '', '', 'help', DOPBSP_VIEW_ONLY_INFO));
     HTML.push(dopbspSettingsFormInput('page_url', data['page_url'], DOPBSP_PAGE_URL, '', '', '', 'help', DOPBSP_PAGE_URL_INFO));  
     
 // Notifications Settings
     HTML.push('    <a href="javascript:dopbspMoveTop()" class="go-top">'+DOPBSP_GO_TOP+'</a><h3 class="settings">'+DOPBSP_NOTIFICATIONS_STYLES_SETTINGS+'</h3>'); 
-    HTML.push(dopbspSettingsFormSelect('template_email', data['template_email'], DOPBSP_NOTIFICATIONS_TEMPLATE, '', '', '', 'help', DOPBSP_NOTIFICATIONS_TEMPLATE_INFO, data['templates_email'], data['templates_email']));
+    HTML.push(dopbspSettingsFormSelect('template_email', data['template_email'], DOPBSP_NOTIFICATIONS_TEMPLATE, '', '', 'help', DOPBSP_NOTIFICATIONS_TEMPLATE_INFO, data['templates_email'], data['templates_email']));
     HTML.push(dopbspSettingsFormInput('notifications_email', data['notifications_email'], DOPBSP_NOTIFICATIONS_EMAIL, '', '', '', 'help', DOPBSP_NOTIFICATIONS_EMAIL_INFO));  
-    HTML.push(dopbspSettingsFormSelect('smtp_enabled', data['smtp_enabled'], DOPBSP_NOTIFICATIONS_SMTP_ENABLED, '', '', '', 'help', DOPBSP_NOTIFICATIONS_SMTP_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));     
+    HTML.push(dopbspSettingFormSwitch('smtp_enabled', data['smtp_enabled'], DOPBSP_NOTIFICATIONS_SMTP_ENABLED, '', '', 'help', DOPBSP_NOTIFICATIONS_SMTP_ENABLED_INFO));     
     HTML.push(dopbspSettingsFormInput('smtp_host_name', data['smtp_host_name'], DOPBSP_NOTIFICATIONS_SMTP_HOST_NAME, '', '', '', 'help', DOPBSP_NOTIFICATIONS_SMTP_HOST_NAME_INFO));  
     HTML.push(dopbspSettingsFormInput('smtp_host_port', data['smtp_host_port'], DOPBSP_NOTIFICATIONS_SMTP_HOST_PORT, '', '', '', 'help', DOPBSP_NOTIFICATIONS_SMTP_HOST_PORT_INFO));  
-    HTML.push(dopbspSettingsFormSelect('smtp_ssl', data['smtp_ssl'], DOPBSP_NOTIFICATIONS_SMTP_SSL, '', '', '', 'help', DOPBSP_NOTIFICATIONS_SMTP_SSL_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));                           
+    HTML.push(dopbspSettingFormSwitch('smtp_ssl', data['smtp_ssl'], DOPBSP_NOTIFICATIONS_SMTP_SSL, '', '', 'help', DOPBSP_NOTIFICATIONS_SMTP_SSL_INFO));                           
     HTML.push(dopbspSettingsFormInput('smtp_user', data['smtp_user'], DOPBSP_NOTIFICATIONS_SMTP_USER, '', '', '', 'help', DOPBSP_NOTIFICATIONS_SMTP_USER_INFO));  
     HTML.push(dopbspSettingsFormInput('smtp_password', data['smtp_password'], DOPBSP_NOTIFICATIONS_SMTP_PASSWORD, '', '', '', 'help', DOPBSP_NOTIFICATIONS_SMTP_PASSWORD_INFO));  
     
 // Days Settings
     HTML.push('    <a href="javascript:dopbspMoveTop()" class="go-top">'+DOPBSP_GO_TOP+'</a><h3 class="settings">'+DOPBSP_DAYS_STYLES_SETTINGS+'</h3>'); 
-    HTML.push(dopbspSettingsFormSelect('multiple_days_select', data['multiple_days_select'], DOPBSP_MULTIPLE_DAYS_SELECT, '', '', '', 'help', DOPBSP_MULTIPLE_DAYS_SELECT_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));  
-    HTML.push(dopbspSettingsFormSelect('morning_check_out', data['morning_check_out'], DOPBSP_MORNING_CHECK_OUT, '', '', '', 'help', DOPBSP_MORNING_CHECK_OUT_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED)); 
-    HTML.push(dopbspSettingsFormSelect('details_from_hours', data['details_from_hours'], DOPBSP_DETAILS_FROM_HOURS, '', '', '', 'help', DOPBSP_DETAILS_FROM_HOURS_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED)); 
+    HTML.push(dopbspSettingFormSwitch('multiple_days_select', data['multiple_days_select'], DOPBSP_MULTIPLE_DAYS_SELECT, '', '', 'help', DOPBSP_MULTIPLE_DAYS_SELECT_INFO));  
+    HTML.push(dopbspSettingFormSwitch('morning_check_out', data['morning_check_out'], DOPBSP_MORNING_CHECK_OUT, '', '', 'help', DOPBSP_MORNING_CHECK_OUT_INFO)); 
+    HTML.push(dopbspSettingFormSwitch('details_from_hours', data['details_from_hours'], DOPBSP_DETAILS_FROM_HOURS, '', '', 'help', DOPBSP_DETAILS_FROM_HOURS_INFO)); 
     
 // Hours Settings
     HTML.push('    <a href="javascript:dopbspMoveTop()" class="go-top">'+DOPBSP_GO_TOP+'</a><h3 class="settings">'+DOPBSP_HOURS_STYLES_SETTINGS+'</h3>');     
-    HTML.push(dopbspSettingsFormSelect('hours_enabled', data['hours_enabled'], DOPBSP_HOURS_ENABLED, '', '', '', 'help', DOPBSP_HOURS_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));  
-    HTML.push(dopbspSettingsFormSelect('hours_info_enabled', data['hours_info_enabled'], DOPBSP_HOURS_INFO_ENABLED, '', '', '', 'help', DOPBSP_HOURS_INFO_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));  
+    HTML.push(dopbspSettingFormSwitch('hours_enabled', data['hours_enabled'], DOPBSP_HOURS_ENABLED, '', '', 'help', DOPBSP_HOURS_ENABLED_INFO));
+    HTML.push(dopbspSettingFormSwitch('hours_info_enabled', data['hours_info_enabled'], DOPBSP_HOURS_INFO_ENABLED, '', '', 'help', DOPBSP_HOURS_INFO_ENABLED_INFO));
     HTML.push(dopbspSettingsFormHoursDefinitions('hours_definitions', data['hours_definitions'], DOPBSP_HOURS_DEFINITIONS, '', '', '', 'help', DOPBSP_HOURS_DEFINITIONS_INFO));
-    HTML.push(dopbspSettingsFormSelect('multiple_hours_select', data['multiple_hours_select'], DOPBSP_MULTIPLE_HOURS_SELECT, '', '', '', 'help', DOPBSP_MULTIPLE_HOURS_SELECT_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
-    HTML.push(dopbspSettingsFormSelect('hours_ampm', data['hours_ampm'], DOPBSP_HOURS_AMPM, '', '', '', 'help', DOPBSP_HOURS_AMPM_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
-    HTML.push(dopbspSettingsFormSelect('last_hour_to_total_price', data['last_hour_to_total_price'], DOPBSP_LAST_HOUR_TO_TOTAL_PRICE, '', '', '', 'help', DOPBSP_LAST_HOUR_TO_TOTAL_PRICE_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
-    HTML.push(dopbspSettingsFormSelect('hours_interval_enabled', data['hours_interval_enabled'], DOPBSP_HOURS_INTERVAL_ENABLED, '', '', '', 'help', DOPBSP_HOURS_INTERVAL_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
+    HTML.push(dopbspSettingFormSwitch('multiple_hours_select', data['multiple_hours_select'], DOPBSP_MULTIPLE_HOURS_SELECT, '', '', 'help', DOPBSP_MULTIPLE_HOURS_SELECT_INFO));
+    HTML.push(dopbspSettingFormSwitch('hours_ampm', data['hours_ampm'], DOPBSP_HOURS_AMPM, '', '', 'help', DOPBSP_HOURS_AMPM_INFO));
+    HTML.push(dopbspSettingFormSwitch('last_hour_to_total_price', data['last_hour_to_total_price'], DOPBSP_LAST_HOUR_TO_TOTAL_PRICE, '', '', 'help', DOPBSP_LAST_HOUR_TO_TOTAL_PRICE_INFO));
+    HTML.push(dopbspSettingFormSwitch('hours_interval_enabled', data['hours_interval_enabled'], DOPBSP_HOURS_INTERVAL_ENABLED, '', '', 'help', DOPBSP_HOURS_INTERVAL_ENABLED_INFO));
 
 // Discounts by Number of Days
     HTML.push('    <a href="javascript:dopbspMoveTop()" class="go-top">'+DOPBSP_GO_TOP+'</a><h3 class="settings">'+DOPBSP_DISCOUNTS_NO_DAYS_SETTINGS+'</h3>');
@@ -487,7 +457,7 @@ function dopbspSettingsForm(data, column){// Settings Form.
         discountsNoDaysLabels.push(i+' '+DOPBSP_DISCOUNTS_NO_DAYS_DAYS+' ('+(discountsNoDays[i-2] != 0 ? '-':'')+discountsNoDays[i-2]+'%)');
     }
     
-    HTML.push(dopbspSettingsFormSelect('discounts_no_days', '-1', DOPBSP_DISCOUNTS_NO_DAYS, '', '', '', 'help', DOPBSP_DISCOUNTS_NO_DAYS_INFO, discountsNoDaysValues.join(';;'), discountsNoDaysLabels.join(';;')));
+    HTML.push(dopbspSettingsFormSelect('discounts_no_days', '-1', DOPBSP_DISCOUNTS_NO_DAYS, '', '', 'help', DOPBSP_DISCOUNTS_NO_DAYS_INFO, discountsNoDaysValues.join(';;'), discountsNoDaysLabels.join(';;')));
     HTML.push(dopbspSettingsFormInput('discount_no_days', discountsNoDays[0], '2 '+DOPBSP_DISCOUNTS_NO_DAYS_DAYS, '-', '%', 'small', 'help-small', DOPBSP_DISCOUNTS_NO_DAYS_DAYS_INFO));
 
 // Deposit
@@ -496,28 +466,33 @@ function dopbspSettingsForm(data, column){// Settings Form.
 
 // Contact Form Settings
     HTML.push('    <a href="javascript:dopbspMoveTop()" class="go-top">'+DOPBSP_GO_TOP+'</a><h3 class="settings">'+DOPBSP_FORM_STYLES_SETTINGS+'</h3>');
-    HTML.push(dopbspSettingsFormSelect('form', data['form'], DOPBSP_FORM, '', '', '', 'help', DOPBSP_FORM_INFO, formsValues.join(';;'), formsLabels.join(';;')));
-    HTML.push(dopbspSettingsFormSelect('instant_booking', data['instant_booking'], DOPBSP_INSTANT_BOOKING_ENABLED, '', '', '', 'help', DOPBSP_INSTANT_BOOKING_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));   
-    HTML.push(dopbspSettingsFormSelect('no_people_enabled', data['no_people_enabled'], DOPBSP_NO_PEOPLE_ENABLED, '', '', '', 'help', DOPBSP_NO_PEOPLE_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));   
+    HTML.push(dopbspSettingsFormSelect('form', data['form'], DOPBSP_FORM, '', '', 'help', DOPBSP_FORM_INFO, formsValues.join(';;'), formsLabels.join(';;')));
+    HTML.push(dopbspSettingFormSwitch('instant_booking', data['instant_booking'], DOPBSP_INSTANT_BOOKING_ENABLED, '', '', 'help', DOPBSP_INSTANT_BOOKING_ENABLED_INFO));   
+    HTML.push(dopbspSettingFormSwitch('no_people_enabled', data['no_people_enabled'], DOPBSP_NO_PEOPLE_ENABLED, '', '', 'help', DOPBSP_NO_PEOPLE_ENABLED_INFO));   
     HTML.push(dopbspSettingsFormInput('min_no_people', data['min_no_people'], DOPBSP_MIN_NO_PEOPLE, '', '', 'small', 'help-small', DOPBSP_MIN_NO_PEOPLE_INFO));
     HTML.push(dopbspSettingsFormInput('max_no_people', data['max_no_people'], DOPBSP_MAX_NO_PEOPLE, '', '', 'small', 'help-small', DOPBSP_MAX_NO_PEOPLE_INFO));
-    HTML.push(dopbspSettingsFormSelect('no_children_enabled', data['no_children_enabled'], DOPBSP_NO_CHILDREN_ENABLED, '', '', '', 'help', DOPBSP_NO_CHILDREN_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));   
+    HTML.push(dopbspSettingFormSwitch('no_children_enabled', data['no_children_enabled'], DOPBSP_NO_CHILDREN_ENABLED, '', '', 'help', DOPBSP_NO_CHILDREN_ENABLED_INFO));   
     HTML.push(dopbspSettingsFormInput('min_no_children', data['min_no_children'], DOPBSP_MIN_NO_CHILDREN, '', '', 'small', 'help-small', DOPBSP_MIN_NO_CHILDREN_INFO));
     HTML.push(dopbspSettingsFormInput('max_no_children', data['max_no_children'], DOPBSP_MAX_NO_CHILDREN, '', '', 'small', 'help-small', DOPBSP_MAX_NO_CHILDREN_INFO));
-    HTML.push(dopbspSettingsFormSelect('payment_arrival_enabled', data['payment_arrival_enabled'], DOPBSP_PAYMENT_ARRIVAL_ENABLED, '', '', '', 'help', DOPBSP_PAYMENT_ARRIVAL_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
-    HTML.push(dopbspSettingsFormSelect('terms_and_conditions_enabled', data['terms_and_conditions_enabled'], DOPBSP_TERMS_AND_CONDITIONS_ENABLED, '', '', '', 'help', DOPBSP_TERMS_AND_CONDITIONS_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
+    HTML.push(dopbspSettingFormSwitch('payment_arrival_enabled', data['payment_arrival_enabled'], DOPBSP_PAYMENT_ARRIVAL_ENABLED, '', '', 'help', DOPBSP_PAYMENT_ARRIVAL_ENABLED_INFO));
+    HTML.push(dopbspSettingFormSwitch('terms_and_conditions_enabled', data['terms_and_conditions_enabled'], DOPBSP_TERMS_AND_CONDITIONS_ENABLED, '', '', 'help', DOPBSP_TERMS_AND_CONDITIONS_ENABLED_INFO));
     HTML.push(dopbspSettingsFormInput('terms_and_conditions_link', data['terms_and_conditions_link'], DOPBSP_TERMS_AND_CONDITIONS_LINK, '', '', '', 'help', DOPBSP_TERMS_AND_CONDITIONS_LINK_INFO));
 
 // PayPal Settings
     HTML.push('    <a href="javascript:dopbspMoveTop()" class="go-top">'+DOPBSP_GO_TOP+'</a><h3 class="settings">'+DOPBSP_PAYMENT_PAYPAL_STYLES_SETTINGS+'</h3>');  
-    HTML.push(dopbspSettingsFormSelect('payment_paypal_enabled', data['payment_paypal_enabled'], DOPBSP_PAYMENT_PAYPAL_ENABLED, '', '', '', 'help', DOPBSP_PAYMENT_PAYPAL_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
+    HTML.push(dopbspSettingFormSwitch('payment_paypal_enabled', data['payment_paypal_enabled'], DOPBSP_PAYMENT_PAYPAL_ENABLED, '', '', 'help', DOPBSP_PAYMENT_PAYPAL_ENABLED_INFO));
     HTML.push(dopbspSettingsFormInput('payment_paypal_username', data['payment_paypal_username'], DOPBSP_PAYMENT_PAYPAL_USERNAME, '', '', '', 'help', DOPBSP_PAYMENT_PAYPAL_USERNAME_INFO));
     HTML.push(dopbspSettingsFormInput('payment_paypal_password', data['payment_paypal_password'], DOPBSP_PAYMENT_PAYPAL_PASSWORD, '', '', '', 'help', DOPBSP_PAYMENT_PAYPAL_PASSWORD_INFO));
     HTML.push(dopbspSettingsFormInput('payment_paypal_signature', data['payment_paypal_signature'], DOPBSP_PAYMENT_PAYPAL_SIGNATURE, '', '', '', 'help', DOPBSP_PAYMENT_PAYPAL_SIGNATURE_INFO));
-    HTML.push(dopbspSettingsFormSelect('payment_paypal_credit_card', data['payment_paypal_credit_card'], DOPBSP_PAYMENT_PAYPAL_CREDIT_CARD, '', '', '', 'help', DOPBSP_PAYMENT_PAYPAL_CREDIT_CARD_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
-    HTML.push(dopbspSettingsFormSelect('payment_paypal_sandbox_enabled', data['payment_paypal_sandbox_enabled'], DOPBSP_PAYMENT_PAYPAL_SANDBOX_ENABLED, '', '', '', 'help', DOPBSP_PAYMENT_PAYPAL_SANDBOX_ENABLED_INFO, 'true;;false', DOPBSP_ENABLED+';;'+DOPBSP_DISABLED));
+    HTML.push(dopbspSettingFormSwitch('payment_paypal_credit_card', data['payment_paypal_credit_card'], DOPBSP_PAYMENT_PAYPAL_CREDIT_CARD, '', '', 'help', DOPBSP_PAYMENT_PAYPAL_CREDIT_CARD_INFO));
+    HTML.push(dopbspSettingFormSwitch('payment_paypal_sandbox_enabled', data['payment_paypal_sandbox_enabled'], DOPBSP_PAYMENT_PAYPAL_SANDBOX_ENABLED, '', '', 'help', DOPBSP_PAYMENT_PAYPAL_SANDBOX_ENABLED_INFO));
 
     HTML.push('</form>');
+    HTML.push('<style type="text/css">');
+    HTML.push('    .DOPBSP-admin .setting-box .switch-inner:before{content: "'+DOPBSP_ENABLED+'";}');
+    HTML.push('    .DOPBSP-admin .setting-box .switch-inner:after{content: "'+DOPBSP_DISABLED+'";}');
+    HTML.push('</style>');
+    
     $jDOPBSP('.column-content', '.column'+column, '.DOPBSP-admin').html(HTML.join(''));
     
     $jDOPBSP('#discounts_no_days').unbind('change');
@@ -552,7 +527,7 @@ function dopbspSettingsFormInput(id, value, label, pre, suf, input_class, help_c
     return inputHTML.join('');
 }
 
-function dopbspSettingsFormAvailableDays(id, value, label, pre, suf, textarea_class, help_class, help){// Create an Input Field.
+function dopbspSettingsFormAvailableDays(id, value, label, pre, suf, help_class, help){// Create an Input Field.
     var inputHTML = new Array(),
     content = value.split(',');
     
@@ -560,13 +535,13 @@ function dopbspSettingsFormAvailableDays(id, value, label, pre, suf, textarea_cl
     inputHTML.push('        <label>'+label+'</label>');
     inputHTML.push('        <span class="pre">'+pre+'</span>');
     inputHTML.push('        <span class="days">');
-    inputHTML.push('            <input type="checkbox" name="'+id+'0" id="'+id+'0"'+(content[0] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'0">'+DOPBSP_day_names[0]+'</label><br class="DOPBSP-clear" />');
-    inputHTML.push('            <input type="checkbox" name="'+id+'1" id="'+id+'1"'+(content[1] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'1">'+DOPBSP_day_names[1]+'</label><br class="DOPBSP-clear" />');
-    inputHTML.push('            <input type="checkbox" name="'+id+'2" id="'+id+'2"'+(content[2] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'2">'+DOPBSP_day_names[2]+'</label><br class="DOPBSP-clear" />');
-    inputHTML.push('            <input type="checkbox" name="'+id+'3" id="'+id+'3"'+(content[3] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'3">'+DOPBSP_day_names[3]+'</label><br class="DOPBSP-clear" />');
-    inputHTML.push('            <input type="checkbox" name="'+id+'4" id="'+id+'4"'+(content[4] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'4">'+DOPBSP_day_names[4]+'</label><br class="DOPBSP-clear" />');
-    inputHTML.push('            <input type="checkbox" name="'+id+'5" id="'+id+'5"'+(content[5] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'5">'+DOPBSP_day_names[5]+'</label><br class="DOPBSP-clear" />');
-    inputHTML.push('            <input type="checkbox" name="'+id+'6" id="'+id+'6"'+(content[6] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'6">'+DOPBSP_day_names[6]+'</label><br class="DOPBSP-clear" />');    
+    inputHTML.push('            <input type="checkbox" name="'+id+'0" id="'+id+'0"'+(content[0] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'0">'+DOPBSP_DAY_SUNDAY+'</label><br class="DOPBSP-clear" />');
+    inputHTML.push('            <input type="checkbox" name="'+id+'1" id="'+id+'1"'+(content[1] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'1">'+DOPBSP_DAY_MONDAY+'</label><br class="DOPBSP-clear" />');
+    inputHTML.push('            <input type="checkbox" name="'+id+'2" id="'+id+'2"'+(content[2] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'2">'+DOPBSP_DAY_TUESDAY+'</label><br class="DOPBSP-clear" />');
+    inputHTML.push('            <input type="checkbox" name="'+id+'3" id="'+id+'3"'+(content[3] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'3">'+DOPBSP_DAY_WEDNESDAY+'</label><br class="DOPBSP-clear" />');
+    inputHTML.push('            <input type="checkbox" name="'+id+'4" id="'+id+'4"'+(content[4] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'4">'+DOPBSP_DAY_THURSDAY+'</label><br class="DOPBSP-clear" />');
+    inputHTML.push('            <input type="checkbox" name="'+id+'5" id="'+id+'5"'+(content[5] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'5">'+DOPBSP_DAY_FRIDAY+'</label><br class="DOPBSP-clear" />');
+    inputHTML.push('            <input type="checkbox" name="'+id+'6" id="'+id+'6"'+(content[6] == 'true' ? ' checked="checked"':'')+' /><label for="'+id+'6">'+DOPBSP_DAY_SATURDAY+'</label><br class="DOPBSP-clear" />');    
     inputHTML.push('        </span>');        
     inputHTML.push('        <span class="suf">'+suf+'</span>');
     inputHTML.push('        <a href="javascript:void()" class="'+help_class+'"><span>'+help+'</span></a>');
@@ -594,7 +569,7 @@ function dopbspSettingsFormHoursDefinitions(id, value, label, pre, suf, textarea
     return inputHTML.join('');
 }
 
-function dopbspSettingsFormSelect(id, value, label, pre, suf, input_class, help_class, help, values, valueLabels){// Create a Combo Box.
+function dopbspSettingsFormSelect(id, value, label, pre, suf, help_class, help, values, valueLabels){// Create a Combo Box.
     var selectHTML = new Array(), i,
     valuesList = values.split(';;'),
     valueLabelsList = valueLabels.split(';;');
@@ -602,13 +577,7 @@ function dopbspSettingsFormSelect(id, value, label, pre, suf, input_class, help_
     selectHTML.push('    <div class="setting-box">');
     selectHTML.push('        <label for="'+id+'">'+label+'</label>');
     selectHTML.push('        <span class="pre">'+pre+'</span>');
-    
-    if (values == 'true;;false'){
-        selectHTML.push('        <select name="'+id+'" id="'+id+'" class="'+(value == 'true' ? 'enabled':'disabled')+'" onchange="dopbspSettingsFormSelectEnable(this, this.value)">');
-    }
-    else{
-        selectHTML.push('        <select name="'+id+'" id="'+id+'">');
-    }
+    selectHTML.push('        <select name="'+id+'" id="'+id+'">');
     
     for (i=0; i<valuesList.length; i++){
         if (valuesList[i] == value){
@@ -630,6 +599,27 @@ function dopbspSettingsFormSelect(id, value, label, pre, suf, input_class, help_
 function dopbspSettingsFormSelectEnable(item, value){
     $jDOPBSP(item).removeClass('enabled').removeClass('disabled');
     $jDOPBSP(item).addClass(value == 'true' ? 'enabled':'disabled');
+}
+
+function dopbspSettingFormSwitch(id, value, label, pre, suf, help_class, help){ // Create a Switch Button
+    var switchtHTML = new Array();
+
+    switchtHTML.push('    <div class="setting-box">');
+    switchtHTML.push('        <label for="">'+label+'</label>');
+    switchtHTML.push('        <span class="pre">'+pre+'</span>');
+    switchtHTML.push('        <div class="switch">');
+    switchtHTML.push('             <input type="checkbox" name="'+id+'" id="'+id+'" class="switch-checkbox"'+(value == 'true' ? ' checked="checked"':'')+' />');
+    switchtHTML.push('             <label class="switch-label" for="'+id+'">');
+    switchtHTML.push('                  <div class="switch-inner"></div>');
+    switchtHTML.push('                  <div class="switch-switch"></div>');
+    switchtHTML.push('             </label>');
+    switchtHTML.push('        </div>');
+    switchtHTML.push('        <span class="suf">'+suf+'</span>');
+    switchtHTML.push('        <a href="javascript:void()" class="'+help_class+'"><span>'+help+'</span></a>');
+    switchtHTML.push('        <br class="DOPBSP-clear" />');
+    switchtHTML.push('    </div>');
+
+    return switchtHTML.join('');
 }
 
 // ***************************************************************************** Administrator Settings
@@ -715,7 +705,6 @@ function dopbspEditUserCustomPostsPermissions(id, field, value){
                                 id: id,
                                 field: field,
                                 value: value}, function(data){
-                                console.log(data);
             dopbspToggleMessage('hide', DOPBSP_SAVE_SUCCESS);
             clearClick = true;
             $jDOPBSP('.DOPSBP-check-all').removeAttr('disabled');
@@ -970,6 +959,42 @@ function dopbspPermissionsFormCheckbox(id, value, label, pre, suf, input_class, 
 }
 
 //****************************************************************************** Prototypes
+
+function dopbspRemoveColumns(no){// Clear columns content.
+    if (no <= 1){
+        $jDOPBSP('.column-content', '.column1', '.DOPBSP-admin').html('');
+    }
+    if (no <= 2){
+        $jDOPBSP('.column-header', '.column2', '.DOPBSP-admin').html('');
+        $jDOPBSP('.column-content', '.column2', '.DOPBSP-admin').html('');
+        calendarLoaded = false;
+    }
+    if (no <= 3){
+        $jDOPBSP('.column-header', '.column3', '.DOPBSP-admin').html('');
+        $jDOPBSP('.column-content', '.column3', '.DOPBSP-admin').html('');        
+    }
+}
+
+function dopbspToggleMessage(action, message){// Display Info Messages.
+    if (action == 'show'){
+        clearClick = false;        
+        clearTimeout(messageTimeout);
+        $jDOPBSP('#DOPBSP-admin-message').addClass('loader');
+        $jDOPBSP('#DOPBSP-admin-message').html(message);
+        $jDOPBSP('#DOPBSP-admin-message').stop(true, true).animate({'opacity':1}, 600);
+    }
+    else{
+        clearClick = true;
+        $jDOPBSP('#DOPBSP-admin-message').removeClass('loader');
+        $jDOPBSP('#DOPBSP-admin-message').html(message);
+        
+        messageTimeout = setTimeout(function(){
+            $jDOPBSP('#DOPBSP-admin-message').stop(true, true).animate({'opacity':0}, 600, function(){
+                $jDOPBSP('#DOPBSP-admin-message').html('');
+            });
+        }, 2000);
+    }
+}
                         
 function dopbspMoveTop(){
     jQuery('html').stop(true, true).animate({'scrollTop':'0'}, 300);
@@ -1081,10 +1106,39 @@ function dopbspShortName(name, size){// Return a short string.
     return newName.join('');
 }
 
-function dopbspGetUrlVars() {
+function dopbspGetUrlVars(){
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
         vars[key] = value;
     });
     return vars;
+}
+
+function dopbspDateDiference(date1, date2){// Diference between 2 dates
+    var time1 = date1.getTime(),
+    time2 = date2.getTime(),
+    diff = Math.abs(time1-time2),
+    one_day = 1000*60*60*24;
+
+    return parseInt(diff/(one_day))+1;
+}
+
+function dopbspTimeToAMPM(item){// Returns time in AM/PM format
+    var hour = parseInt(item.split(':')[0], 10),
+    minutes = item.split(':')[1],
+    result = '';
+
+    if (hour == 0){
+        result = '12';
+    }
+    else if (hour > 12){
+        result = hour-12 < 10 ? '0'+(hour-12):hour-12;
+    }
+    else{
+        result = hour < 10 ? '0'+hour:hour;
+    }
+
+    result += ':'+minutes+' '+(hour < 12 ? 'AM':'PM');
+
+    return result;
 }

@@ -1,10 +1,10 @@
-=== Responsive Lightbox ===
+=== Responsive Lightbox by dFactory ===
 Contributors: dfactory
 Donate link: http://www.dfactory.eu/
 Tags: gallery, images, lightbox, links, photos, template, theme, photo, image, picture, slideshow, modal, overlay, YouTube, Vimeo, video, videos
 Requires at least: 3.3
-Tested up to: 3.6
-Stable tag: 1.0.4
+Tested up to: 3.9.0
+Stable tag: 1.4.4
 License: MIT License
 License URI: http://opensource.org/licenses/MIT
 
@@ -18,21 +18,30 @@ For more information, check out plugin page at [dFactory](http://www.dfactory.eu
 
 = Features include: =
 
-* Select from 2 responsive lightbox scripts
+* Select from 5 responsive lightbox scripts (SwipeBox, prettyPhoto, FancyBox, Nivo Lightbox, Image Lightbox)
 * Automatically add lightbox to WordPress image galleries
 * Automatically add lightbox to WordPress image links
 * Automatically add lightbox to WordPress video links (YouTube, Vimeo)
 * Option to display single post images as a gallery
+* Option to trigger lightbox on custom jquery events
 * Enter a selector for lightbox
 * Highly customizable settings for each of the lightbox scripts
+* Multisite support
+* Filter hook for embeddding different scripts based on any custom conditions (page, post, category, user id, etc.)
 * .pot file for translations included
 
 = Translations: =
 
 * Czech - by Vaclav Hnilicka
+* Dutch - by [Sebas Blom](http://www.basbva.nl/)
+* Estonian - by Hugo Amtmann
 * French - by [Li-An](http://www.echodesplugins.li-an.fr/)
+* German - by [Andreas Reitberger](http://wdbase.de)
+* Japanese - by stranger-jp
 * Persian - by [Ali Mirzaei](http://alimir.ir/)
 * Polish - by Bartosz Arendt
+* Serbo-Croatian - by [Borisa Djuraskovic](http://www.webhostinghub.com/)
+* Spanish - by [Gaston](http://www.detodoynada.com.ar)
 
 
 == Installation ==
@@ -51,6 +60,75 @@ No questions yet.
 2. screenshot-2.jpg
 
 == Changelog ==
+
+= 1.4.4
+* Fix: Prevent unintentional scroll to the top when pressing the "enter" key in the opened swipebox, thanks to Arno Welzel
+
+= 1.4.3 =
+* New: Estonian translation, thanks to Hugo Amtmann
+* Tweak: Swipebox script update, thanks to Arno Welzel
+
+= 1.4.2 =
+* Fix: Final fix for IE scroll bug
+
+= 1.4.1 =
+* Fix: Swipebox script files inconsistency
+
+= 1.4.0 =
+* New: Added Image Lightbox script
+* New: Option to load scripts in header or footer
+* Tweak: Changed Swipebox script to custom built, thanks to Arno Welzel
+
+= 1.3.6 =
+* New: Added rl_lightbox_args filter hook for embeddding different scripts based on any custom conditions (page, post, category, user id, etc.)
+
+= 1.3.5 =
+* New: Dutch translation, thanks to [Sebas Blom](http://www.basbva.nl/)
+
+= 1.3.4 =
+* Fix: Gallery images displayed as single images
+
+= 1.3.3 =
+* New: Triggering lightbox on custom jquery events option
+* Tweak: UI improvements for WP 3.8
+
+= 1.3.2 =
+* New: German translation, thanks to Andreas Reitberger
+* Tweak: Nivo Lightbox script updated
+
+= 1.3.1 =
+* New: Spanish translation, thanks to Gaston
+* Tweak: Japanese translation updated
+
+= 1.3.0 =
+* New: Added Nivo Lightbox script
+* New: Option to reset plugin settings to defaults
+
+= 1.2.3 =
+* New: Serbo-Croatian translation, thanks to Borisa Djuraskovic
+
+= 1.2.2 =
+* New: Option to force PNG icons in case of display problems
+* Fix: Bug with video width not working in SwipeBox
+
+= 1.2.1 =
+* New: Support for images loaded via AJAX
+* Tweak: Updated Japanese translation
+
+= 1.2.0 =
+* New: Added FancyBox script
+* Tweak: UI enhancements for options
+* Tweak: Better YouTube video handling (including https protocol) 
+
+= 1.1.2 =
+* New: Japanese translation, thanks to stranger-jp
+
+= 1.1.1 =
+* Tweak: UI enhancements for prettyPhoto opacity
+
+= 1.1.0 =
+* New: Multisite support
+* Fix: Notice during first plugin activation
 
 = 1.0.4 =
 * Fix: Changed regex for links to attachment pages, thanks to Darwin
@@ -77,5 +155,5 @@ Initial release
 
 == Upgrade Notice ==
 
-= 1.0.4 =
-Fix: Changed regex for links to attachment pages, thanks to Darwin
+= 1.4.4
+* Fix: Prevent unintentional scroll to the top when pressing the "enter" key in the opened swipebox, thanks to Arno Welzel

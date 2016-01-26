@@ -2,10 +2,10 @@
 
 /*
 * Title                   : Booking System PRO (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 2.0
 * File                    : templates.php
-* File Version            : 1.7
-* Created / Last Modified : 31 July 2013
+* File Version            : 2.0
+* Created / Last Modified : 27 December 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper
 * Website                 : http://www.dotonpaper.net
@@ -17,575 +17,7 @@
             function DOPBSPTemplates(){// Constructor.
             }
             
-            function returnTranslations(){// Add translation to JavaScript variables for AJAX usage.
-                //echo $_GET['post_type']; 
-              //  die();
-                if (!isset($_GET['post_type']) && !isset($_GET['action'])){
-                    $current_page = $_GET['page'];
-
-                    switch($current_page){
-                        case "dopbsp-settings":
-                            $DOPBSP_curr_page = "Settings";
-                            break;
-                        case "dopbsp-booking-forms":
-                            $DOPBSP_curr_page = "Forms List";
-                            break;
-                        default:
-                            $DOPBSP_curr_page = "Calendars List";
-                            break;
-                    }
-                }
-                else{
-                    $DOPBSP_curr_page = "Calendars List";
-                }
-                
-                if (!is_super_admin()){
-                    $DOPBSP_user_role = wp_get_current_user()->roles[0];
-                }
-                else{
-                    $DOPBSP_user_role = "administrator";
-                }
-?>          
-            <script type="text/JavaScript">
-                var DOPBSP_curr_page = "<?php echo $DOPBSP_curr_page?>",
-                DOPBSP_user_role = "<?php echo $DOPBSP_user_role?>",
-                DOPBSP_plugin_url = "<?php echo WP_PLUGIN_URL.'/dopbsp/'?>",
-                DOPBSP_plugin_abs = "<?php echo ABSPATH.'wp-content/plugins/dopbsp/'?>",
-
-                DOPBSP_TITLE = "<?php echo DOPBSP_TITLE?>",
-
-                // Loading ...
-                DOPBSP_LOAD = "<?php echo DOPBSP_LOAD?>",
-
-                // Save ...
-                DOPBSP_SAVE = "<?php echo DOPBSP_SAVE?>",
-                DOPBSP_SAVE_SUCCESS = "<?php echo DOPBSP_SAVE_SUCCESS?>",
-
-                // Months & Week Days
-                DOPBSP_month_names = [<?php            
-                    global $DOPBSP_month_names;
-
-                    for ($i=0; $i<count($DOPBSP_month_names); $i++){
-                        if ($i == 0){
-                            echo '"'.$DOPBSP_month_names[$i].'"';
-                        }
-                        else{
-                            echo ', "'.$DOPBSP_month_names[$i].'"';                
-                        }
-                    }?>],     
-                DOPBSP_day_names = [<?php            
-                    global $DOPBSP_day_names;
-
-                    for ($i=0; $i<count($DOPBSP_day_names); $i++){
-                        if ($i == 0){
-                            echo '"'.$DOPBSP_day_names[$i].'"';
-                        }
-                        else{
-                            echo ', "'.$DOPBSP_day_names[$i].'"';                
-                        }
-                    }?>],
-
-                // Help
-                DOPBSP_CALENDARS_HELP = "<?php echo DOPBSP_CALENDARS_HELP?>",
-                DOPBSP_CALENDARS_NO_ADD_HELP = "<?php echo DOPBSP_CALENDARS_NO_ADD_HELP?>",
-                DOPBSP_CALENDAR_EDIT_HELP = "<?php echo DOPBSP_CALENDAR_EDIT_HELP?>",
-                DOPBSP_CALENDAR_EDIT_ADMINISTRATOR_HELP = "<?php echo DOPBSP_CALENDAR_EDIT_ADMINISTRATOR_HELP?>",
-                DOPBSP_CALENDAR_EDIT_SETTINGS_HELP = "<?php echo DOPBSP_CALENDAR_EDIT_SETTINGS_HELP?>",
-
-                // Form
-                DOPBSP_SUBMIT = "<?php echo DOPBSP_SUBMIT?>",
-                DOPBSP_DELETE = "<?php echo DOPBSP_DELETE?>",
-                DOPBSP_BACK = "<?php echo DOPBSP_BACK?>",
-                DOPBSP_BACK_SUBMIT = "<?php echo DOPBSP_BACK_SUBMIT?>",
-                DOPBSP_ENABLED = "<?php echo DOPBSP_ENABLED?>",
-                DOPBSP_DISABLED = "<?php echo DOPBSP_DISABLED?>",
-                DOPBSP_DATE_TYPE_AMERICAN = "<?php echo DOPBSP_DATE_TYPE_AMERICAN?>",
-                DOPBSP_DATE_TYPE_EUROPEAN = "<?php echo DOPBSP_DATE_TYPE_EUROPEAN?>",
-
-                // Calendars    
-                DOPBSP_SHOW_CALENDARS = "<?php echo DOPBSP_SHOW_CALENDARS?>",
-                DOPBSP_CALENDARS_LOADED = "<?php echo DOPBSP_CALENDARS_LOADED?>",
-                DOPBSP_CALENDAR_LOADED = "<?php echo DOPBSP_CALENDAR_LOADED?>",
-                DOPBSP_NO_CALENDARS = "<?php echo DOPBSP_NO_CALENDARS?>",
-
-                // Calendar 
-                DOPBSP_ADD_MONTH_VIEW = "<?php echo DOPBSP_ADD_MONTH_VIEW?>",
-                DOPBSP_REMOVE_MONTH_VIEW = "<?php echo DOPBSP_REMOVE_MONTH_VIEW?>",
-                DOPBSP_PREVIOUS_MONTH = "<?php echo DOPBSP_PREVIOUS_MONTH?>",
-                DOPBSP_NEXT_MONTH = "<?php echo DOPBSP_NEXT_MONTH?>",
-                DOPBSP_AVAILABLE_ONE_TEXT = "<?php echo DOPBSP_AVAILABLE_ONE_TEXT?>",
-                DOPBSP_AVAILABLE_TEXT = "<?php echo DOPBSP_AVAILABLE_TEXT?>",
-                DOPBSP_BOOKED_TEXT = "<?php echo DOPBSP_BOOKED_TEXT?>",
-                DOPBSP_UNAVAILABLE_TEXT = "<?php echo DOPBSP_UNAVAILABLE_TEXT?>",
-
-                // Calendar Form 
-                DOPBSP_DATE_START_LABEL = "<?php echo DOPBSP_DATE_START_LABEL?>",
-                DOPBSP_DATE_START_LABEL = "<?php echo DOPBSP_DATE_START_LABEL?>",
-                DOPBSP_DATE_END_LABEL = "<?php echo DOPBSP_DATE_END_LABEL?>",
-                DOPBSP_STATUS_LABEL = "<?php echo DOPBSP_STATUS_LABEL?>",
-                DOPBSP_STATUS_AVAILABLE_TEXT = "<?php echo DOPBSP_STATUS_AVAILABLE_TEXT?>",
-                DOPBSP_STATUS_BOOKED_TEXT = "<?php echo DOPBSP_STATUS_BOOKED_TEXT?>",
-                DOPBSP_STATUS_SPECIAL_TEXT = "<?php echo DOPBSP_STATUS_SPECIAL_TEXT?>",
-                DOPBSP_STATUS_UNAVAILABLE_TEXT = "<?php echo DOPBSP_STATUS_UNAVAILABLE_TEXT?>",
-                DOPBSP_PRICE_LABEL = "<?php echo DOPBSP_PRICE_LABEL?>",
-                DOPBSP_PROMO_LABEL = "<?php echo DOPBSP_PROMO_LABEL?>",
-                DOPBSP_AVAILABLE_LABEL = "<?php echo DOPBSP_AVAILABLE_LABEL?>",
-                DOPBSP_HOURS_DEFINITIONS_CHANGE_LABEL = "<?php echo DOPBSP_HOURS_DEFINITIONS_CHANGE_LABEL?>",
-                DOPBSP_HOURS_DEFINITIONS_LABEL = "<?php echo DOPBSP_HOURS_DEFINITIONS_LABEL?>",
-                DOPBSP_HOURS_SET_DEFAULT_DATA_LABEL = "<?php echo DOPBSP_HOURS_SET_DEFAULT_DATA_LABEL?>",
-                DOPBSP_HOURS_START_LABEL = "<?php echo DOPBSP_HOURS_START_LABEL?>",
-                DOPBSP_HOURS_END_LABEL = "<?php echo DOPBSP_HOURS_END_LABEL?>",
-                DOPBSP_HOURS_INFO_LABEL = "<?php echo DOPBSP_HOURS_INFO_LABEL?>",
-                DOPBSP_HOURS_NOTES_LABEL = "<?php echo DOPBSP_HOURS_NOTES_LABEL?>",
-                DOPBSP_GROUP_DAYS_LABEL = "<?php echo DOPBSP_GROUP_DAYS_LABEL?>",
-                DOPBSP_GROUP_HOURS_LABEL = "<?php echo DOPBSP_GROUP_HOURS_LABEL?>",
-                DOPBSP_RESET_CONFIRMATION = "<?php echo DOPBSP_RESET_CONFIRMATION?>",
-
-                // Add Calendar
-                DOPBSP_ADD_CALENDAR_NAME = "<?php echo DOPBSP_ADD_CALENDAR_NAME?>",
-                DOPBSP_ADD_CALENDAR_SUBMIT = "<?php echo DOPBSP_ADD_CALENDAR_SUBMIT?>",
-                DOPBSP_ADD_CALENDAR_SUBMITED = "<?php echo DOPBSP_ADD_CALENDAR_SUBMITED?>",
-                DOPBSP_ADD_CALENDAR_SUCCESS = "<?php echo DOPBSP_ADD_CALENDAR_SUCCESS?>",
-
-                // Edit Calendar
-                DOPBSP_EDIT_CALENDAR_SUBMIT = "<?php echo DOPBSP_EDIT_CALENDAR_SUBMIT?>",
-                DOPBSP_EDIT_CALENDAR_SUCCESS = "<?php echo DOPBSP_EDIT_CALENDAR_SUCCESS?>",
-                DOPBSP_EDIT_CALENDAR_USERS_PERMISSIONS = "<?php echo DOPBSP_EDIT_CALENDAR_USERS_PERMISSIONS?>",
-
-                // Delete Calendar
-                DOPBSP_DELETE_CALENDAR_CONFIRMATION = "<?php echo DOPBSP_DELETE_CALENDAR_CONFIRMATION?>",
-                DOPBSP_DELETE_CALENDAR_SUBMIT = "<?php echo DOPBSP_DELETE_CALENDAR_SUBMIT?>",
-                DOPBSP_DELETE_CALENDAR_SUBMITED = "<?php echo DOPBSP_DELETE_CALENDAR_SUBMITED?>",
-                DOPBSP_DELETE_CALENDAR_SUCCESS = "<?php echo DOPBSP_DELETE_CALENDAR_SUCCESS?>",
-
-                // Reservations
-                DOPBSP_SHOW_RESERVATIONS = "<?php echo DOPBSP_SHOW_RESERVATIONS?>",
-                DOPBSP_NO_RESERVATIONS = "<?php echo DOPBSP_NO_RESERVATIONS?>",
-
-                DOPBSP_RESERVATIONS_ID = "<?php echo DOPBSP_RESERVATIONS_ID?>",
-
-                DOPBSP_RESERVATIONS_CHECK_IN_LABEL = "<?php echo DOPBSP_RESERVATIONS_CHECK_IN_LABEL?>",
-                DOPBSP_RESERVATIONS_CHECK_OUT_LABEL = "<?php echo DOPBSP_RESERVATIONS_CHECK_OUT_LABEL?>",
-                DOPBSP_RESERVATIONS_START_HOURS_LABEL = "<?php echo DOPBSP_RESERVATIONS_START_HOURS_LABEL?>",
-                DOPBSP_RESERVATIONS_END_HOURS_LABEL = "<?php echo DOPBSP_RESERVATIONS_END_HOURS_LABEL?>",
-
-                DOPBSP_RESERVATIONS_FIRST_NAME_LABEL = "<?php echo DOPBSP_RESERVATIONS_FIRST_NAME_LABEL?>",
-                DOPBSP_RESERVATIONS_LAST_NAME_LABEL = "<?php echo DOPBSP_RESERVATIONS_LAST_NAME_LABEL?>",
-                DOPBSP_RESERVATIONS_STATUS_LABEL = "<?php echo DOPBSP_RESERVATIONS_STATUS_LABEL?>",
-                DOPBSP_RESERVATIONS_STATUS_PENDING = "<?php echo DOPBSP_RESERVATIONS_STATUS_PENDING?>",
-                DOPBSP_RESERVATIONS_STATUS_APPROVED = "<?php echo DOPBSP_RESERVATIONS_STATUS_APPROVED?>",
-                DOPBSP_RESERVATIONS_DATE_CREATED_LABEL = "<?php echo DOPBSP_RESERVATIONS_DATE_CREATED_LABEL?>",
-                DOPBSP_RESERVATIONS_PAYMENT_METHOD_LABEL = "<?php echo DOPBSP_RESERVATIONS_PAYMENT_METHOD_LABEL?>",
-                DOPBSP_RESERVATIONS_PAYMENT_METHOD_ARRIVAL = "<?php echo DOPBSP_RESERVATIONS_PAYMENT_METHOD_ARRIVAL?>",
-                DOPBSP_RESERVATIONS_PAYMENT_METHOD_PAYPAL = "<?php echo DOPBSP_RESERVATIONS_PAYMENT_METHOD_PAYPAL?>",
-                DOPBSP_RESERVATIONS_PAYMENT_METHOD_PAYPAL_TRANSACTION_ID_LABEL = "<?php echo DOPBSP_RESERVATIONS_PAYMENT_METHOD_PAYPAL_TRANSACTION_ID_LABEL?>",
-                DOPBSP_RESERVATIONS_TOTAL_PRICE_LABEL = "<?php echo DOPBSP_RESERVATIONS_TOTAL_PRICE_LABEL?>",   
-                DOPBSP_RESERVATIONS_NO_ITEMS_LABEL = "<?php echo DOPBSP_RESERVATIONS_NO_ITEMS_LABEL?>",
-                DOPBSP_RESERVATIONS_PRICE_LABEL = "<?php echo DOPBSP_RESERVATIONS_PRICE_LABEL?>",
-                DOPBSP_RESERVATIONS_EMAIL_LABEL = "<?php echo DOPBSP_RESERVATIONS_EMAIL_LABEL?>",
-                DOPBSP_RESERVATIONS_PHONE_LABEL = "<?php echo DOPBSP_RESERVATIONS_PHONE_LABEL?>",
-                DOPBSP_RESERVATIONS_NO_PEOPLE_LABEL = "<?php echo DOPBSP_RESERVATIONS_NO_PEOPLE_LABEL?>",
-                DOPBSP_RESERVATIONS_NO_CHILDREN_LABEL = "<?php echo DOPBSP_RESERVATIONS_NO_CHILDREN_LABEL?>",
-                DOPBSP_RESERVATIONS_MESSAGE_LABEL = "<?php echo DOPBSP_RESERVATIONS_MESSAGE_LABEL?>",
-
-                DOPBSP_RESERVATIONS_JUMP_TO_DAY_LABEL = "<?php echo DOPBSP_RESERVATIONS_JUMP_TO_DAY_LABEL?>",
-                DOPBSP_RESERVATIONS_APPROVE_LABEL = "<?php echo DOPBSP_RESERVATIONS_APPROVE_LABEL?>",
-                DOPBSP_RESERVATIONS_REJECT_LABEL = "<?php echo DOPBSP_RESERVATIONS_REJECT_LABEL?>",
-                DOPBSP_RESERVATIONS_CANCEL_LABEL = "<?php echo DOPBSP_RESERVATIONS_CANCEL_LABEL?>",
-
-                DOPBSP_RESERVATIONS_APPROVE_CONFIRMATION = "<?php echo DOPBSP_RESERVATIONS_APPROVE_CONFIRMATION?>",
-                DOPBSP_RESERVATIONS_APPROVE_SUCCESS = "<?php echo DOPBSP_RESERVATIONS_APPROVE_SUCCESS?>",
-                DOPBSP_RESERVATIONS_REJECT_CONFIRMATION = "<?php echo DOPBSP_RESERVATIONS_REJECT_CONFIRMATION?>",
-                DOPBSP_RESERVATIONS_REJECT_SUCCESS = "<?php echo DOPBSP_RESERVATIONS_REJECT_SUCCESS?>",
-                DOPBSP_RESERVATIONS_CANCEL_CONFIRMATION = "<?php echo DOPBSP_RESERVATIONS_CANCEL_CONFIRMATION?>",
-                DOPBSP_RESERVATIONS_CANCEL_SUCCESS = "<?php echo DOPBSP_RESERVATIONS_CANCEL_SUCCESS?>",
-
-                // TinyMCE
-                DOPBSP_TINYMCE_ADD = "<?php echo DOPBSP_TINYMCE_ADD?>",
-
-                // Settings
-                DOPBSP_GENERAL_STYLES_SETTINGS = "<?php echo DOPBSP_GENERAL_STYLES_SETTINGS?>",
-                DOPBSP_CALENDAR_NAME = "<?php echo DOPBSP_CALENDAR_NAME?>",
-                DOPBSP_AVAILABLE_DAYS = "<?php echo DOPBSP_AVAILABLE_DAYS?>",
-                DOPBSP_FIRST_DAY = "<?php echo DOPBSP_FIRST_DAY?>",
-                DOPBSP_CURRENCY = "<?php echo DOPBSP_CURRENCY?>",
-                DOPBSP_DATE_TYPE = "<?php echo DOPBSP_DATE_TYPE?>",
-                DOPBSP_PREDEFINED = "<?php echo DOPBSP_PREDEFINED?>",
-                DOPBSP_TEMPLATE = "<?php echo DOPBSP_TEMPLATE?>",
-                DOPBSP_MIN_STAY = "<?php echo DOPBSP_MIN_STAY?>",
-                DOPBSP_MAX_STAY = "<?php echo DOPBSP_MAX_STAY?>",
-                DOPBSP_NO_ITEMS_ENABLED = "<?php echo DOPBSP_NO_ITEMS_ENABLED?>",
-                DOPBSP_VIEW_ONLY = "<?php echo DOPBSP_VIEW_ONLY?>",
-                DOPBSP_PAGE_URL = "<?php echo DOPBSP_PAGE_URL?>",
-
-                DOPBSP_NOTIFICATIONS_STYLES_SETTINGS = "<?php echo DOPBSP_NOTIFICATIONS_STYLES_SETTINGS?>",
-                DOPBSP_NOTIFICATIONS_TEMPLATE = "<?php echo DOPBSP_NOTIFICATIONS_TEMPLATE?>",
-                DOPBSP_NOTIFICATIONS_EMAIL = "<?php echo DOPBSP_NOTIFICATIONS_EMAIL?>",
-                DOPBSP_NOTIFICATIONS_SMTP_ENABLED = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_ENABLED?>",
-                DOPBSP_NOTIFICATIONS_SMTP_HOST_NAME = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_HOST_NAME?>",
-                DOPBSP_NOTIFICATIONS_SMTP_HOST_PORT = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_HOST_PORT?>",
-                DOPBSP_NOTIFICATIONS_SMTP_SSL = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_SSL?>",
-                DOPBSP_NOTIFICATIONS_SMTP_USER = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_USER?>",
-                DOPBSP_NOTIFICATIONS_SMTP_PASSWORD = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_PASSWORD?>",
-
-                DOPBSP_DAYS_STYLES_SETTINGS = "<?php echo DOPBSP_DAYS_STYLES_SETTINGS?>",
-                DOPBSP_MULTIPLE_DAYS_SELECT = "<?php echo DOPBSP_MULTIPLE_DAYS_SELECT?>",
-                DOPBSP_MORNING_CHECK_OUT = "<?php echo DOPBSP_MORNING_CHECK_OUT?>",
-                DOPBSP_DETAILS_FROM_HOURS = "<?php echo DOPBSP_DETAILS_FROM_HOURS?>",
-                
-                DOPBSP_HOURS_STYLES_SETTINGS = "<?php echo DOPBSP_HOURS_STYLES_SETTINGS?>",
-                DOPBSP_HOURS_ENABLED = "<?php echo DOPBSP_HOURS_ENABLED?>",
-                DOPBSP_HOURS_INFO_ENABLED = "<?php echo DOPBSP_HOURS_INFO_ENABLED?>",
-                DOPBSP_HOURS_DEFINITIONS = "<?php echo DOPBSP_HOURS_DEFINITIONS?>",
-                DOPBSP_MULTIPLE_HOURS_SELECT = "<?php echo DOPBSP_MULTIPLE_HOURS_SELECT?>",
-                DOPBSP_HOURS_AMPM = "<?php echo DOPBSP_HOURS_AMPM?>",
-                DOPBSP_LAST_HOUR_TO_TOTAL_PRICE = "<?php echo DOPBSP_LAST_HOUR_TO_TOTAL_PRICE?>",
-                DOPBSP_HOURS_INTERVAL_ENABLED = "<?php echo DOPBSP_HOURS_INTERVAL_ENABLED?>",
-
-                DOPBSP_DISCOUNTS_NO_DAYS_SETTINGS = "<?php echo DOPBSP_DISCOUNTS_NO_DAYS_SETTINGS?>",
-                DOPBSP_DISCOUNTS_NO_DAYS = "<?php echo DOPBSP_DISCOUNTS_NO_DAYS?>",
-                DOPBSP_DISCOUNTS_NO_DAYS_DAYS = "<?php echo DOPBSP_DISCOUNTS_NO_DAYS_DAYS?>",
-
-                DOPBSP_DEPOSIT_SETTINGS = "<?php echo DOPBSP_DEPOSIT_SETTINGS?>",
-                DOPBSP_DEPOSIT = "<?php echo DOPBSP_DEPOSIT?>",
-
-                DOPBSP_FORM_STYLES_SETTINGS = "<?php echo DOPBSP_FORM_STYLES_SETTINGS?>",
-                DOPBSP_FORM = "<?php echo DOPBSP_FORM?>",
-                DOPBSP_INSTANT_BOOKING_ENABLED = "<?php echo DOPBSP_INSTANT_BOOKING_ENABLED?>",
-                DOPBSP_NO_PEOPLE_ENABLED = "<?php echo DOPBSP_NO_PEOPLE_ENABLED?>",
-                DOPBSP_MIN_NO_PEOPLE = "<?php echo DOPBSP_MIN_NO_PEOPLE?>",
-                DOPBSP_MAX_NO_PEOPLE = "<?php echo DOPBSP_MAX_NO_PEOPLE?>",
-                DOPBSP_NO_CHILDREN_ENABLED = "<?php echo DOPBSP_NO_CHILDREN_ENABLED?>",
-                DOPBSP_MIN_NO_CHILDREN = "<?php echo DOPBSP_MIN_NO_CHILDREN?>",
-                DOPBSP_MAX_NO_CHILDREN = "<?php echo DOPBSP_MAX_NO_CHILDREN?>",
-                DOPBSP_PAYMENT_ARRIVAL_ENABLED = "<?php echo DOPBSP_PAYMENT_ARRIVAL_ENABLED?>",
-
-                DOPBSP_PAYMENT_PAYPAL_STYLES_SETTINGS = "<?php echo DOPBSP_PAYMENT_PAYPAL_STYLES_SETTINGS?>",
-                DOPBSP_PAYMENT_PAYPAL_ENABLED = "<?php echo DOPBSP_PAYMENT_PAYPAL_ENABLED?>",
-                DOPBSP_PAYMENT_PAYPAL_USERNAME = "<?php echo DOPBSP_PAYMENT_PAYPAL_USERNAME?>",
-                DOPBSP_PAYMENT_PAYPAL_PASSWORD = "<?php echo DOPBSP_PAYMENT_PAYPAL_PASSWORD?>",
-                DOPBSP_PAYMENT_PAYPAL_SIGNATURE = "<?php echo DOPBSP_PAYMENT_PAYPAL_SIGNATURE?>",
-                DOPBSP_PAYMENT_PAYPAL_CREDIT_CARD = "<?php echo DOPBSP_PAYMENT_PAYPAL_CREDIT_CARD?>",
-                DOPBSP_PAYMENT_PAYPAL_SANDBOX_ENABLED = "<?php echo DOPBSP_PAYMENT_PAYPAL_SANDBOX_ENABLED?>",
-
-                DOPBSP_TERMS_AND_CONDITIONS_ENABLED = "<?php echo DOPBSP_TERMS_AND_CONDITIONS_ENABLED?>",
-                DOPBSP_TERMS_AND_CONDITIONS_LINK = "<?php echo DOPBSP_TERMS_AND_CONDITIONS_LINK?>",
-
-                DOPBSP_GO_TOP = "<?php echo DOPBSP_GO_TOP?>",
-                DOPBSP_SHOW = "<?php echo DOPBSP_SHOW?>",
-                DOPBSP_HIDE = "<?php echo DOPBSP_HIDE?>",
-
-                // Settings Info
-                DOPBSP_CALENDAR_NAME_INFO = "<?php echo DOPBSP_CALENDAR_NAME_INFO?>",
-                DOPBSP_AVAILABLE_DAYS_INFO = "<?php echo DOPBSP_AVAILABLE_DAYS_INFO?>",
-                DOPBSP_FIRST_DAY_INFO = "<?php echo DOPBSP_FIRST_DAY_INFO?>",
-                DOPBSP_CURRENCY_INFO = "<?php echo DOPBSP_CURRENCY_INFO?>",
-                DOPBSP_DATE_TYPE_INFO = "<?php echo DOPBSP_DATE_TYPE_INFO?>",
-                DOPBSP_PREDEFINED_INFO = "<?php echo DOPBSP_PREDEFINED_INFO?>",
-                DOPBSP_TEMPLATE_INFO = "<?php echo DOPBSP_TEMPLATE_INFO?>",
-                DOPBSP_MIN_STAY_INFO = "<?php echo DOPBSP_MIN_STAY_INFO?>",
-                DOPBSP_MAX_STAY_INFO = "<?php echo DOPBSP_MAX_STAY_INFO?>",
-                DOPBSP_NO_ITEMS_ENABLED_INFO = "<?php echo DOPBSP_NO_ITEMS_ENABLED_INFO?>",
-                DOPBSP_VIEW_ONLY_INFO = "<?php echo DOPBSP_VIEW_ONLY_INFO?>",
-                DOPBSP_PAGE_URL_INFO = "<?php echo DOPBSP_PAGE_URL_INFO?>",
-
-                DOPBSP_NOTIFICATIONS_TEMPLATE_INFO = "<?php echo DOPBSP_NOTIFICATIONS_TEMPLATE_INFO?>",
-                DOPBSP_NOTIFICATIONS_EMAIL_INFO = "<?php echo DOPBSP_NOTIFICATIONS_EMAIL_INFO?>",
-                DOPBSP_NOTIFICATIONS_SMTP_ENABLED_INFO = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_ENABLED_INFO?>",
-                DOPBSP_NOTIFICATIONS_SMTP_HOST_NAME_INFO = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_HOST_NAME_INFO?>",
-                DOPBSP_NOTIFICATIONS_SMTP_HOST_PORT_INFO = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_HOST_PORT_INFO?>",
-                DOPBSP_NOTIFICATIONS_SMTP_SSL_INFO = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_SSL_INFO?>",
-                DOPBSP_NOTIFICATIONS_SMTP_USER_INFO = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_USER_INFO?>",
-                DOPBSP_NOTIFICATIONS_SMTP_PASSWORD_INFO = "<?php echo DOPBSP_NOTIFICATIONS_SMTP_PASSWORD_INFO?>",
-
-                DOPBSP_MULTIPLE_DAYS_SELECT_INFO = "<?php echo DOPBSP_MULTIPLE_DAYS_SELECT_INFO?>",
-                DOPBSP_MORNING_CHECK_OUT_INFO = "<?php echo DOPBSP_MORNING_CHECK_OUT_INFO?>",
-                DOPBSP_DETAILS_FROM_HOURS_INFO = "<?php echo DOPBSP_DETAILS_FROM_HOURS_INFO?>",
-                
-                DOPBSP_HOURS_ENABLED_INFO = "<?php echo DOPBSP_HOURS_ENABLED_INFO?>",
-                DOPBSP_HOURS_INFO_ENABLED_INFO = "<?php echo DOPBSP_HOURS_INFO_ENABLED_INFO?>",
-                DOPBSP_HOURS_DEFINITIONS_INFO = "<?php echo DOPBSP_HOURS_DEFINITIONS_INFO?>",
-                DOPBSP_MULTIPLE_HOURS_SELECT_INFO = "<?php echo DOPBSP_MULTIPLE_HOURS_SELECT_INFO?>",
-                DOPBSP_HOURS_AMPM_INFO = "<?php echo DOPBSP_HOURS_AMPM_INFO?>",
-                DOPBSP_LAST_HOUR_TO_TOTAL_PRICE_INFO = "<?php echo DOPBSP_LAST_HOUR_TO_TOTAL_PRICE_INFO?>",
-                DOPBSP_HOURS_INTERVAL_ENABLED_INFO = "<?php echo DOPBSP_HOURS_INTERVAL_ENABLED_INFO?>",
-
-                DOPBSP_DISCOUNTS_NO_DAYS_INFO = "<?php echo DOPBSP_DISCOUNTS_NO_DAYS_INFO?>",
-                DOPBSP_DISCOUNTS_NO_DAYS_DAYS_INFO = "<?php echo DOPBSP_DISCOUNTS_NO_DAYS_DAYS_INFO?>",
-
-                DOPBSP_DEPOSIT_INFO = "<?php echo DOPBSP_DEPOSIT_INFO?>",
-
-                DOPBSP_FORM_INFO = "<?php echo DOPBSP_FORM_INFO?>",
-                DOPBSP_INSTANT_BOOKING_ENABLED_INFO = "<?php echo DOPBSP_INSTANT_BOOKING_ENABLED_INFO?>",
-                DOPBSP_NO_PEOPLE_ENABLED_INFO = "<?php echo DOPBSP_NO_PEOPLE_ENABLED_INFO?>",
-                DOPBSP_MIN_NO_PEOPLE_INFO = "<?php echo DOPBSP_MIN_NO_PEOPLE_INFO?>",
-                DOPBSP_MAX_NO_PEOPLE_INFO = "<?php echo DOPBSP_MAX_NO_PEOPLE_INFO?>",
-                DOPBSP_NO_CHILDREN_ENABLED_INFO = "<?php echo DOPBSP_NO_CHILDREN_ENABLED_INFO?>",
-                DOPBSP_MIN_NO_CHILDREN_INFO = "<?php echo DOPBSP_MIN_NO_CHILDREN_INFO?>",
-                DOPBSP_MAX_NO_CHILDREN_INFO = "<?php echo DOPBSP_MAX_NO_CHILDREN_INFO?>",
-                DOPBSP_PAYMENT_ARRIVAL_ENABLED_INFO = "<?php echo DOPBSP_PAYMENT_ARRIVAL_ENABLED_INFO?>",
-
-                DOPBSP_PAYMENT_PAYPAL_ENABLED_INFO = "<?php echo DOPBSP_PAYMENT_PAYPAL_ENABLED_INFO?>",   
-                DOPBSP_PAYMENT_PAYPAL_USERNAME_INFO = "<?php echo DOPBSP_PAYMENT_PAYPAL_USERNAME_INFO?>",
-                DOPBSP_PAYMENT_PAYPAL_PASSWORD_INFO = "<?php echo DOPBSP_PAYMENT_PAYPAL_PASSWORD_INFO?>",  
-                DOPBSP_PAYMENT_PAYPAL_SIGNATURE_INFO = "<?php echo DOPBSP_PAYMENT_PAYPAL_SIGNATURE_INFO?>",
-                DOPBSP_PAYMENT_PAYPAL_CREDIT_CARD_INFO = "<?php echo DOPBSP_PAYMENT_PAYPAL_CREDIT_CARD_INFO?>",
-                DOPBSP_PAYMENT_PAYPAL_SANDBOX_ENABLED_INFO = "<?php echo DOPBSP_PAYMENT_PAYPAL_SANDBOX_ENABLED_INFO?>",
-
-                DOPBSP_TERMS_AND_CONDITIONS_ENABLED_INFO = "<?php echo DOPBSP_TERMS_AND_CONDITIONS_ENABLED_INFO?>",
-                DOPBSP_TERMS_AND_CONDITIONS_LINK_INFO = "<?php echo DOPBSP_TERMS_AND_CONDITIONS_LINK_INFO?>",
-    
-                // Booking Forms
-                DOPBSP_TITLE_BOOKING_FORMS = "<?php echo DOPBSP_TITLE_BOOKING_FORMS?>",
-                DOPBSP_BOOKING_FORMS_HELP = "<?php echo DOPBSP_BOOKING_FORMS_HELP?>",
-                DOPBSP_BOOKING_FORMS_LOADED = "<?php echo DOPBSP_BOOKING_FORMS_LOADED?>",
-                DOPBSP_BOOKING_FORM_SETTINGS_HELP = "<?php echo DOPBSP_BOOKING_FORM_SETTINGS_HELP?>",
-                DOPBSP_BOOKING_FORM_LOADED = "<?php echo DOPBSP_BOOKING_FORM_LOADED?>",
-                DOPBSP_NO_BOOKING_FORMS = "<?php echo DOPBSP_NO_BOOKING_FORMS?>",
-
-                // Add Booking Form
-                DOPBSP_ADD_BOOKING_FORM_NAME = "<?php echo DOPBSP_ADD_BOOKING_FORM_NAME?>",
-                DOPBSP_ADD_BOOKING_FORM_SUBMIT = "<?php echo DOPBSP_ADD_BOOKING_FORM_SUBMIT?>",
-                DOPBSP_ADD_BOOKING_FORM_SUBMITED = "<?php echo DOPBSP_ADD_BOOKING_FORM_SUBMITED?>",
-                DOPBSP_ADD_BOOKING_FORM_SUCCESS = "<?php echo DOPBSP_ADD_BOOKING_FORM_SUCCESS?>",
-
-                // Edit Booking Form
-                DOPBSP_EDIT_BOOKING_FORM_SUBMIT = "<?php echo DOPBSP_EDIT_BOOKING_FORM_SUBMIT?>",
-                DOPBSP_EDIT_BOOKING_FORM_SUCCESS = "<?php echo DOPBSP_EDIT_BOOKING_FORM_SUCCESS?>",
-
-                // Delete Booking Form
-                DOPBSP_DELETE_BOOKING_FORM_CONFIRMATION = "<?php echo DOPBSP_DELETE_BOOKING_FORM_CONFIRMATION?>",
-                DOPBSP_DELETE_BOOKING_FORM_SUBMIT = "<?php echo DOPBSP_DELETE_BOOKING_FORM_SUBMIT?>",
-                DOPBSP_DELETE_BOOKING_FORM_SUBMITED = "<?php echo DOPBSP_DELETE_BOOKING_FORM_SUBMITED?>",
-                DOPBSP_DELETE_BOOKING_FORM_SUCCESS = "<?php echo DOPBSP_DELETE_BOOKING_FORM_SUCCESS?>",
-
-                // Booking Form Fields
-                DOPBSP_BOOKING_FORM_NAME = "<?php echo DOPBSP_BOOKING_FORM_NAME?>",
-                DOPBSP_BOOKING_FORM_NAME_DEFAULT = "<?php echo DOPBSP_BOOKING_FORM_NAME_DEFAULT?>",
-                DOPBSP_BOOKING_FORM_FIELDS_TITLE = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_TITLE?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SHOW_SETTINGS = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SHOW_SETTINGS?>",
-                DOPBSP_BOOKING_FORM_FIELDS_HIDE_SETTINGS = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_HIDE_SETTINGS?>",
-                DOPBSP_BOOKING_FORM_FIELDS_TYPE_TEXT_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_TYPE_TEXT_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_TYPE_TEXTAREA_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_TYPE_TEXTAREA_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_TYPE_CHECKBOX_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_TYPE_CHECKBOX_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_TYPE_SELECT_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_TYPE_SELECT_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_LANGUAGE_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_LANGUAGE_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_NAME_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_NAME_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_NEW_FIELD_TEXT_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_NEW_FIELD_TEXT_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_NEW_FIELD_TEXTAREA_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_NEW_FIELD_TEXTAREA_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_NEW_FIELD_CHECKBOX_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_NEW_FIELD_CHECKBOX_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_NEW_FIELD_SELECT_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_NEW_FIELD_SELECT_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_ALLOWED_CHARACTERS_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_ALLOWED_CHARACTERS_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SIZE_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SIZE_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_EMAIL_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_EMAIL_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_REQUIRED_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_REQUIRED_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SELECT_OPTIONS_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SELECT_OPTIONS_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SELECT_ADD_OPTION = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SELECT_ADD_OPTION?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SELECT_NEW_OPTION_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SELECT_NEW_OPTION_LABEL?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SELECT_DELETE_OPTION = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SELECT_DELETE_OPTION?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SELECT_MULTIPLE_SELECT_LABEL = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SELECT_MULTIPLE_SELECT_LABEL?>",
-
-                // Booking Form Fields Info
-                DOPBSP_BOOKING_FORM_NAME_INFO = "<?php echo DOPBSP_BOOKING_FORM_NAME_INFO?>",
-                DOPBSP_BOOKING_FORM_FIELDS_LANGUAGE_INFO = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_LANGUAGE_INFO?>",
-                DOPBSP_BOOKING_FORM_FIELDS_NAME_INFO = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_NAME_INFO?>",
-                DOPBSP_BOOKING_FORM_FIELDS_ALLOWED_CHARACTERS_INFO = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_ALLOWED_CHARACTERS_INFO?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SIZE_INFO = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SIZE_INFO?>",
-                DOPBSP_BOOKING_FORM_FIELDS_EMAIL_INFO = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_EMAIL_INFO?>",
-                DOPBSP_BOOKING_FORM_FIELDS_REQUIRED_INFO = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_REQUIRED_INFO?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SELECT_OPTIONS_INFO = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SELECT_OPTIONS_INFO?>",
-                DOPBSP_BOOKING_FORM_FIELDS_SELECT_MULTIPLE_SELECT_INFO = "<?php echo DOPBSP_BOOKING_FORM_FIELDS_SELECT_MULTIPLE_SELECT_INFO?>",
-    
-                // Settings
-                DOPBSP_TITLE_SETTINGS = "<?php echo DOPBSP_TITLE_SETTINGS?>",
-
-                DOPBSP_USERS_PERMISSIONS = "<?php echo DOPBSP_USERS_PERMISSIONS?>",
-                DOPBSP_USERS_CUSTOM_POSTS_TYPE_PERMISSIONS = "<?php echo DOPBSP_USERS_CUSTOM_POSTS_TYPE_PERMISSIONS?>",
-                DOPBSP_USERS_SHOW = "<?php echo DOPBSP_USERS_SHOW?>",
-                DOPBSP_USERS_HIDE = "<?php echo DOPBSP_USERS_HIDE?>",
-                DOPBSP_USERS_NO_ADMINISTRATORS = "<?php echo DOPBSP_USERS_NO_ADMINISTRATORS?>",
-                DOPBSP_USERS_NO_AUTHORS = "<?php echo DOPBSP_USERS_NO_AUTHORS?>",
-                DOPBSP_USERS_NO_CONTRIBUTORS = "<?php echo DOPBSP_USERS_NO_CONTRIBUTORS?>",
-                DOPBSP_USERS_NO_EDITORS = "<?php echo DOPBSP_USERS_NO_EDITORS?>",
-                DOPBSP_USERS_NO_SUBSCRIBERS = "<?php echo DOPBSP_USERS_NO_SUBSCRIBERS?>",
-                DOPBSP_USERS_ADMINISTRATORS = "<?php echo DOPBSP_USERS_ADMINISTRATORS?>",
-                DOPSBP_USERS_ADMINISTRATORS_BULK_PERMISSIONS_INFO = "<?php echo DOPSBP_USERS_ADMINISTRATORS_BULK_PERMISSIONS_INFO?>",
-                DOPSBP_USERS_ADMINISTRATORS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO = "<?php echo DOPSBP_USERS_ADMINISTRATORS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO?>",
-                DOPBSP_USERS_AUTHORS = "<?php echo DOPBSP_USERS_AUTHORS?>",
-                DOPSBP_USERS_AUTHORS_BULK_PERMISSIONS_INFO = "<?php echo DOPSBP_USERS_AUTHORS_BULK_PERMISSIONS_INFO?>",
-                DOPSBP_USERS_AUTHORS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO = "<?php echo DOPSBP_USERS_AUTHORS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO?>",
-                DOPBSP_USERS_CONTRIBUTORS = "<?php echo DOPBSP_USERS_CONTRIBUTORS?>",
-                DOPBSP_USERS_CONTRIBUTORS_BULK_PERMISSIONS_INFO = "<?php echo DOPBSP_USERS_CONTRIBUTORS_BULK_PERMISSIONS_INFO?>",
-                DOPBSP_USERS_CONTRIBUTORS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO = "<?php echo DOPBSP_USERS_CONTRIBUTORS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO?>",
-                DOPBSP_USERS_EDITORS = "<?php echo DOPBSP_USERS_EDITORS?>",
-                DOPSBP_USERS_EDITORS_BULK_PERMISSIONS_INFO = "<?php echo DOPSBP_USERS_EDITORS_BULK_PERMISSIONS_INFO?>",
-                DOPSBP_USERS_EDITORS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO = "<?php echo DOPSBP_USERS_EDITORS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO?>",
-                DOPBSP_USERS_SUBSCRIBERS = "<?php echo DOPBSP_USERS_SUBSCRIBERS?>",
-                DOPBSP_USERS_SUBSCRIBERS_BULK_PERMISSIONS_INFO = "<?php echo DOPBSP_USERS_SUBSCRIBERS_BULK_PERMISSIONS_INFO?>",
-                DOPBSP_USERS_SUBSCRIBERS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO = "<?php echo DOPBSP_USERS_SUBSCRIBERS_BULK_CUSTOM_POSTS_TYPE_PERMISSIONS_INFO?>",
-                DOPBSP_USERS_PERMISSIONS_HELP = "<?php echo DOPBSP_USERS_PERMISSIONS_HELP?>",
-                DOPBSP_USERS_CUSTOM_POSTS_TYPE_PERMISSIONS_HELP = "<?php echo DOPBSP_USERS_CUSTOM_POSTS_TYPE_PERMISSIONS_HELP?>",
-                
-                // Custom Post Type
-                DOPBSP_CUSTOM_POSTS_TYPE = "<?php echo DOPBSP_CUSTOM_POSTS_TYPE?>",
-                DOPBSP_CUSTOM_POSTS_TYPE_ADD_NEW_ITEM_ALL_ITEMS = "<?php echo DOPBSP_CUSTOM_POSTS_TYPE_ADD_NEW_ITEM_ALL_ITEMS?>",
-                DOPBSP_CUSTOM_POSTS_TYPE_ADD_NEW_ITEM = "<?php echo DOPBSP_CUSTOM_POSTS_TYPE_ADD_NEW_ITEM?>",
-                DOPBSP_CUSTOM_POSTS_TYPE_EDIT_ITEM = "<?php echo DOPBSP_CUSTOM_POSTS_TYPE_EDIT_ITEM?>",
-                DOPBSP_CUSTOM_POSTS_TYPE_BOOKING_SYSTEM = "<?php echo DOPBSP_CUSTOM_POSTS_TYPE_BOOKING_SYSTEM?>",
-    
-                // Widget
-                DOPBSP_WIDGET_TITLE = "<?php echo DOPBSP_WIDGET_TITLE?>",
-                DOPBSP_WIDGET_DESCRIPTION = "<?php echo DOPBSP_WIDGET_DESCRIPTION?>",
-                DOPBSP_WIDGET_LABEL_TITLE = "<?php echo DOPBSP_WIDGET_LABEL_TITLE?>",
-                DOPBSP_WIDGET_LABEL_SELECTION = "<?php echo DOPBSP_WIDGET_LABEL_SELECTION?>",
-                DOPBSP_WIDGET_SELECTION_SIDEBAR = "<?php echo DOPBSP_WIDGET_SELECTION_SIDEBAR?>",
-                DOPBSP_WIDGET_LABEL_ID = "<?php echo DOPBSP_WIDGET_LABEL_ID?>",
-                DOPBSP_WIDGET_NO_CALENDARS = "<?php echo DOPBSP_WIDGET_NO_CALENDARS?>",
-
-                // Help
-                DOPBSP_HELP_DOCUMENTATION = "<?php echo DOPBSP_HELP_DOCUMENTATION?>",
-                DOPBSP_HELP_FAQ = "<?php echo DOPBSP_HELP_FAQ?>";
-            </script>
-<?php  
-            }
-            
-            function returnLanguages(){ // List languages select.
-                $current_backend_language = get_option('DOPBSP_backend_language_'.wp_get_current_user()->ID);
-                
-                if ($current_backend_language == ''){
-                    $current_backend_language = 'en';
-                    add_option('DOPBSP_backend_language_'.wp_get_current_user()->ID, 'en');
-                }
-?>
-                <select id="DOPBSP-admin-translation" onchange="dopbspChangeTranslation()">
-                    <option value="af"<?php echo $current_backend_language == 'af' ? ' selected="selected"':''?>>Afrikaans (Afrikaans)</option>
-                    <option value="al"<?php echo $current_backend_language == 'al' ? ' selected="selected"':''?>>Albanian (Shqiptar)</option>
-                    <option value="ar"<?php echo $current_backend_language == 'ar' ? ' selected="selected"':''?>>Arabic (>العربية)</option>
-                    <option value="az"<?php echo $current_backend_language == 'az' ? ' selected="selected"':''?>>Azerbaijani (Azərbaycan)</option>
-                    <option value="bs"<?php echo $current_backend_language == 'bs' ? ' selected="selected"':''?>>Basque (Euskal)</option>
-                    <option value="by"<?php echo $current_backend_language == 'by' ? ' selected="selected"':''?>>Belarusian (Беларускай)</option>
-                    <option value="bg"<?php echo $current_backend_language == 'bg' ? ' selected="selected"':''?>>Bulgarian (Български)</option>
-                    <option value="ca"<?php echo $current_backend_language == 'ca' ? ' selected="selected"':''?>>Catalan (Català)</option>
-                    <option value="cn"<?php echo $current_backend_language == 'cn' ? ' selected="selected"':''?>>Chinese (中国的)</option>
-                    <option value="cr"<?php echo $current_backend_language == 'cr' ? ' selected="selected"':''?>>Croatian (Hrvatski)</option>
-                    <option value="cz"<?php echo $current_backend_language == 'cz' ? ' selected="selected"':''?>>Czech (Český)</option>
-                    <option value="dk"<?php echo $current_backend_language == 'dk' ? ' selected="selected"':''?>>Danish (Dansk)</option>
-                    <option value="du"<?php echo $current_backend_language == 'du' ? ' selected="selected"':''?>>Dutch (Nederlands)</option>
-                    <option value="en"<?php echo $current_backend_language == 'en' ? ' selected="selected"':''?>>English</option>
-                    <option value="eo"<?php echo $current_backend_language == 'eo' ? ' selected="selected"':''?>>Esperanto (Esperanto)</option>
-                    <option value="et"<?php echo $current_backend_language == 'et' ? ' selected="selected"':''?>>Estonian (Eesti)</option>
-                    <option value="fl"<?php echo $current_backend_language == 'fl' ? ' selected="selected"':''?>>Filipino (na Filipino)</option>
-                    <option value="fi"<?php echo $current_backend_language == 'fi' ? ' selected="selected"':''?>>Finnish (Suomi)</option>
-                    <option value="fr"<?php echo $current_backend_language == 'fr' ? ' selected="selected"':''?>>French (Français)</option>
-                    <option value="gl"<?php echo $current_backend_language == 'gl' ? ' selected="selected"':''?>>Galician (Galego)</option>
-                    <option value="de"<?php echo $current_backend_language == 'de' ? ' selected="selected"':''?>>German (Deutsch)</option>
-                    <option value="gr"<?php echo $current_backend_language == 'gr' ? ' selected="selected"':''?>>Greek (Ɛλληνικά)</option>
-                    <option value="ha"<?php echo $current_backend_language == 'ha' ? ' selected="selected"':''?>>Haitian Creole (Kreyòl Ayisyen)</option>
-                    <option value="he"<?php echo $current_backend_language == 'he' ? ' selected="selected"':''?>>Hebrew (עברית)</option>
-                    <option value="hi"<?php echo $current_backend_language == 'hi' ? ' selected="selected"':''?>>Hindi (हिंदी)</option>
-                    <option value="hu"<?php echo $current_backend_language == 'hu' ? ' selected="selected"':''?>>Hungarian (Magyar)</option>
-                    <option value="is"<?php echo $current_backend_language == 'is' ? ' selected="selected"':''?>>Icelandic (Íslenska)</option>
-                    <option value="id"<?php echo $current_backend_language == 'id' ? ' selected="selected"':''?>>Indonesian (Indonesia)</option>
-                    <option value="ir"<?php echo $current_backend_language == 'ir' ? ' selected="selected"':''?>>Irish (Gaeilge)</option>
-                    <option value="it"<?php echo $current_backend_language == 'it' ? ' selected="selected"':''?>>Italian (Italiano)</option>
-                    <option value="ja"<?php echo $current_backend_language == 'ja' ? ' selected="selected"':''?>>Japanese (日本の)</option>
-                    <option value="ko"<?php echo $current_backend_language == 'ko' ? ' selected="selected"':''?>>Korean (한국의)</option>            
-                    <option value="lv"<?php echo $current_backend_language == 'lv' ? ' selected="selected"':''?>>Latvian (Latvijas)</option>
-                    <option value="lt"<?php echo $current_backend_language == 'lt' ? ' selected="selected"':''?>>Lithuanian (Lietuvos)</option>            
-                    <option value="mk"<?php echo $current_backend_language == 'mk' ? ' selected="selected"':''?>>Macedonian (македонски)</option>
-                    <option value="mg"<?php echo $current_backend_language == 'mg' ? ' selected="selected"':''?>>Malay (Melayu)</option>
-                    <option value="ma"<?php echo $current_backend_language == 'ma' ? ' selected="selected"':''?>>Maltese (Maltija)</option>
-                    <option value="no"<?php echo $current_backend_language == 'no' ? ' selected="selected"':''?>>Norwegian (Norske)</option>            
-                    <option value="pe"<?php echo $current_backend_language == 'pe' ? ' selected="selected"':''?>>Persian (فارسی)</option>
-                    <option value="pl"<?php echo $current_backend_language == 'pl' ? ' selected="selected"':''?>>Polish (Polski)</option>
-                    <option value="pt"<?php echo $current_backend_language == 'pt' ? ' selected="selected"':''?>>Portuguese (Português)</option>
-                    <option value="ro"<?php echo $current_backend_language == 'ro' ? ' selected="selected"':''?>>Romanian (Română)</option>
-                    <option value="ru"<?php echo $current_backend_language == 'ru' ? ' selected="selected"':''?>>Russian (Pусский)</option>
-                    <option value="sr"<?php echo $current_backend_language == 'sr' ? ' selected="selected"':''?>>Serbian (Cрпски)</option>
-                    <option value="sk"<?php echo $current_backend_language == 'sk' ? ' selected="selected"':''?>>Slovak (Slovenských)</option>
-                    <option value="sl"<?php echo $current_backend_language == 'sl' ? ' selected="selected"':''?>>Slovenian (Slovenski)</option>
-                    <option value="sp"<?php echo $current_backend_language == 'sp' ? ' selected="selected"':''?>>Spanish (Español)</option>
-                    <option value="sw"<?php echo $current_backend_language == 'sw' ? ' selected="selected"':''?>>Swahili (Kiswahili)</option>
-                    <option value="se"<?php echo $current_backend_language == 'se' ? ' selected="selected"':''?>>Swedish (Svenskt)</option>
-                    <option value="th"<?php echo $current_backend_language == 'th' ? ' selected="selected"':''?>>Thai (ภาษาไทย)</option>
-                    <option value="tr"<?php echo $current_backend_language == 'tr' ? ' selected="selected"':''?>>Turkish (Türk)</option>
-                    <option value="uk"<?php echo $current_backend_language == 'uk' ? ' selected="selected"':''?>>Ukrainian (Український)</option>
-                    <option value="ur"<?php echo $current_backend_language == 'ur' ? ' selected="selected"':''?>>Urdu (اردو)</option>
-                    <option value="vi"<?php echo $current_backend_language == 'vi' ? ' selected="selected"':''?>>Vietnamese (Việt)</option>
-                    <option value="we"<?php echo $current_backend_language == 'we' ? ' selected="selected"':''?>>Welsh (Cymraeg)</option>
-                    <option value="yi"<?php echo $current_backend_language == 'yi' ? ' selected="selected"':''?>>Yiddish (ייִדיש)</option>
-                </select>                    
-<?php  
-            }
-            
-            function returnBookingFormLanguages(){ // List languages select.
-                $current_backend_language = get_option('DOPBSP_backend_language_'.wp_get_current_user()->ID);
-                
-                if ($current_backend_language == ''){
-                    $current_backend_language = 'en';
-                }
-?>
-                <select id="DOPBSP-admin-form-field-language-<?=$field_id?>" onchange="dopbspTranslationBookingFormField(this.value)">
-                    <option value="af"<?php echo $current_backend_language == 'af' ? ' selected="selected"':''?>>Afrikaans (Afrikaans)</option>
-                    <option value="al"<?php echo $current_backend_language == 'al' ? ' selected="selected"':''?>>Albanian (Shqiptar)</option>
-                    <option value="ar"<?php echo $current_backend_language == 'ar' ? ' selected="selected"':''?>>Arabic (>العربية)</option>
-                    <option value="az"<?php echo $current_backend_language == 'az' ? ' selected="selected"':''?>>Azerbaijani (Azərbaycan)</option>
-                    <option value="bs"<?php echo $current_backend_language == 'bs' ? ' selected="selected"':''?>>Basque (Euskal)</option>
-                    <option value="by"<?php echo $current_backend_language == 'by' ? ' selected="selected"':''?>>Belarusian (Беларускай)</option>
-                    <option value="bg"<?php echo $current_backend_language == 'bg' ? ' selected="selected"':''?>>Bulgarian (Български)</option>
-                    <option value="ca"<?php echo $current_backend_language == 'ca' ? ' selected="selected"':''?>>Catalan (Català)</option>
-                    <option value="cn"<?php echo $current_backend_language == 'cn' ? ' selected="selected"':''?>>Chinese (中国的)</option>
-                    <option value="cr"<?php echo $current_backend_language == 'cr' ? ' selected="selected"':''?>>Croatian (Hrvatski)</option>
-                    <option value="cz"<?php echo $current_backend_language == 'cz' ? ' selected="selected"':''?>>Czech (Český)</option>
-                    <option value="dk"<?php echo $current_backend_language == 'dk' ? ' selected="selected"':''?>>Danish (Dansk)</option>
-                    <option value="du"<?php echo $current_backend_language == 'du' ? ' selected="selected"':''?>>Dutch (Nederlands)</option>
-                    <option value="en"<?php echo $current_backend_language == 'en' ? ' selected="selected"':''?>>English</option>
-                    <option value="eo"<?php echo $current_backend_language == 'eo' ? ' selected="selected"':''?>>Esperanto (Esperanto)</option>
-                    <option value="et"<?php echo $current_backend_language == 'et' ? ' selected="selected"':''?>>Estonian (Eesti)</option>
-                    <option value="fl"<?php echo $current_backend_language == 'fl' ? ' selected="selected"':''?>>Filipino (na Filipino)</option>
-                    <option value="fi"<?php echo $current_backend_language == 'fi' ? ' selected="selected"':''?>>Finnish (Suomi)</option>
-                    <option value="fr"<?php echo $current_backend_language == 'fr' ? ' selected="selected"':''?>>French (Français)</option>
-                    <option value="gl"<?php echo $current_backend_language == 'gl' ? ' selected="selected"':''?>>Galician (Galego)</option>
-                    <option value="de"<?php echo $current_backend_language == 'de' ? ' selected="selected"':''?>>German (Deutsch)</option>
-                    <option value="gr"<?php echo $current_backend_language == 'gr' ? ' selected="selected"':''?>>Greek (Ɛλληνικά)</option>
-                    <option value="ha"<?php echo $current_backend_language == 'ha' ? ' selected="selected"':''?>>Haitian Creole (Kreyòl Ayisyen)</option>
-                    <option value="he"<?php echo $current_backend_language == 'he' ? ' selected="selected"':''?>>Hebrew (עברית)</option>
-                    <option value="hi"<?php echo $current_backend_language == 'hi' ? ' selected="selected"':''?>>Hindi (हिंदी)</option>
-                    <option value="hu"<?php echo $current_backend_language == 'hu' ? ' selected="selected"':''?>>Hungarian (Magyar)</option>
-                    <option value="is"<?php echo $current_backend_language == 'is' ? ' selected="selected"':''?>>Icelandic (Íslenska)</option>
-                    <option value="id"<?php echo $current_backend_language == 'id' ? ' selected="selected"':''?>>Indonesian (Indonesia)</option>
-                    <option value="ir"<?php echo $current_backend_language == 'ir' ? ' selected="selected"':''?>>Irish (Gaeilge)</option>
-                    <option value="it"<?php echo $current_backend_language == 'it' ? ' selected="selected"':''?>>Italian (Italiano)</option>
-                    <option value="ja"<?php echo $current_backend_language == 'ja' ? ' selected="selected"':''?>>Japanese (日本の)</option>
-                    <option value="ko"<?php echo $current_backend_language == 'ko' ? ' selected="selected"':''?>>Korean (한국의)</option>            
-                    <option value="lv"<?php echo $current_backend_language == 'lv' ? ' selected="selected"':''?>>Latvian (Latvijas)</option>
-                    <option value="lt"<?php echo $current_backend_language == 'lt' ? ' selected="selected"':''?>>Lithuanian (Lietuvos)</option>            
-                    <option value="mk"<?php echo $current_backend_language == 'mk' ? ' selected="selected"':''?>>Macedonian (македонски)</option>
-                    <option value="mg"<?php echo $current_backend_language == 'mg' ? ' selected="selected"':''?>>Malay (Melayu)</option>
-                    <option value="ma"<?php echo $current_backend_language == 'ma' ? ' selected="selected"':''?>>Maltese (Maltija)</option>
-                    <option value="no"<?php echo $current_backend_language == 'no' ? ' selected="selected"':''?>>Norwegian (Norske)</option>            
-                    <option value="pe"<?php echo $current_backend_language == 'pe' ? ' selected="selected"':''?>>Persian (فارسی)</option>
-                    <option value="pl"<?php echo $current_backend_language == 'pl' ? ' selected="selected"':''?>>Polish (Polski)</option>
-                    <option value="pt"<?php echo $current_backend_language == 'pt' ? ' selected="selected"':''?>>Portuguese (Português)</option>
-                    <option value="ro"<?php echo $current_backend_language == 'ro' ? ' selected="selected"':''?>>Romanian (Română)</option>
-                    <option value="ru"<?php echo $current_backend_language == 'ru' ? ' selected="selected"':''?>>Russian (Pусский)</option>
-                    <option value="sr"<?php echo $current_backend_language == 'sr' ? ' selected="selected"':''?>>Serbian (Cрпски)</option>
-                    <option value="sk"<?php echo $current_backend_language == 'sk' ? ' selected="selected"':''?>>Slovak (Slovenských)</option>
-                    <option value="sl"<?php echo $current_backend_language == 'sl' ? ' selected="selected"':''?>>Slovenian (Slovenski)</option>
-                    <option value="sp"<?php echo $current_backend_language == 'sp' ? ' selected="selected"':''?>>Spanish (Español)</option>
-                    <option value="sw"<?php echo $current_backend_language == 'sw' ? ' selected="selected"':''?>>Swahili (Kiswahili)</option>
-                    <option value="se"<?php echo $current_backend_language == 'se' ? ' selected="selected"':''?>>Swedish (Svenskt)</option>
-                    <option value="th"<?php echo $current_backend_language == 'th' ? ' selected="selected"':''?>>Thai (ภาษาไทย)</option>
-                    <option value="tr"<?php echo $current_backend_language == 'tr' ? ' selected="selected"':''?>>Turkish (Türk)</option>
-                    <option value="uk"<?php echo $current_backend_language == 'uk' ? ' selected="selected"':''?>>Ukrainian (Український)</option>
-                    <option value="ur"<?php echo $current_backend_language == 'ur' ? ' selected="selected"':''?>>Urdu (اردو)</option>
-                    <option value="vi"<?php echo $current_backend_language == 'vi' ? ' selected="selected"':''?>>Vietnamese (Việt)</option>
-                    <option value="we"<?php echo $current_backend_language == 'we' ? ' selected="selected"':''?>>Welsh (Cymraeg)</option>
-                    <option value="yi"<?php echo $current_backend_language == 'yi' ? ' selected="selected"':''?>>Yiddish (ייִדיש)</option>
-                </select>                    
-<?php
-            }
-
+// Templates            
             function calendarsList(){// Return Template              
                 if (class_exists("DOPBookingSystemPROBackEnd")){
                     $DOPBSP_pluginSeries = new DOPBookingSystemPROBackEnd();
@@ -594,36 +26,30 @@
 ?>            
     <div class="wrap DOPBSP-admin">
 <!-- Header -->
-        <h2><?php echo DOPBSP_TITLE?></h2>
-        <div id="DOPBSP-admin-message"></div>
-        <?php $this->returnLanguages(); ?>
-        <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html#faq" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_FAQ ?></a>
-        <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_DOCUMENTATION ?></a>
-        <input type="hidden" id="calendar_id" value="" />
-        <br class="DOPBSP-clear" />
-
+        <?php $this->returnHeader(DOPBSP_TITLE); ?>
+        <input type="hidden" name="calendar_id" id="calendar_id" value="" />
+        <input type="hidden" name="calendar_jump_to_day" id="calendar_jump_to_day" value="" />
+        <input type="hidden" name="calendar_refresh" id="calendar_refresh" value="" />
 <!-- Content -->        
         <div class="main">
             
             <div class="column column1">
                 <div class="column-header">
-                <?php if (!isset($_GET['post_type']) && !isset($_GET['action'])){ ?>
 <?php 
-                    if($DOPBSP_pluginSeries->userHasPermissions(wp_get_current_user()->ID)){ 
-    ?>                  
+                if (isset($_GET['page']) && $DOPBSP_pluginSeries->userHasPermissions(wp_get_current_user()->ID)){ 
+?>                  
 
                         <div class="add-button" id="DOPBSP-add-calendar-btn">
                             <a href="javascript:dopbspAddCalendar()" title="<?php echo DOPBSP_ADD_CALENDAR_SUBMIT?>"></a>
                         </div>
 
                         <a href="javascript:void()" class="header-help"><span><?php echo DOPBSP_CALENDARS_HELP?>"</span></a>
-    <?php
-                    }
-                    else{
-    ?>           
+<?php
+                }
+                else{
+?>           
                         <a href="javascript:void()" class="header-help"><span><?php echo DOPBSP_CALENDARS_NO_ADD_HELP?>"</span></a>
-    <?php
-                    }
+<?php
                 }
 ?>                               
                 </div>
@@ -651,25 +77,320 @@
                     </div>
                 </div>
             </div>
+            <br class="DOPBSP-clear" />
         </div>
-        <br class="DOPBSP-clear" />
+    </div>       
+<?php
+                $this->reservationsList();
+            }
+            
+            function reservationsList($show_with_calendar = true){// Return Reservation Template
+                if (class_exists("DOPBookingSystemPROBackEnd") && !$show_with_calendar){
+                    $DOPBSP_pluginSeries = new DOPBookingSystemPROBackEnd();
+                }
+                $this->returnTranslations();
+?>            
+    <div class="wrap DOPBSP-admin" id="DOPBSP-admin-reservations"<?php echo $show_with_calendar ? ' style="display: none;"':'' ?>>
+<!-- Header -->
+        <?php $this->returnReservationsHeader(($show_with_calendar ? '':DOPBSP_TITLE.' - ').DOPBSP_TITLE_RESERVATIONS, $show_with_calendar); ?>
+<!-- Content -->   
+        <div class="main">
+            <div class="reservations-header">
+<?php 
+                if (!$show_with_calendar){
+?>
+                    <div class="reservation-filter" id="DOPBSP-reservations-calendars-filter">
+                        <div class="title"><?php echo DOPBSP_RESERVATIONS_FILTERS_CALENDAR?></div>
+                        <div class="filters">
+                            <select name="calendar_id" id="calendar_id" class="big" onchange="dopbspShowReservations()">
+                                <?php echo $DOPBSP_pluginSeries->showReservationsCalendars()?>
+                            </select>
+                            <input type="hidden" name="DOPBSP-reservations-without-calendar" id="DOPBSP-reservations-without-calendar" value="true" />
+                        </div>
+                        <a href="javascript:void()" class="help">
+                            <span><?php echo DOPBSP_RESERVATIONS_FILTERS_CALENDAR_HELP?></span>
+                        </a>
+                        <br class="DOPBSP-clear" />
+                    </div>
+<?php
+                }
+?>
+                <div class="reservation-filter" id="DOPBSP-reservations-actions-filter">
+                    <div class="title"><?php echo DOPBSP_RESERVATIONS_ACTIONS?></div>
+                    <div class="filters">
+                        <input type="button" name="DOPBSP-add-reservation" id="DOPBSP-add-reservation" class="submit-style" value="<?php echo DOPBSP_RESERVATIONS_ACTIONS_ADD; ?>" onclick="dopbspInitAddReservation()" />
+                        <input type="button" name="DOPBSP-reset-reservations-filter" id="DOPBSP-reset-reservations-filter" class="submit-style" value="<?php echo DOPBSP_RESERVATIONS_ACTIONS_RESET; ?>" />
+                        <input type="button" name="DOPBSP-submit-reservation" id="DOPBSP-submit-reservation" class="submit-style" value="<?php echo DOPBSP_RESERVATIONS_ACTIONS_SUBMIT; ?>" onclick="" />
+                        <input type="button" name="DOPBSP-back-reservation" id="DOPBSP-back-reservation" class="submit-style" value="<?php echo DOPBSP_RESERVATIONS_ACTIONS_BACK; ?>" onclick="dopbspInitReservations()" />
+                    </div>
+                    <a href="javascript:void()" class="help">
+                        <span><?php echo DOPBSP_RESERVATIONS_ACTIONS_HELP?></span>
+                    </a>
+                    <br class="DOPBSP-clear" />
+                </div>
+                <div class="reservation-filter" id="DOPBSP-reservations-view-filter">
+                    <div class="title"><?php echo DOPBSP_RESERVATIONS_FILTERS_VIEW?></div>
+                    <div class="filters">
+                        <select name="DOPBSP-reservations-view" id="DOPBSP-reservations-view" onchange="dopbspInitReservations()">
+                            <option value="calendar"><?php echo DOPBSP_RESERVATIONS_FILTERS_VIEW_CALENDAR?></option>
+                            <option value="list" selected="selected"><?php echo DOPBSP_RESERVATIONS_FILTERS_VIEW_LIST?></option>
+                        </select>
+                    </div>
+                    <a href="javascript:void()" class="help">
+                        <span><?php echo DOPBSP_RESERVATIONS_FILTERS_VIEW_HELP?></span>
+                    </a>
+                    <br class="DOPBSP-clear" />
+                </div>
+                <div class="reservation-filter" id="DOPBSP-reservations-period-filter">
+                    <div class="title"><?php echo DOPBSP_RESERVATIONS_FILTERS_PERIOD?></div>
+                    <div class="filters">
+                        <label id="DOPBSP-reservations-start-day-label" for="DOPBSP-reservations-start-day"><?php echo DOPBSP_RESERVATIONS_FILTERS_START_DAY?></label>
+                        <input type="text" name="DOPBSP-reservations-start-day" id="DOPBSP-reservations-start-day" val="" />
+                        <input type="hidden" name="DOPBSP-reservations-start-day-alt" id="DOPBSP-reservations-start-day-alt" val="" />
+                        <label id="DOPBSP-reservations-end-day-label" for="DOPBSP-reservations-end-day"><?php echo DOPBSP_RESERVATIONS_FILTERS_END_DAY?></label>
+                        <input type="text" name="DOPBSP-reservations-end-day" id="DOPBSP-reservations-end-day" val="" />
+                        <input type="hidden" name="DOPBSP-reservations-end-day-alt" id="DOPBSP-reservations-end-day-alt" val="" />
+                        <label id="DOPBSP-reservations-start-hour-label" for="DOPBSP-reservations-start-hour"><?php echo DOPBSP_RESERVATIONS_FILTERS_START_HOUR?></label>
+                        <select name="DOPBSP-reservations-start-hour" id="DOPBSP-reservations-start-hour" class="small">
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option>
+                            <option value="24:00">24:00</option>
+                        </select>
+                        <label id="DOPBSP-reservations-end-hour-label" for="DOPBSP-reservations-end-hour"><?php echo DOPBSP_RESERVATIONS_FILTERS_END_HOUR?></label>
+                        <select name="DOPBSP-reservations-end-hour" id="DOPBSP-reservations-end-hour" class="small">
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option>
+                            <option value="24:00">24:00</option>
+                        </select>
+                    </div>
+                    <a href="javascript:void()" class="help">
+                        <span><?php echo DOPBSP_RESERVATIONS_FILTERS_PERIOD_HELP?></span>
+                    </a>
+                    <br class="DOPBSP-clear" />
+                </div>
+                <div class="reservation-filter" id="DOPBSP-reservations-status-filter">
+                    <div class="title"><?php echo DOPBSP_RESERVATIONS_FILTERS_STATUS?></div>
+                    <div class="filters">
+                        <input type="checkbox" name="DOPBSP-reservations-pending" id="DOPBSP-reservations-pending" />
+                        <label class="checkbox" id="DOPBSP-reservations-pending-label" for="DOPBSP-reservations-pending"><?php echo DOPBSP_RESERVATIONS_FILTERS_STATUS_PENDING?></label>
+                        <input type="checkbox" name="DOPBSP-reservations-approved" id="DOPBSP-reservations-approved" />
+                        <label class="checkbox" id="DOPBSP-reservations-approved-label" for="DOPBSP-reservations-approved"><?php echo DOPBSP_RESERVATIONS_FILTERS_STATUS_APPROVED?></label>
+                        <input type="checkbox" name="DOPBSP-reservations-rejected" id="DOPBSP-reservations-rejected" />
+                        <label class="checkbox" id="DOPBSP-reservations-rejected-label" for="DOPBSP-reservations-rejected"><?php echo DOPBSP_RESERVATIONS_FILTERS_STATUS_REJECTED?></label>
+                        <input type="checkbox" name="DOPBSP-reservations-canceled" id="DOPBSP-reservations-canceled" />
+                        <label class="checkbox" id="DOPBSP-reservations-canceled-label" for="DOPBSP-reservations-canceled"><?php echo DOPBSP_RESERVATIONS_FILTERS_STATUS_CANCELED?></label>
+                        <input type="checkbox" name="DOPBSP-reservations-expired" id="DOPBSP-reservations-expired" />
+                        <label class="checkbox" id="DOPBSP-reservations-expired-label" for="DOPBSP-reservations-expired"><?php echo DOPBSP_RESERVATIONS_FILTERS_STATUS_EXPIRED?></label>
+                    </div>
+                    <a href="javascript:void()" class="help type2">
+                        <span><?php echo DOPBSP_RESERVATIONS_FILTERS_STATUS_HELP?></span>
+                    </a>
+                    <br class="DOPBSP-clear" />
+                </div>
+                <div class="reservation-filter" id="DOPBSP-reservations-payment-filter">
+                    <div class="title"><?php echo DOPBSP_RESERVATIONS_FILTERS_PAYMENT?></div>
+                    <div class="filters">
+                        <input type="checkbox" name="DOPBSP-reservations-payment-none" id="DOPBSP-reservations-payment-none" />
+                        <label class="checkbox" id="DOPBSP-reservations-payment-none-label" for="DOPBSP-reservations-payment-none"><?php echo DOPBSP_RESERVATIONS_FILTERS_PAYMENT_NONE?></label>
+                        <input type="checkbox" name="DOPBSP-reservations-payment-arrival" id="DOPBSP-reservations-payment-arrival" />
+                        <label class="checkbox" id="DOPBSP-reservations-payment-arrival-label" for="DOPBSP-reservations-payment-arrival"><?php echo DOPBSP_RESERVATIONS_FILTERS_PAYMENT_ARRIVAL?></label>
+                        <input type="checkbox" name="DOPBSP-reservations-payment-paypal" id="DOPBSP-reservations-payment-paypal" />
+                        <label class="checkbox" id="DOPBSP-reservations-payment-paypal-label" for="DOPBSP-reservations-payment-paypal"><?php echo DOPBSP_RESERVATIONS_FILTERS_PAYMENT_PAYPAL?></label>                        
+                    </div>
+                    <a href="javascript:void()" class="help type2">
+                        <span><?php echo DOPBSP_RESERVATIONS_FILTERS_PAYMENT_HELP?></span>
+                    </a>
+                    <br class="DOPBSP-clear" />
+                </div>
+                <div class="reservation-filter" id="DOPBSP-reservations-search-filter">
+                    <div class="title"><?php echo DOPBSP_RESERVATIONS_FILTERS_SEARCH?></div>
+                    <div class="filters">
+                        <input type="text" name="DOPBSP-reservations-search" id="DOPBSP-reservations-search" val="" />
+                        <label id="DOPBSP-reservations-search-by-label" for="DOPBSP-reservations-search-by"><?php echo DOPBSP_RESERVATIONS_FILTERS_SEARCH_BY?></label>
+                        <select name="DOPBSP-reservations-search-by" id="DOPBSP-reservations-search-by">
+                            <option value="id">ID</option>
+                        </select>
+                    </div>
+                    <a href="javascript:void()" class="help">
+                        <span><?php echo DOPBSP_RESERVATIONS_FILTERS_SEARCH_HELP?></span>
+                    </a>
+                    <br class="DOPBSP-clear" />
+                </div>
+                <div class="reservation-filter" id="DOPBSP-reservations-pagination-filter">
+                    <div class="title"><?php echo DOPBSP_RESERVATIONS_FILTERS_PAGINATION?></div>
+                    <div class="filters">
+                        <input type="hidden" name="DOPBSP-reservations-no-pages" id="DOPBSP-reservations-no-pages" value="" />
+                        <select name="DOPBSP-reservations-pagination-page" id="DOPBSP-reservations-pagination-page">
+                            <option value="1">1</option>
+                        </select>
+                        <label id="DOPBSP-reservations-pagination-no-page-label" for="DOPBSP-reservations-pagination-no-page"><?php echo DOPBSP_RESERVATIONS_FILTERS_PAGINATION_NO_PAGE?></label>
+                        <select name="DOPBSP-reservations-pagination-no-page" id="DOPBSP-reservations-pagination-no-page" class="small">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25" selected="selected">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <a href="javascript:void()" class="help">
+                        <span><?php echo DOPBSP_RESERVATIONS_FILTERS_PAGINATION_HELP?></span>
+                    </a>
+                    <br class="DOPBSP-clear" />
+                </div>
+                <div class="reservation-filter" id="DOPBSP-reservations-order-filter">
+                    <div class="title"><?php echo DOPBSP_RESERVATIONS_FILTERS_ORDER?></div>
+                    <div class="filters">
+                        <select name="DOPBSP-reservations-order" id="DOPBSP-reservations-order">
+                            <option value="ASC"><?php echo DOPBSP_RESERVATIONS_FILTERS_ORDER_ASCENDING?></option>
+                            <option value="DESC"><?php echo DOPBSP_RESERVATIONS_FILTERS_ORDER_DESCENDING?></option>
+                        </select>
+                        <label id="DOPBSP-reservations-order-by-label" for="DOPBSP-reservations-order-by"><?php echo DOPBSP_RESERVATIONS_FILTERS_ORDER_BY?></label>
+                        <select name="DOPBSP-reservations-order-by" id="DOPBSP-reservations-order-by">
+                            <option value="check_in"><?php echo DOPBSP_RESERVATIONS_CHECK_IN_LABEL?></option>
+                            <option value="check_out" style="display:none;"><?php echo DOPBSP_RESERVATIONS_CHECK_OUT_LABEL?></option>
+                            <option value="start_hour"><?php echo DOPBSP_RESERVATIONS_START_HOURS_LABEL?></option>
+                            <option value="end_hour"><?php echo DOPBSP_RESERVATIONS_END_HOURS_LABEL?></option>
+                            <option value="id">ID</option>
+                            <option value="status"><?php echo DOPBSP_RESERVATIONS_STATUS_LABEL?></option>
+                            <option value="date_created"><?php echo DOPBSP_RESERVATIONS_DATE_CREATED_LABEL?></option>
+                        </select>
+                    </div>
+                    <a href="javascript:void()" class="help">
+                        <span><?php echo DOPBSP_RESERVATIONS_FILTERS_ORDER_HELP?></span>
+                    </a>
+                    <br class="DOPBSP-clear" />
+                </div>
+            </div>
+            <div class="reservations-content"></div>
+        </div>
     </div>
 <?php
             }
-
+            
+            function bookingForms(){// Return Template              
+                if (class_exists("DOPBookingSystemPROBackEnd")){
+                    $DOPBSP_pluginSeries = new DOPBookingSystemPROBackEnd();
+                }
+                $this->returnTranslations();
+?>            
+    <div class="wrap DOPBSP-admin">
+<!-- Header -->
+        <?php $this->returnHeader(DOPBSP_TITLE.' - '.DOPBSP_TITLE_BOOKING_FORMS); ?>
+        <input type="hidden" id="booking_form_id" value="" />
+<!-- Content -->
+        <div class="main">
+            <div class="column column1">
+                <?php if($DOPBSP_pluginSeries->userHasPermissions(wp_get_current_user()->ID)) { ?>
+                <div class="column-header">
+                    <div class="add-button" id="DOPBSP-add-booking-form-btn">
+                        <a href="javascript:dopbspAddBookingForm()" title="<?php echo DOPBSP_ADD_BOOKING_FORM_SUBMIT ?>"></a>
+                    </div>
+                    <a href="javascript:void()" class="header-help"><span><?php echo DOPBSP_BOOKING_FORMS_HELP?>"</span></a>                    
+                </div>
+                <?php } ?>
+                <div class="column-content-container">
+                    <div class="column-content">
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+            <div class="column-separator"></div>
+            <div class="column column2">
+                <div class="column-header"></div>
+                <div class="column-content-container">
+                    <div class="column-content">
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+            <br class="DOPBSP-clear" />
+        </div>
+    </div>
+<?php
+            }
+            
+            function translation(){// Return Translation Template
+                $this->returnTranslations();
+?>            
+    <div class="wrap DOPBSP-admin">
+<!-- Header -->
+        <?php $this->returnHeader(DOPBSP_TITLE.' - '.DOPBSP_TITLE_TRANSLATION); ?>
+<!-- Content -->
+        <div class="main">
+            <div class="translation-header">
+                <!-- Location Select -->
+                <label for="DOPBSP-translation-location"><?php echo DOPBSP_TRANSLATION_SECTION?></label>
+                <select name="DOPBSP-translation-location" id="DOPBSP-translation-location" onchange="dopbspShowTranslation()">
+                    <option value="frontend"><?php echo DOPBSP_TRANSLATION_SECTION_FRONTEND?></option>
+                    <option value="backend"><?php echo DOPBSP_TRANSLATION_SECTION_BACKEND?></option>
+                </select>
+                <!-- Language Select -->
+                <label for="DOPBSP-translation-language"><?php echo DOPBSP_TRANSLATION_LANGUAGE?></label>
+                <?php $this->returnLanguages('DOPBSP-translation-language', 'dopbspShowTranslation'); ?>
+                <!-- Search -->
+                <label for="DOPBSP-translation-search"><?php echo DOPBSP_TRANSLATION_SEARCH?></label>
+                <input type="text" name="DOPBSP-translation-search" id="DOPBSP-translation-search" value="" onkeyup="dopbspSearchTranslation()" />
+                <a href="javascript:void()" class="header-help last"><span><?php echo DOPBSP_TRANSLATION_HELP?></span></a>
+                <input type="button" name="DOPBSP-translation-reset" id="DOPBSP-translation-reset" class="submit-style" value="<?php echo DOPBSP_TRANSLATION_RESET?>" onclick="dopbspResetTranslation()" />
+                <br class="DOPBSP-clear" />
+            </div>
+            <div class="translation-content" id="DOPBSP-translation-content"></div>
+        </div>
+    </div>
+<?php
+            }
+            
             function settings(){// Settings Template
                 $this->returnTranslations();
 ?>  
     <div class="wrap DOPBSP-admin">
-<!-- Header -->        
-        <h2><?php echo DOPBSP_TITLE.' - '.DOPBSP_TITLE_SETTINGS?></h2>
-        <div id="DOPBSP-admin-message"></div>
-        <?php $this->returnLanguages(); ?>
-        <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html#faq" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_FAQ ?></a>
-        <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_DOCUMENTATION ?></a>
-        <br class="DOPBSP-clear" />
-        
-<!-- Content -->        
+<!-- Header -->
+        <?php $this->returnHeader(DOPBSP_TITLE.' - '.DOPBSP_TITLE_SETTINGS); ?>
+<!-- Content -->  
         <div class="main">
             <form method="post" class="DOPBSP-form" action="" style="padding:0;"></form>
             <div class="column column1">
@@ -697,8 +418,8 @@
                     </div>
                 </div>
             </div>
+            <br class="DOPBSP-clear" />
         </div>
-        <br class="DOPBSP-clear" />
     </div>
 <?php
             }
@@ -1052,59 +773,173 @@
 <?php            
             }
             
-            function bookingForms(){// Return Template              
-                if (class_exists("DOPBookingSystemPROBackEnd")){
-                    $DOPBSP_pluginSeries = new DOPBookingSystemPROBackEnd();
-                }
-                $this->returnTranslations();
-?>            
-    <div class="wrap DOPBSP-admin">
-        <h2><?php echo DOPBSP_TITLE_BOOKING_FORMS?></h2>
-        <div id="DOPBSP-admin-message"></div>
-        <?php $this->returnLanguages(); ?>
-        <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html#faq" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_FAQ ?></a>
-        <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_DOCUMENTATION ?></a>
-        <input type="hidden" id="booking_form_id" value="" />
-        <br class="DOPBSP-clear" />
-        <div class="main">
-            <div class="column column1">
-                <?php if($DOPBSP_pluginSeries->userHasPermissions(wp_get_current_user()->ID)) { ?>
-                <div class="column-header">
-                    <div class="add-button" id="DOPBSP-add-booking-form-btn">
-                        <a href="javascript:dopbspAddBookingForm()" title="<?php echo DOPBSP_ADD_BOOKING_FORM_SUBMIT ?>"></a>
-                    </div>
-                    <a href="javascript:void()" class="header-help"><span><?php echo DOPBSP_BOOKING_FORMS_HELP?>"</span></a>                    
+// Components
+            function returnHeader($title){ // Default page header.
+?>
+                <h2></h2>
+                <div class="main-header">
+                    <h3><?php echo $title?></h3>
+                    <div id="DOPBSP-admin-message"></div>
+                    <?php $this->returnLanguages(); ?>
+                    <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html#faq" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_FAQ ?></a>
+                    <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_DOCUMENTATION ?></a>
+                    <br class="DOPBSP-clear" />
                 </div>
-                <?php } ?>
-                <div class="column-content-container">
-                    <div class="column-content">
-                        &nbsp;
-                    </div>
-                </div>
-            </div>
-            <div class="column-separator"></div>
-            <div class="column column2">
-                <div class="column-header"></div>
-                <div class="column-content-container">
-                    <div class="column-content">
-                        &nbsp;
-                    </div>
-                </div>
-            </div>
-            <div class="column-separator"></div>
-            <div class="column column3">
-                <div class="column-header"></div>
-                <div class="column-content-container">
-                    <div class="column-content">
-                        &nbsp;
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br class="DOPBSP-clear" />
-    </div>
+<?php                
+            }
+            
+            function returnReservationsHeader($title, $show_with_calendar){ // Default page header.
+?>
+                <h2></h2>
+                <div class="main-header">
+                    <h3><?php echo $title?></h3>
+                    <div id="DOPBSP-admin-reservations-message"></div>
+<?php 
+                if (!$show_with_calendar){
+?>
+                    <?php $this->returnLanguages(); ?>
+                    <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html#faq" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_FAQ ?></a>
+                    <a href="http://envato-help.dotonpaper.net/booking-system-pro-wordpress-plugin.html" target="_blank" class="DOPBSP-help"><?php echo DOPBSP_HELP_DOCUMENTATION ?></a>
 <?php
+                }
+?>
+                    <br class="DOPBSP-clear" />
+                </div>
+<?php                
+            }
+            
+            function returnTranslations(){// Add translation to JavaScript variables for AJAX usage.
+                global $wpdb;
+                
+                if (isset($_GET['page'])){
+                    $current_page = $_GET['page'];
+
+                    switch($current_page){
+                        case "dopbsp-reservations":
+                            $DOPBSP_curr_page = "Reservations List";
+                            break;
+                        case "dopbsp-booking-forms":
+                            $DOPBSP_curr_page = "Forms List";
+                            break;
+                        case "dopbsp-translation":
+                            $DOPBSP_curr_page = "Translation";
+                            break;
+                        case "dopbsp-settings":
+                            $DOPBSP_curr_page = "Settings";
+                            break;
+                        default:
+                            $DOPBSP_curr_page = "Calendars List";
+                            break;
+                    }
+                }
+                else{
+                    $DOPBSP_curr_page = "Calendars List";
+                }
+                
+                if (!is_super_admin()){
+                    $DOPBSP_user_role = wp_get_current_user()->roles[0];
+                }
+                else{
+                    $DOPBSP_user_role = "administrator";
+                }
+?>          
+            <script type="text/JavaScript">
+                var DOPBSP_curr_page = '<?php echo $DOPBSP_curr_page?>',
+                DOPBSP_user_role = '<?php echo $DOPBSP_user_role?>',
+                DOPBSP_plugin_url = '<?php echo DOPBSP_Plugin_URL?>',
+                DOPBSP_plugin_abs = '<?php echo DOPBSP_Plugin_AbsPath?>',
+                
+<?php
+                if (!is_network_admin()){
+                    $language = get_option('DOPBSP_backend_language_'.wp_get_current_user()->ID);
+
+                    if ($language == ''){
+                        $language = DOPBSP_CONFIG_BACKEND_DEFAULT_LANGUAGE;
+                        add_option('DOPBSP_backend_language_'.wp_get_current_user()->ID, DOPBSP_CONFIG_BACKEND_DEFAULT_LANGUAGE);
+                    }
+                }
+                else{
+                    $language = DOPBSP_CONFIG_BACKEND_DEFAULT_LANGUAGE;
+                }
+                
+                $translation = $wpdb->get_results('SELECT * FROM '.DOPBSP_Translation_table.'_'.$language.' WHERE location="backend"');
+
+                foreach ($translation as $item){    
+                    echo $item->key_data.' = \''.str_replace('<<single-quote>>', "\'", stripslashes($item->translation)).'\', ';
+                }
+?>
+                DOPBSP_END_TRANSLATION_LIST = 'End translation.';
+            </script>
+<?php  
+            }
+            
+            function returnLanguages($id = 'DOPBSP-admin-translation', $function = 'dopbspChangeTranslation', $class = ''){ // List languages select.
+                $current_backend_language = get_option('DOPBSP_backend_language_'.wp_get_current_user()->ID);
+                
+                if ($current_backend_language == ''){
+                    $current_backend_language = DOPBSP_CONFIG_BACKEND_DEFAULT_LANGUAGE;
+                    add_option('DOPBSP_backend_language_'.wp_get_current_user()->ID, DOPBSP_CONFIG_BACKEND_DEFAULT_LANGUAGE);
+                }
+?>
+                <select name="<?php echo $id?>" id="<?php echo $id?>"<?php $class == '' ? '':' class="'.$class.'"'; ?> onchange="<?php echo $function.'()'?>">
+                    <option value="af"<?php echo $current_backend_language == 'af' ? ' selected="selected"':''?>>Afrikaans (Afrikaans)</option>
+                    <option value="al"<?php echo $current_backend_language == 'al' ? ' selected="selected"':''?>>Albanian (Shqiptar)</option>
+                    <option value="ar"<?php echo $current_backend_language == 'ar' ? ' selected="selected"':''?>>Arabic (>العربية)</option>
+                    <option value="az"<?php echo $current_backend_language == 'az' ? ' selected="selected"':''?>>Azerbaijani (Azərbaycan)</option>
+                    <option value="bs"<?php echo $current_backend_language == 'bs' ? ' selected="selected"':''?>>Basque (Euskal)</option>
+                    <option value="by"<?php echo $current_backend_language == 'by' ? ' selected="selected"':''?>>Belarusian (Беларускай)</option>
+                    <option value="bg"<?php echo $current_backend_language == 'bg' ? ' selected="selected"':''?>>Bulgarian (Български)</option>
+                    <option value="ca"<?php echo $current_backend_language == 'ca' ? ' selected="selected"':''?>>Catalan (Català)</option>
+                    <option value="cn"<?php echo $current_backend_language == 'cn' ? ' selected="selected"':''?>>Chinese (中国的)</option>
+                    <option value="cr"<?php echo $current_backend_language == 'cr' ? ' selected="selected"':''?>>Croatian (Hrvatski)</option>
+                    <option value="cz"<?php echo $current_backend_language == 'cz' ? ' selected="selected"':''?>>Czech (Český)</option>
+                    <option value="dk"<?php echo $current_backend_language == 'dk' ? ' selected="selected"':''?>>Danish (Dansk)</option>
+                    <option value="du"<?php echo $current_backend_language == 'du' ? ' selected="selected"':''?>>Dutch (Nederlands)</option>
+                    <option value="en"<?php echo $current_backend_language == 'en' ? ' selected="selected"':''?>>English</option>
+                    <option value="eo"<?php echo $current_backend_language == 'eo' ? ' selected="selected"':''?>>Esperanto (Esperanto)</option>
+                    <option value="et"<?php echo $current_backend_language == 'et' ? ' selected="selected"':''?>>Estonian (Eesti)</option>
+                    <option value="fl"<?php echo $current_backend_language == 'fl' ? ' selected="selected"':''?>>Filipino (na Filipino)</option>
+                    <option value="fi"<?php echo $current_backend_language == 'fi' ? ' selected="selected"':''?>>Finnish (Suomi)</option>
+                    <option value="fr"<?php echo $current_backend_language == 'fr' ? ' selected="selected"':''?>>French (Français)</option>
+                    <option value="gl"<?php echo $current_backend_language == 'gl' ? ' selected="selected"':''?>>Galician (Galego)</option>
+                    <option value="de"<?php echo $current_backend_language == 'de' ? ' selected="selected"':''?>>German (Deutsch)</option>
+                    <option value="gr"<?php echo $current_backend_language == 'gr' ? ' selected="selected"':''?>>Greek (Ɛλληνικά)</option>
+                    <option value="ha"<?php echo $current_backend_language == 'ha' ? ' selected="selected"':''?>>Haitian Creole (Kreyòl Ayisyen)</option>
+                    <option value="he"<?php echo $current_backend_language == 'he' ? ' selected="selected"':''?>>Hebrew (עברית)</option>
+                    <option value="hi"<?php echo $current_backend_language == 'hi' ? ' selected="selected"':''?>>Hindi (हिंदी)</option>
+                    <option value="hu"<?php echo $current_backend_language == 'hu' ? ' selected="selected"':''?>>Hungarian (Magyar)</option>
+                    <option value="is"<?php echo $current_backend_language == 'is' ? ' selected="selected"':''?>>Icelandic (Íslenska)</option>
+                    <option value="id"<?php echo $current_backend_language == 'id' ? ' selected="selected"':''?>>Indonesian (Indonesia)</option>
+                    <option value="ir"<?php echo $current_backend_language == 'ir' ? ' selected="selected"':''?>>Irish (Gaeilge)</option>
+                    <option value="it"<?php echo $current_backend_language == 'it' ? ' selected="selected"':''?>>Italian (Italiano)</option>
+                    <option value="ja"<?php echo $current_backend_language == 'ja' ? ' selected="selected"':''?>>Japanese (日本の)</option>
+                    <option value="ko"<?php echo $current_backend_language == 'ko' ? ' selected="selected"':''?>>Korean (한국의)</option>            
+                    <option value="lv"<?php echo $current_backend_language == 'lv' ? ' selected="selected"':''?>>Latvian (Latvijas)</option>
+                    <option value="lt"<?php echo $current_backend_language == 'lt' ? ' selected="selected"':''?>>Lithuanian (Lietuvos)</option>            
+                    <option value="mk"<?php echo $current_backend_language == 'mk' ? ' selected="selected"':''?>>Macedonian (македонски)</option>
+                    <option value="mg"<?php echo $current_backend_language == 'mg' ? ' selected="selected"':''?>>Malay (Melayu)</option>
+                    <option value="ma"<?php echo $current_backend_language == 'ma' ? ' selected="selected"':''?>>Maltese (Maltija)</option>
+                    <option value="no"<?php echo $current_backend_language == 'no' ? ' selected="selected"':''?>>Norwegian (Norske)</option>            
+                    <option value="pe"<?php echo $current_backend_language == 'pe' ? ' selected="selected"':''?>>Persian (فارسی)</option>
+                    <option value="pl"<?php echo $current_backend_language == 'pl' ? ' selected="selected"':''?>>Polish (Polski)</option>
+                    <option value="pt"<?php echo $current_backend_language == 'pt' ? ' selected="selected"':''?>>Portuguese (Português)</option>
+                    <option value="ro"<?php echo $current_backend_language == 'ro' ? ' selected="selected"':''?>>Romanian (Română)</option>
+                    <option value="ru"<?php echo $current_backend_language == 'ru' ? ' selected="selected"':''?>>Russian (Pусский)</option>
+                    <option value="sr"<?php echo $current_backend_language == 'sr' ? ' selected="selected"':''?>>Serbian (Cрпски)</option>
+                    <option value="sk"<?php echo $current_backend_language == 'sk' ? ' selected="selected"':''?>>Slovak (Slovenských)</option>
+                    <option value="sl"<?php echo $current_backend_language == 'sl' ? ' selected="selected"':''?>>Slovenian (Slovenski)</option>
+                    <option value="sp"<?php echo $current_backend_language == 'sp' ? ' selected="selected"':''?>>Spanish (Español)</option>
+                    <option value="sw"<?php echo $current_backend_language == 'sw' ? ' selected="selected"':''?>>Swahili (Kiswahili)</option>
+                    <option value="se"<?php echo $current_backend_language == 'se' ? ' selected="selected"':''?>>Swedish (Svenskt)</option>
+                    <option value="th"<?php echo $current_backend_language == 'th' ? ' selected="selected"':''?>>Thai (ภาษาไทย)</option>
+                    <option value="tr"<?php echo $current_backend_language == 'tr' ? ' selected="selected"':''?>>Turkish (Türk)</option>
+                    <option value="uk"<?php echo $current_backend_language == 'uk' ? ' selected="selected"':''?>>Ukrainian (Український)</option>
+                    <option value="ur"<?php echo $current_backend_language == 'ur' ? ' selected="selected"':''?>>Urdu (اردو)</option>
+                    <option value="vi"<?php echo $current_backend_language == 'vi' ? ' selected="selected"':''?>>Vietnamese (Việt)</option>
+                    <option value="we"<?php echo $current_backend_language == 'we' ? ' selected="selected"':''?>>Welsh (Cymraeg)</option>
+                    <option value="yi"<?php echo $current_backend_language == 'yi' ? ' selected="selected"':''?>>Yiddish (ייִדיש)</option>
+                </select>                    
+<?php  
             }
         }
     }
-?>

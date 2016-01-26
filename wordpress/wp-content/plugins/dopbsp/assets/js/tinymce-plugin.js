@@ -1,8 +1,8 @@
 /*
 * Title                   : Booking System PRO (WordPress Plugin)
-* Version                 : 1.7
+* Version                 : 1.9
 * File                    : tinymce-plugin.php
-* File Version            : 1.0
+* File Version            : 1.1
 * Created / Last Modified : 31 July 2013
 * Author                  : Dot on Paper
 * Copyright               : © 2012 Dot on Paper

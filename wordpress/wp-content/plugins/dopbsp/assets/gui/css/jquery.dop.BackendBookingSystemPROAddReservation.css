@@ -1,0 +1,131 @@
+@charset "utf-8";
+
+/*
+* Title                   : Booking System PRO (WordPress Plugin)
+* Version                 : 1.9
+* File                    : jquery.dop.BackendBookingSystemPROAddReservation.css
+* File Version            : 1.1
+* Created / Last Modified : 06 November 2013
+* Author                  : Dot on Paper
+* Copyright               : © 2012 Dot on Paper
+* Website                 : http://www.dotonpaper.net
+* Description             : Booking System PRO Add Reservation Stylesheet.
+*/
+
+.DOPBookingSystemPROAddReservationContainer{
+
+}
+
+/******************************************************************************* Container */
+
+.DOPBookingSystemPROAddReservation_Container{
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.DOPBookingSystemPROAddReservation_Clear{
+    clear: both;
+}
+
+/******************************************************************************* Sidebar */
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item{
+    border-bottom: 1px solid #f0f0f0;
+    padding: 5px 0;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item:hover{
+    background: #f9f9f9;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item:last-child{
+    border-bottom: none;
+}
+
+.DOPBookingSystemPROAddReservation_Container .DOPBookingSystemPROAddReservation_HoursSelect,
+.DOPBookingSystemPROAddReservation_Container .DOPBookingSystemPROAddReservation_NoItemsSelect,
+.DOPBookingSystemPROAddReservation_Container .DOPBookingSystemPROAddReservation_ContactForm,
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item.price,
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item.message{
+    display: none;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item.price .value{
+    font-size: 13px;
+    line-height: 25px;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item.price .cut{
+    text-decoration: line-through;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item.price .small{
+    color: #202020;
+    font-size: 12px;
+    line-height: 1em !important;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item.price .medium{
+    font-size: 14px;
+    line-height: 1em !important;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item.message{
+    color: #ff0000;  
+    font-size: 13px;
+    line-height: 25px;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item.message .success{
+    color: #0e9f0e; 
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item label{
+    display: block;
+    float: left;
+    font: bold 13px/25px Helvetica, Arial, sans-serif;
+    text-indent: 10px;
+    width: 13%;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item .add-reservation-fields{
+    float: left;
+    width: 87%;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item .add-reservation-fields label{
+    color: #888888;
+    font-size: 12px;
+    line-height: 12px;
+    margin: 4px 0 0 0;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item .add-reservation-fields input[type=text]{
+    font-size: 12px;
+    width: 200px;
+}
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item .add-reservation-fields input[type=text].small{
+    width: 120px;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item .add-reservation-fields input[type=checkbox]{
+    display: inline-block;
+    margin: 4px 0 0 0;
+    padding: 0;
+    width: auto;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item .add-reservation-fields select{
+    font-size: 12px;
+    width: 200px;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item .add-reservation-fields select.small{
+    width: 85px;
+}
+
+.DOPBookingSystemPROAddReservation_Container .add-reservation-form-item .add-reservation-fields textarea{
+    font-size: 12px;
+    width: 400px;
+}

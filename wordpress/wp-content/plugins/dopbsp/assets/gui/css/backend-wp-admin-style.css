@@ -1,0 +1,59 @@
+@charset "utf-8";
+
+/*
+* Title                   : Booking System PRO (WordPress Plugin)
+* Version                 : 1.9
+* File                    : backend-wp-admin-style.css
+* File Version            : 1.2
+* Created / Last Modified : 11 October 2013
+* Author                  : Dot on Paper
+* Copyright               : © 2012 Dot on Paper
+* Website                 : http://www.dotonpaper.net
+* Description             : Booking System PRO Admin Stylesheet for Wp Admin.
+*/
+
+/******************************************************************************* Begin Menu Icon */
+
+#toplevel_page_dopbsp .wp-menu-image{
+    background: transparent url('../images/icon.png') no-repeat center center;
+}
+
+#toplevel_page_dopbsp:hover .wp-menu-image,
+#toplevel_page_dopbsp.wp-has-current-submenu .wp-menu-image,
+#toplevel_page_dopbsp.current .wp-menu-image{
+    background: transparent url('../images/icon-hover.png') no-repeat center center;
+}
+
+/******************************************************************************* End Menu Icon */
+
+
+/******************************************************************************* Begin WooCommerce */
+
+#woocommerce-product-data ul.product_data_tabs li.dopbsp_tab a{
+    background: #f1f1f1 url('../images/icon-woocommerce.png') no-repeat 5px 5px;
+    padding: 5px 5px 5px 28px;
+}
+
+#woocommerce-product-data ul.product_data_tabs li.dopbsp_tab a:hover,
+#woocommerce-product-data ul.product_data_tabs li.dopbsp_tab.active a{
+    background: #f1f1f1 url('../images/icon-woocommerce-hover.png') no-repeat 5px 5px;
+    padding: 5px 5px 5px 28px;
+}
+
+#dopbsp_tab_data .form-field label{
+    float: left;
+    width: 14%;
+}
+
+#dopbsp_tab_data .form-field select{
+    float: left;
+    width: 20%;
+}
+
+#dopbsp_tab_data .form-field .description{
+    float: left;
+    margin: 0 0 0 1%;
+    width: 65%;
+}
+
+/******************************************************************************* End WooCommerce */
